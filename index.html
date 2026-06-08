@@ -56,12 +56,45 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .nav-logo {
-    font-family: var(--serif);
-    font-size: 1.35rem;
+  /* ---- BRAND MARK ---- */
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 2px;
+  }
+
+  .nav-wordmark-name {
+    font-family: var(--sans);
+    font-size: 1.15rem;
+    font-weight: 500;
     color: var(--green-deep);
     letter-spacing: -0.01em;
-    text-decoration: none;
+    line-height: 1;
+  }
+
+  .nav-wordmark-sub {
+    font-family: var(--sans);
+    font-size: 0.52rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    line-height: 1;
   }
 
   .nav-links {
@@ -561,7 +594,187 @@
     text-decoration: none;
   }
 
-  /* ---- FADE IN ---- */
+  /* ---- PLATFORM ECOSYSTEM ---- */
+  .ecosystem {
+    background: var(--cream);
+    padding: 5rem 3rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ecosystem-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .ecosystem-pathway {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0;
+    align-items: center;
+    margin-top: 3.5rem;
+  }
+
+  .eco-platform {
+    border: 1px solid var(--border);
+    padding: 2rem 1.75rem;
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .eco-platform:hover {
+    border-color: var(--green-accent);
+    box-shadow: 0 4px 24px rgba(26,58,42,0.07);
+  }
+
+  .eco-platform-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .eco-platform-name {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    color: var(--green-deep);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+  }
+
+  .eco-platform-url {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .eco-platform-desc {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.55;
+  }
+
+  .eco-platform-role {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-accent);
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 1px;
+    background: var(--cream);
+  }
+
+  .eco-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1.5rem;
+  }
+
+  .eco-arrow-line {
+    width: 48px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .eco-arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-right: 1px solid var(--ink-soft);
+    border-bottom: 1px solid var(--ink-soft);
+    transform: rotate(-45deg);
+  }
+
+  .eco-arrow-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .eco-outcomes {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .eco-outcome {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+  }
+
+  .eco-outcome-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.5rem;
+  }
+
+  .eco-outcome-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--green-deep);
+    margin-bottom: 0.4rem;
+  }
+
+  .eco-outcome-body {
+    font-size: 0.825rem;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.55;
+  }
+
+  .eco-outcome-highlight {
+    border-color: var(--green-deep);
+  }
+
+  .eco-outcome-highlight .eco-outcome-label {
+    color: var(--green-accent);
+  }
+
+  .eco-outcome-highlight .eco-outcome-title {
+    color: var(--green-deep);
+  }
+
+  @media (max-width: 860px) {
+    .ecosystem-pathway {
+      grid-template-columns: 1fr;
+    }
+    .eco-arrow {
+      padding: 1rem 0;
+      flex-direction: row;
+      justify-content: center;
+    }
+    .eco-arrow-line {
+      width: 32px;
+    }
+    .eco-outcomes {
+      grid-template-columns: 1fr;
+    }
+  }
   .fade-in {
     opacity: 0;
     transform: translateY(18px);
@@ -660,7 +873,7 @@
   @media (max-width: 480px) {
     /* Nav */
     nav { padding: 0.9rem 1.25rem; }
-    .nav-logo { font-size: 1.2rem; }
+    .nav-wordmark-name { font-size: 1rem; }
     .nav-cta { padding: 0.45rem 1rem; font-size: 0.8rem; }
 
     /* Hero */
@@ -715,11 +928,24 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">Assistiv</a>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo-icon">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.5" stroke="#b8d4c2" stroke-width="1.1"/>
+        <circle cx="17" cy="17" r="10" stroke="#7aab90" stroke-width="1.8" fill="none"/>
+        <circle cx="17" cy="17" r="4.5" fill="#1a3a2a"/>
+      </svg>
+    </div>
+    <div class="nav-wordmark">
+      <span class="nav-wordmark-name">Assistiv</span>
+      <span class="nav-wordmark-sub">Systems</span>
+    </div>
+  </a>
   <ul class="nav-links">
     <li><a href="#challenge">The Challenge</a></li>
     <li><a href="#approach">Our Approach</a></li>
     <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#ecosystem">Our Platform</a></li>
     <li><a href="#advisors">Advisory</a></li>
   </ul>
   <a class="nav-cta" href="#contact">Get in touch</a>
@@ -947,6 +1173,67 @@
   </div>
 </section>
 
+<!-- PLATFORM ECOSYSTEM -->
+<section class="ecosystem" id="ecosystem">
+  <div class="ecosystem-inner">
+    <p class="section-label fade-in">Our platform</p>
+    <h2 class="section-title fade-in">Three connected tools. One system of care.</h2>
+    <p class="section-body fade-in">Assistiv operates across three integrated platforms. Each addresses a distinct stage of the journey from invisibility to appropriate support — finding people, understanding their needs, and delivering the right response.</p>
+
+    <div class="ecosystem-pathway fade-in">
+
+      <a class="eco-platform" href="https://www.assistiv.health" target="_blank" rel="noopener">
+        <p class="eco-platform-label">01 · Identify</p>
+        <p class="eco-platform-name">Assistiv Health</p>
+        <span class="eco-platform-url">assistiv.health</span>
+        <p class="eco-platform-desc">Population-level frailty intelligence. Finds older adults in the Missing Middle before they reach crisis — using open NHS data, geographic signals, and longitudinal risk modelling.</p>
+        <span class="eco-platform-role">Intelligence layer</span>
+      </a>
+
+      <div class="eco-arrow">
+        <div class="eco-arrow-line"></div>
+        <p class="eco-arrow-label">Refer</p>
+      </div>
+
+      <a class="eco-platform" href="https://www.resilience.xyz" target="_blank" rel="noopener">
+        <p class="eco-platform-label">02 · Screen</p>
+        <p class="eco-platform-name">Resilience</p>
+        <span class="eco-platform-url">resilience.xyz</span>
+        <p class="eco-platform-desc">Community screening for identified populations. Determines the level and urgency of need through structured, validated assessment — sorting those who need acute pathways from those suited to early intervention.</p>
+        <span class="eco-platform-role">Screening layer</span>
+      </a>
+
+      <div class="eco-arrow">
+        <div class="eco-arrow-line"></div>
+        <p class="eco-arrow-label">Route</p>
+      </div>
+
+      <a class="eco-platform eco-platform-highlight" href="#" style="border-color: var(--green-deep);">
+        <p class="eco-platform-label" style="color: var(--green-deep);">03 · Intervene</p>
+        <p class="eco-platform-name">Assistiv</p>
+        <span class="eco-platform-url">assistiv.co</span>
+        <p class="eco-platform-desc">Early intervention for those below the acute threshold. Passive home monitoring, warm conversation, and care coordination — delivered on the person's terms before independence is lost.</p>
+        <span class="eco-platform-role" style="border-color: var(--green-deep); color: var(--green-deep); background: var(--green-pale);">You are here</span>
+      </a>
+
+    </div>
+
+    <div class="eco-outcomes fade-in">
+      <div class="eco-outcome">
+        <p class="eco-outcome-label">Acute pathway</p>
+        <p class="eco-outcome-title">Health and Social Care</p>
+        <p class="eco-outcome-body">People identified by Resilience as approaching or exceeding the acute threshold are referred directly into NHS or local authority care pathways — with the longitudinal data needed for rapid, accurate assessment.</p>
+      </div>
+      <div class="eco-outcome eco-outcome-highlight">
+        <p class="eco-outcome-label">Early intervention pathway</p>
+        <p class="eco-outcome-title">Assistiv Services</p>
+        <p class="eco-outcome-body">People below the acute threshold — managing, but at risk — are supported by Assistiv's platform. Proactive, non-intrusive, and designed to extend independence and defer the need for formal care.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ADVISORY -->
 <section class="section" id="advisors">
   <div class="section-inner">
@@ -993,8 +1280,20 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-logo">Assistiv</span>
-  <span class="footer-note">Assistiv Systems Ltd · Confidential. For professional audiences only. April 2026.</span>
+  <div class="nav-brand" style="pointer-events:none;">
+    <div class="nav-logo-icon">
+      <svg width="28" height="28" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.5" stroke="#b8d4c2" stroke-width="1.1"/>
+        <circle cx="17" cy="17" r="10" stroke="#7aab90" stroke-width="1.8" fill="none"/>
+        <circle cx="17" cy="17" r="4.5" fill="#1a3a2a"/>
+      </svg>
+    </div>
+    <div class="nav-wordmark">
+      <span class="nav-wordmark-name" style="font-size:1rem;">Assistiv</span>
+      <span class="nav-wordmark-sub">Systems</span>
+    </div>
+  </div>
+  <span class="footer-note">Assistiv Systems Ltd · Confidential. For professional audiences only. June 2026. &nbsp;·&nbsp; <a href="https://www.assistiv.health" style="color:inherit;text-decoration:none;" target="_blank">assistiv.health</a> &nbsp;·&nbsp; <a href="https://www.resilience.xyz" style="color:inherit;text-decoration:none;" target="_blank">resilience.xyz</a></span>
   <a class="footer-url" href="https://www.assistiv.co">www.assistiv.co</a>
 </footer>
 
