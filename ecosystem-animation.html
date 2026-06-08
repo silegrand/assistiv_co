@@ -112,7 +112,7 @@ nav {
 .stage-bar {
   display: flex;
   align-items: stretch;
-  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   background: var(--white);
 }
 .stage-steps {
@@ -123,7 +123,7 @@ nav {
 .sstep {
   flex: 1;
   min-width: 0;
-  padding: 0.85rem 0.75rem 0.75rem;
+  padding: 0.6rem 0.75rem 0.55rem;
   border-right: 1px solid var(--border);
   cursor: pointer;
   transition: background 0.2s;
@@ -135,7 +135,7 @@ nav {
 .sstep.active::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  bottom: 0; left: 0; right: 0;
   height: 2px;
   background: var(--green-accent);
 }
@@ -235,8 +235,6 @@ nav {
   </div>
 
   <div class="anim-outer">
-    <canvas id="ecosystem-canvas" height="440" aria-label="Assistiv ecosystem funnel animation"></canvas>
-
     <!-- Step nav -->
     <div class="stage-bar">
       <div class="stage-steps">
@@ -270,6 +268,8 @@ nav {
         </div>
       </div>
     </div>
+
+    <canvas id="ecosystem-canvas" height="440" aria-label="Assistiv ecosystem funnel animation"></canvas>
 
     <!-- Caption -->
     <div class="caption-bar">
