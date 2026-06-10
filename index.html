@@ -3,33 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Assistiv Services — preventative care and support for older adults living independently. Proactive, dignified, and person-led. Before crisis. On your terms.">
-<title>Assistiv Services — Living Well at Home, on Your Terms</title>
+<meta name="description" content="Assistiv Systems — a closed-loop intelligence platform identifying older adults at risk before crisis, screening communities, and delivering preventative care at scale.">
+<title>Assistiv Systems — Infrastructure for Independent Living</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-
 /* ── TOKENS ─────────────────────────────────────────────────── */
 :root {
-  --ink:        #0f1a14;
-  --ink-mid:    #3a4a3f;
-  --ink-soft:   #6b7d72;
-  --ink-faint:  #9aaa9e;
-  --white:      #ffffff;
-  --cream:      #f4f7f5;
-  --border:     #cfddd5;
+  --ink:          #0f1a14;
+  --ink-mid:      #3a4a3f;
+  --ink-soft:     #6b7d72;
+  --ink-faint:    #9aaa9e;
+  --white:        #ffffff;
+  --cream:        #f7f5f1;
+  --border:       #d8e0da;
 
-  /* Services brand — forest green */
-  --s:          #1a3a2a;
-  --s-mid:      #2d5c42;
-  --s-accent:   #3d7a56;
-  --s-pale:     #e4ede8;
-  --s-ghost:    rgba(45,92,66,0.07);
+  /* Brand greens (Assistiv Systems parent) */
+  --g-deep:       #0A5F44;
+  --g-mid:        #0f7a57;
+  --g-accent:     #12966a;
+  --g-pale:       #e3eeea;
 
-  /* Ecosystem siblings */
-  --cloud:      #365EBF;
-  --tools:      #C4702A;
+  /* Cloud — blue */
+  --cloud:        #365EBF;
+  --cloud-dark:   #1e3a7a;
+  --cloud-pale:   #eef2fb;
+
+  /* Tools — amber */
+  --tools:        #C4702A;
+  --tools-dark:   #8a4012;
+  --tools-pale:   #fdf3e3;
+
+  /* Services — forest green */
+  --serv:         #1a3a2a;
+  --serv-mid:     #2d5c42;
+  --serv-pale:    #e8f0eb;
 
   --serif:  'Cormorant Garamond', Georgia, serif;
   --sans:   'DM Sans', system-ui, sans-serif;
@@ -63,313 +72,351 @@ body {
   display: flex; align-items: center; justify-content: space-between; gap: 2rem;
 }
 .nav-brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
-.nav-mark { position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
-.nav-dot { border-radius: 50%; position: absolute; }
-.nav-core { width: 8px; height: 8px; background: var(--s); z-index: 2; }
-.nav-r1   { width: 17px; height: 17px; border: 1.5px solid var(--s); opacity: 0.45; background: none; }
-.nav-r2   { width: 28px; height: 28px; border: 1.5px solid var(--s); opacity: 0.18; background: none; }
-.nav-words { display: flex; flex-direction: column; gap: 1px; }
-.nav-name { font-family: var(--sans); font-size: 1rem; font-weight: 700; letter-spacing: -0.03em; color: var(--s); line-height: 1; }
-.nav-sub  { font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--s-mid); opacity: 0.7; }
+.nav-logo-mark { position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.nav-logo-dot { border-radius: 50%; position: absolute; }
+.nav-logo-core { width: 8px; height: 8px; background: var(--g-deep); z-index: 2; }
+.nav-logo-r1   { width: 18px; height: 18px; border: 1.5px solid var(--g-deep); opacity: 0.45; background: none; }
+.nav-logo-r2   { width: 30px; height: 30px; border: 1.5px solid var(--g-deep); opacity: 0.18; background: none; }
+.nav-wordmark  { display: flex; flex-direction: column; gap: 1px; }
+.nav-name { font-family: var(--sans); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; color: var(--g-deep); line-height: 1; }
+.nav-sub  { font-family: var(--mono); font-size: 0.45rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g-deep); opacity: 0.6; }
 .nav-links { display: flex; align-items: center; gap: 1.8rem; list-style: none; }
 .nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--ink-mid); text-decoration: none; transition: color var(--ease); }
-.nav-links a:hover { color: var(--s); }
-.nav-eco {
-  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em;
-  color: var(--ink-soft); text-decoration: none; border: 1px solid var(--border);
-  padding: 0.35rem 0.75rem; border-radius: 4px; transition: all var(--ease);
-  white-space: nowrap;
-}
-.nav-eco:hover { border-color: var(--s-accent); color: var(--s); }
+.nav-links a:hover { color: var(--g-deep); }
 .nav-cta {
-  font-size: 0.82rem; font-weight: 600; color: var(--white);
-  background: var(--s); padding: 0.5rem 1.2rem; border-radius: 5px;
-  text-decoration: none; transition: background var(--ease); white-space: nowrap;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 600;
+  color: var(--white); background: var(--g-deep);
+  padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none;
+  transition: background var(--ease); white-space: nowrap;
 }
-.nav-cta:hover { background: var(--s-mid); }
+.nav-cta:hover { background: var(--g-mid); }
 .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
 .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; }
 .mobile-nav {
-  display: none; position: fixed; inset: 0; background: var(--cream);
-  z-index: 998; flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
+  display: none; position: fixed; inset: 0;
+  background: var(--cream); z-index: 998;
+  flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
 }
 .mobile-nav.open { display: flex; }
 .mobile-nav a { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--ink); text-decoration: none; }
-.mobile-nav a:hover { color: var(--s); }
+.mobile-nav a:hover { color: var(--g-deep); }
 .m-close { position: absolute; top: 1.4rem; right: 1.75rem; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: var(--ink); }
-@media (max-width: 860px) { .nav-links, .nav-eco, .nav-cta { display: none; } .hamburger { display: flex; } }
-
-/* ── ECOSYSTEM BREADCRUMB STRIP ─────────────────────────────── */
-.eco-strip {
-  position: fixed; top: 66px; left: 0; right: 0; z-index: 999;
-  background: var(--s-pale); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  gap: 0.5rem; padding: 0.4rem 1.5rem;
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-soft);
-  flex-wrap: wrap;
+@media (max-width: 820px) {
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
 }
-.eco-strip a { color: var(--s-mid); text-decoration: none; font-weight: 500; transition: color var(--ease); }
-.eco-strip a:hover { color: var(--s); text-decoration: underline; }
-.eco-strip-sep { opacity: 0.35; }
-.eco-strip-here { color: var(--s); font-weight: 600; }
-@media (max-width: 600px) { .eco-strip { font-size: 0.56rem; top: 60px; gap: 0.3rem; } }
 
 /* ── HERO ─────────────────────────────────────────────────────── */
 .hero {
-  padding: 136px 2rem 0;
+  padding: 116px 2rem 0;
   max-width: 1160px; margin: 0 auto;
   min-height: 100vh;
   display: flex; flex-direction: column; justify-content: center;
 }
 .hero-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 5rem; align-items: center; padding-bottom: 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  padding-bottom: 5rem;
 }
 .hero-eyebrow {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--s-accent); margin-bottom: 1.75rem;
+  text-transform: uppercase; color: var(--g-accent); margin-bottom: 1.75rem;
   display: flex; align-items: center; gap: 0.65rem;
 }
-.hero-eyebrow::before { content: ''; display: block; width: 22px; height: 1px; background: var(--s-accent); }
+.hero-eyebrow::before { content: ''; display: block; width: 22px; height: 1px; background: var(--g-accent); }
 .hero-h1 {
-  font-family: var(--serif); font-size: clamp(2.4rem, 4vw, 3.9rem);
-  font-weight: 300; line-height: 1.08; letter-spacing: -0.02em;
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-weight: 300; line-height: 1.1; letter-spacing: -0.02em;
   color: var(--ink); margin-bottom: 1.5rem;
 }
-.hero-h1 em { font-style: italic; color: var(--s-mid); }
-.hero-body { font-size: 1rem; font-weight: 300; color: var(--ink-mid); line-height: 1.75; margin-bottom: 2.25rem; max-width: 480px; }
+.hero-h1 em { font-style: italic; color: var(--g-deep); }
+.hero-body {
+  font-size: 1rem; font-weight: 300; color: var(--ink-mid);
+  line-height: 1.72; margin-bottom: 2.25rem; max-width: 480px;
+}
 .hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; }
-.btn-primary { font-size: 0.875rem; font-weight: 600; color: var(--white); background: var(--s); padding: 0.7rem 1.6rem; border-radius: 5px; text-decoration: none; transition: background var(--ease); }
-.btn-primary:hover { background: var(--s-mid); }
-.btn-ghost { font-size: 0.875rem; font-weight: 500; color: var(--ink-mid); border: 1px solid var(--border); padding: 0.7rem 1.4rem; border-radius: 5px; text-decoration: none; transition: border-color var(--ease), color var(--ease); }
-.btn-ghost:hover { border-color: var(--s-accent); color: var(--s); }
-
-/* Hero right — person cards */
-.hero-persona-stack {
-  display: flex; flex-direction: column; gap: 1rem;
+.btn-primary {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 600;
+  color: var(--white); background: var(--g-deep);
+  padding: 0.7rem 1.6rem; border-radius: 5px; text-decoration: none;
+  transition: background var(--ease);
 }
-.persona-card {
-  background: var(--cream);
+.btn-primary:hover { background: var(--g-mid); }
+.btn-ghost {
+  font-family: var(--sans); font-size: 0.875rem; font-weight: 500;
+  color: var(--ink-mid); border: 1px solid var(--border);
+  padding: 0.7rem 1.4rem; border-radius: 5px; text-decoration: none;
+  transition: border-color var(--ease), color var(--ease);
+}
+.btn-ghost:hover { border-color: var(--g-accent); color: var(--g-deep); }
+
+/* Hero right — domain cards */
+.hero-domains {
+  display: flex; flex-direction: column; gap: 0.75rem;
+}
+.domain-card {
+  background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.4rem 1.5rem;
+  border-radius: 10px;
+  padding: 1.1rem 1.4rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  text-decoration: none; color: inherit;
+  transition: box-shadow var(--ease), border-color var(--ease), transform var(--ease);
   position: relative; overflow: hidden;
-  transition: box-shadow var(--ease);
 }
-.persona-card::before {
+.domain-card::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; background: var(--s-mid); border-radius: 3px 0 0 3px;
+  width: 3px; border-radius: 3px 0 0 3px;
 }
-.persona-card:first-child::before { background: var(--s-mid); }
-.persona-card:nth-child(2)::before { background: var(--tools); }
-.persona-card:last-child::before  { background: var(--cloud); }
-.persona-card:hover { box-shadow: 0 6px 24px rgba(26,58,42,0.1); }
-.persona-who {
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em;
-  text-transform: uppercase; margin-bottom: 0.4rem; font-weight: 500;
+.domain-card.cloud::before  { background: var(--cloud); }
+.domain-card.tools::before  { background: var(--tools); }
+.domain-card.serv::before   { background: var(--serv-mid); }
+.domain-card:hover {
+  box-shadow: 0 6px 28px rgba(10,95,68,0.1);
+  transform: translateX(3px);
 }
-.persona-card:first-child .persona-who   { color: var(--s-mid); }
-.persona-card:nth-child(2) .persona-who  { color: var(--tools); }
-.persona-card:last-child .persona-who    { color: var(--cloud); }
-.persona-text { font-size: 0.88rem; font-weight: 300; color: var(--ink-mid); line-height: 1.55; }
-.persona-text strong { font-weight: 600; color: var(--ink); }
+.domain-card.cloud:hover  { border-color: var(--cloud); }
+.domain-card.tools:hover  { border-color: var(--tools); }
+.domain-card.serv:hover   { border-color: var(--serv-mid); }
+.dc-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.domain-card.cloud .dc-icon  { background: var(--cloud-pale); }
+.domain-card.tools .dc-icon  { background: var(--tools-pale); }
+.domain-card.serv .dc-icon   { background: var(--serv-pale); }
+.dc-body { flex: 1; min-width: 0; }
+.dc-url {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
+  font-weight: 500; margin-bottom: 0.2rem;
+}
+.domain-card.cloud .dc-url  { color: var(--cloud); }
+.domain-card.tools .dc-url  { color: var(--tools); }
+.domain-card.serv .dc-url   { color: var(--serv-mid); }
+.dc-title { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; line-height: 1.3; }
+.dc-desc  { font-size: 0.78rem; font-weight: 300; color: var(--ink-soft); line-height: 1.5; }
+.dc-arrow { font-size: 0.75rem; color: var(--ink-faint); align-self: center; flex-shrink: 0; transition: color var(--ease); }
+.domain-card:hover .dc-arrow { color: var(--ink-soft); }
+@media (max-width: 820px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 3rem; padding-bottom: 4rem; }
+}
 
-@media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; gap: 3rem; padding-bottom: 4rem; } }
-
-/* ── QUOTE BREAK ────────────────────────────────────────────── */
-.quote-break {
-  background: var(--s);
-  padding: 4rem 2rem;
-  text-align: center;
+/* ── STAT STRIP ───────────────────────────────────────────────── */
+.stats {
+  background: var(--g-deep);
+  padding: 3.5rem 2rem;
 }
-.quote-break blockquote {
-  font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.4rem);
-  font-weight: 300; font-style: italic; color: var(--white);
-  line-height: 1.25; max-width: 800px; margin: 0 auto 1rem;
-  letter-spacing: -0.01em;
+.stats-inner {
+  max-width: 1160px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem;
 }
-.quote-break cite {
-  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.14em;
-  text-transform: uppercase; color: rgba(255,255,255,0.45); font-style: normal;
-}
+.stat { border-left: 1px solid rgba(255,255,255,0.12); padding-left: 2rem; }
+.stat:first-child { border-left: none; padding-left: 0; }
+.stat-n { font-family: var(--serif); font-size: clamp(2rem,3.5vw,3.25rem); color: var(--white); line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+.stat-l { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.45; }
+@media (max-width: 860px) { .stats-inner { grid-template-columns: repeat(2,1fr); } .stat:nth-child(3) { border-left: none; padding-left: 0; } }
+@media (max-width: 480px) { .stats-inner { grid-template-columns: 1fr; } .stat { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; } .stat:first-child { border-top: none; padding-top: 0; } }
 
 /* ── SHARED SECTION STYLES ────────────────────────────────────── */
 .section { padding: 6rem 2rem; }
 .section-inner { max-width: 1160px; margin: 0 auto; }
 .eyebrow {
   font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--s-accent); margin-bottom: 0.85rem; display: block;
+  text-transform: uppercase; color: var(--g-accent); margin-bottom: 0.85rem; display: block;
 }
 .section-h2 {
-  font-family: var(--serif); font-size: clamp(1.9rem, 3.5vw, 3rem);
+  font-family: var(--serif); font-size: clamp(1.9rem,3.5vw,3rem);
   font-weight: 300; line-height: 1.12; letter-spacing: -0.02em;
   color: var(--ink); margin-bottom: 1.25rem;
 }
-.section-h2 em { font-style: italic; color: var(--s-mid); }
-.section-body { font-size: 1rem; font-weight: 300; color: var(--ink-mid); line-height: 1.72; max-width: 560px; }
+.section-h2 em { font-style: italic; color: var(--g-deep); }
+.section-body {
+  font-size: 1rem; font-weight: 300; color: var(--ink-mid);
+  line-height: 1.72; max-width: 560px;
+}
 
-/* ── HOW IT WORKS — PLATFORM SERVICES ──────────────────────── */
-.services { background: var(--cream); }
-.services-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-bottom: 4rem; align-items: start; }
-@media (max-width: 860px) { .services-intro { grid-template-columns: 1fr; gap: 2rem; } }
+/* ── PROBLEM SECTION ─────────────────────────────────────────── */
+.problem { background: var(--cream); }
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 3.5rem; align-items: start; }
+.prob-points { display: flex; flex-direction: column; gap: 0; }
+.prob-point { padding: 1.5rem 0; border-top: 1px solid var(--border); }
+.prob-point:last-child { border-bottom: 1px solid var(--border); }
+.pp-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
+.pp-text { font-size: 0.9rem; font-weight: 300; color: var(--ink-mid); line-height: 1.65; }
+@media (max-width: 820px) { .problem-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
 
-.service-grid {
+/* ── THE ECOSYSTEM ───────────────────────────────────────────── */
+.ecosystem { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* Flow map — signature element */
+.flow-map {
+  margin-top: 4rem;
+  position: relative;
+}
+.flow-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
+  grid-template-columns: 1fr 60px 1fr 60px 1fr;
+  align-items: stretch;
+  gap: 0;
 }
-.service-card {
-  background: var(--white);
-  padding: 2rem;
-  display: flex; flex-direction: column;
-  transition: background var(--ease);
+.flow-connector {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem;
 }
-.service-card:hover { background: var(--s-pale); }
-.service-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: var(--s-ghost); display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; margin-bottom: 1rem; flex-shrink: 0;
+.flow-conn-line {
+  width: 100%; height: 1px; background: var(--border); position: relative;
 }
-.service-title { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; line-height: 1.35; }
-.service-body  { font-size: 0.8rem; font-weight: 300; color: var(--ink-soft); line-height: 1.62; flex: 1; }
-@media (max-width: 600px) { .service-grid { grid-template-columns: 1fr; } }
-
-/* ── DESIGN YOUR LIFE — onboarding highlight ──────────────────── */
-.dyl { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.dyl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-.dyl-visual {
-  background: var(--s);
-  border-radius: 16px;
-  padding: 2.5rem 2rem;
-  display: flex; flex-direction: column; gap: 0;
+.flow-conn-line::after {
+  content: ''; position: absolute; right: -1px; top: -4px;
+  border-right: 1.5px solid var(--ink-faint); border-top: 1.5px solid var(--ink-faint);
+  width: 8px; height: 8px; transform: rotate(45deg);
 }
-.dyl-step {
-  display: flex; align-items: flex-start; gap: 1rem;
-  padding: 1.1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+.flow-conn-label {
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-faint); text-align: center; line-height: 1.3;
+  white-space: nowrap;
 }
-.dyl-step:last-child { border-bottom: none; padding-bottom: 0; }
-.dyl-step:first-child { padding-top: 0; }
-.dyl-num {
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.35); flex-shrink: 0; padding-top: 3px; width: 22px;
+.platform-card {
+  border: 1px solid var(--border); border-radius: 12px; padding: 2rem;
+  display: flex; flex-direction: column; position: relative; overflow: hidden;
+  transition: box-shadow var(--ease);
 }
-.dyl-step-body {}
-.dyl-step-title { font-size: 0.875rem; font-weight: 600; color: var(--white); margin-bottom: 0.2rem; line-height: 1.3; }
-.dyl-step-desc  { font-size: 0.78rem; font-weight: 300; color: rgba(255,255,255,0.55); line-height: 1.5; }
-@media (max-width: 860px) { .dyl-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
-
-/* ── PRINCIPLES ───────────────────────────────────────────────── */
-.principles { background: var(--cream); }
-.principles-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-  margin-top: 3rem;
+.platform-card:hover { box-shadow: 0 8px 36px rgba(10,95,68,0.08); }
+.platform-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0;
 }
-.principle-card { background: var(--cream); padding: 2.25rem; }
-.principle-card:hover { background: var(--white); }
-.principle-title { font-size: 0.92rem; font-weight: 600; color: var(--s); margin-bottom: 0.5rem; line-height: 1.3; }
-.principle-body  { font-size: 0.875rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
-@media (max-width: 600px) { .principles-grid { grid-template-columns: 1fr; } }
-
-/* ── INNER CIRCLE ──────────────────────────────────────────────── */
-.inner-circle { background: var(--white); }
-.ic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-.ic-features { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
-.ic-feature { display: flex; gap: 1rem; align-items: flex-start; }
-.ic-feature-icon {
-  width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
-  background: var(--s-ghost); display: flex; align-items: center; justify-content: center; font-size: 1rem;
-}
-.ic-feature-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.25rem; line-height: 1.3; }
-.ic-feature-desc  { font-size: 0.82rem; font-weight: 300; color: var(--ink-soft); line-height: 1.58; }
-.ic-visual {
-  background: var(--cream);
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 2rem;
-}
-.ic-member { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
-.ic-member:last-child { border-bottom: none; padding-bottom: 0; }
-.ic-member:first-child { padding-top: 0; }
-.ic-avatar {
-  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 700;
-}
-.ic-member-info { flex: 1; }
-.ic-member-name { font-size: 0.82rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
-.ic-member-role { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; }
-.ic-member-status {
-  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.06em;
-  padding: 0.2rem 0.5rem; border-radius: 3px; white-space: nowrap;
-}
-.status-active   { background: #dcf0e3; color: #1a6335; }
-.status-notified { background: #fdf3e3; color: #8a4012; }
-.status-joined   { background: #eef2fb; color: #1e3a7a; }
-.ic-visual-label {
+.platform-card.cloud::before  { background: var(--cloud); }
+.platform-card.tools::before  { background: var(--tools); }
+.platform-card.serv::before   { background: var(--serv-mid); }
+.pc-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
   font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink-faint); text-align: center; padding-top: 1.25rem; margin-top: 0.5rem;
-  border-top: 1px solid var(--border);
+  padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; align-self: flex-start;
+  font-weight: 500;
 }
-@media (max-width: 860px) { .ic-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+.platform-card.cloud .pc-badge  { color: var(--cloud);    background: var(--cloud-pale); }
+.platform-card.tools .pc-badge  { color: var(--tools);    background: var(--tools-pale); }
+.platform-card.serv .pc-badge   { color: var(--serv-mid); background: var(--serv-pale);  }
+.pc-url {
+  font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+  letter-spacing: -0.01em; margin-bottom: 0.25rem;
+}
+.platform-card.cloud .pc-url  { color: var(--cloud-dark); }
+.platform-card.tools .pc-url  { color: var(--tools-dark); }
+.platform-card.serv .pc-url   { color: var(--serv);       }
+.pc-title {
+  font-family: var(--serif); font-size: 1.5rem; font-weight: 300; line-height: 1.15;
+  color: var(--ink); margin-bottom: 0.75rem; letter-spacing: -0.01em;
+}
+.pc-body { font-size: 0.875rem; font-weight: 300; color: var(--ink-soft); line-height: 1.62; flex: 1; }
+.pc-features { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+.pc-feature {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.8rem; font-weight: 300; color: var(--ink-mid); line-height: 1.4;
+}
+.pc-feature-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 0.45em;
+}
+.platform-card.cloud .pc-feature-dot  { background: var(--cloud); }
+.platform-card.tools .pc-feature-dot  { background: var(--tools); }
+.platform-card.serv .pc-feature-dot   { background: var(--serv-mid); }
+.pc-link {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+  text-decoration: none; font-weight: 500;
+  transition: gap var(--ease);
+}
+.platform-card.cloud .pc-link  { color: var(--cloud); }
+.platform-card.tools .pc-link  { color: var(--tools); }
+.platform-card.serv .pc-link   { color: var(--serv-mid); }
+.pc-link:hover { gap: 0.65rem; }
+.flow-loop {
+  margin-top: 1.5rem; padding: 1.25rem 1.5rem;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 8px;
+  display: flex; align-items: center; gap: 1rem;
+}
+.flow-loop-icon { font-size: 1.1rem; flex-shrink: 0; }
+.flow-loop-text { font-size: 0.82rem; font-weight: 300; color: var(--ink-mid); line-height: 1.5; }
+.flow-loop-text strong { font-weight: 600; color: var(--ink); }
+@media (max-width: 820px) {
+  .flow-row { grid-template-columns: 1fr; }
+  .flow-connector { flex-direction: row; padding: 0.75rem 0; }
+  .flow-conn-line { width: 40px; height: 1px; }
+  .flow-conn-line::after { top: -4px; }
+}
+
+/* ── HOW IT BINDS TOGETHER ────────────────────────────────────── */
+.how { background: var(--cream); }
+.how-steps { display: flex; flex-direction: column; gap: 0; margin-top: 3.5rem; }
+.how-step {
+  display: grid; grid-template-columns: 56px 1fr; gap: 0 2.5rem;
+  padding: 2rem 0; border-top: 1px solid var(--border); align-items: start;
+}
+.how-step:last-child { border-bottom: 1px solid var(--border); }
+.how-num {
+  font-family: var(--serif); font-size: 2.2rem; font-weight: 300;
+  line-height: 1; letter-spacing: -0.02em; padding-top: 3px;
+}
+.how-step:nth-child(1) .how-num { color: var(--cloud); }
+.how-step:nth-child(2) .how-num { color: var(--cloud); }
+.how-step:nth-child(3) .how-num { color: var(--tools); }
+.how-step:nth-child(4) .how-num { color: var(--tools); }
+.how-step:nth-child(5) .how-num { color: var(--serv-mid); }
+.how-step:nth-child(6) .how-num { color: var(--serv-mid); }
+.how-step:nth-child(7) .how-num { color: var(--g-deep); }
+.how-body {}
+.how-platform {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; margin-bottom: 0.35rem; font-weight: 500;
+}
+.how-step:nth-child(1) .how-platform,
+.how-step:nth-child(2) .how-platform { color: var(--cloud); }
+.how-step:nth-child(3) .how-platform,
+.how-step:nth-child(4) .how-platform { color: var(--tools); }
+.how-step:nth-child(5) .how-platform,
+.how-step:nth-child(6) .how-platform { color: var(--serv-mid); }
+.how-step:nth-child(7) .how-platform { color: var(--g-deep); }
+.how-title { font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; line-height: 1.3; }
+.how-desc { font-size: 0.875rem; font-weight: 300; color: var(--ink-soft); line-height: 1.62; }
 
 /* ── OUTCOMES ─────────────────────────────────────────────────── */
-.outcomes { background: var(--cream); }
 .outcomes-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3.5rem; }
-.outcome-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.75rem; }
+.outcome-card { padding: 1.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--white); }
 .oc-who { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
-.oc-title { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-bottom: 0.6rem; line-height: 1.35; }
+.oc-title { font-size: 0.92rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.35; }
 .oc-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
 .oc-list li { font-size: 0.82rem; font-weight: 300; color: var(--ink-mid); padding-left: 1rem; position: relative; line-height: 1.45; }
-.oc-list li::before { content: ''; position: absolute; left: 0; top: 0.56em; width: 4px; height: 4px; border-radius: 50%; background: var(--s-accent); }
+.oc-list li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: var(--g-accent); }
 @media (max-width: 820px) { .outcomes-grid { grid-template-columns: 1fr; } }
 
-/* ── ADVISORS ─────────────────────────────────────────────────── */
-.advisors { background: var(--white); }
-.advisor-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; margin-top: 3.5rem; }
-.advisor-card { padding: 1.75rem; border: 1px solid var(--border); border-radius: 10px; transition: box-shadow var(--ease); }
-.advisor-card:hover { box-shadow: 0 6px 24px rgba(26,58,42,0.08); }
-.advisor-name { font-size: 1rem; font-weight: 600; color: var(--s); margin-bottom: 0.2rem; line-height: 1.3; }
-.advisor-role { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.04em; color: var(--ink-soft); margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); line-height: 1.5; }
-.advisor-note { font-size: 0.875rem; font-weight: 300; color: var(--ink-mid); line-height: 1.65; }
-@media (max-width: 820px) { .advisor-grid { grid-template-columns: 1fr; } }
-
-/* ── ECOSYSTEM POSITION ───────────────────────────────────────── */
-.position { background: var(--s); padding: 5rem 2rem; }
-.position-inner { max-width: 1160px; margin: 0 auto; }
-.position .eyebrow { color: rgba(255,255,255,0.4); }
-.position-h2 { font-family: var(--serif); font-size: clamp(1.9rem,3.5vw,3rem); font-weight: 300; line-height: 1.12; letter-spacing: -0.02em; color: var(--white); margin-bottom: 1.25rem; }
-.position-h2 em { font-style: italic; color: rgba(255,255,255,0.6); }
-.position-body { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.72; max-width: 560px; margin-bottom: 3.5rem; }
-.position-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
-.position-card { padding: 2rem; background: var(--s); transition: background var(--ease); text-decoration: none; display: flex; flex-direction: column; }
-.position-card:hover { background: var(--s-mid); }
-.position-card.current { background: rgba(255,255,255,0.06); cursor: default; }
-.pos-tag { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; font-weight: 500; }
-.position-card:nth-child(1) .pos-tag { color: rgba(54,94,191,0.85); }
-.position-card:nth-child(2) .pos-tag { color: rgba(196,112,42,0.85); }
-.position-card:nth-child(3) .pos-tag { color: rgba(255,255,255,0.45); }
-.pos-domain { font-family: var(--mono); font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.75); margin-bottom: 0.3rem; }
-.pos-title { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; line-height: 1.3; }
-.pos-desc { font-size: 0.8rem; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.55; flex: 1; }
-.pos-link { margin-top: 1.25rem; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 0.4rem; transition: color var(--ease), gap var(--ease); }
-.position-card:hover .pos-link { color: rgba(255,255,255,0.85); gap: 0.65rem; }
-.pos-you { margin-top: 1.25rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
-@media (max-width: 820px) { .position-cards { grid-template-columns: 1fr; } .position-card { border-bottom: 1px solid rgba(255,255,255,0.1); } }
+/* ── PARTNERS ─────────────────────────────────────────────────── */
+.partners { background: var(--g-deep); padding: 5rem 2rem; }
+.partners-inner { max-width: 1160px; margin: 0 auto; }
+.partners .eyebrow { color: rgba(255,255,255,0.4); }
+.partners .section-h2 { color: var(--white); }
+.partners .section-body { color: rgba(255,255,255,0.55); }
+.partners-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); margin-top: 3.5rem; }
+.partner-card { background: var(--g-deep); padding: 2rem 1.75rem; }
+.partner-icon { font-size: 1.4rem; margin-bottom: 1rem; opacity: 0.7; }
+.partner-title { font-size: 0.92rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; line-height: 1.3; }
+.partner-body { font-size: 0.8rem; font-weight: 300; color: rgba(255,255,255,0.45); line-height: 1.55; }
+@media (max-width: 820px) { .partners-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px) { .partners-grid { grid-template-columns: 1fr; } .partner-card { border-bottom: 1px solid rgba(255,255,255,0.08); } }
 
 /* ── CONTACT ─────────────────────────────────────────────────── */
 .contact { background: var(--cream); padding: 6rem 2rem; text-align: center; }
 .contact-inner { max-width: 560px; margin: 0 auto; }
-.contact-h2 { font-family: var(--serif); font-size: clamp(2rem,4vw,3.2rem); font-weight: 300; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; margin-bottom: 1.25rem; }
-.contact-h2 em { font-style: italic; color: var(--s-mid); }
+.contact-title { font-family: var(--serif); font-size: clamp(2rem,4vw,3.2rem); font-weight: 300; color: var(--ink); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+.contact-title em { font-style: italic; color: var(--g-deep); }
 .contact-body { font-size: 1rem; font-weight: 300; color: var(--ink-mid); line-height: 1.7; margin-bottom: 2rem; }
-.contact-email { display: inline-block; font-family: var(--mono); font-size: 0.95rem; font-weight: 500; color: var(--s); padding: 0.85rem 2rem; border: 1.5px solid var(--border); border-radius: 4px; background: var(--white); user-select: all; cursor: text; letter-spacing: 0.01em; }
+.contact-email {
+  display: inline-block; font-family: var(--mono); font-size: 0.95rem; font-weight: 500;
+  color: var(--g-deep); padding: 0.85rem 2rem; border: 1.5px solid var(--border);
+  border-radius: 4px; background: var(--white); user-select: all; cursor: text;
+  letter-spacing: 0.01em;
+}
 
 /* ── FOOTER ───────────────────────────────────────────────────── */
 footer { background: var(--white); border-top: 1px solid var(--border); padding: 4rem 0 2.25rem; }
@@ -378,22 +425,23 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 .footer-brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
 .footer-tagline { font-size: 0.8rem; font-weight: 300; color: var(--ink-soft); line-height: 1.7; max-width: 200px; }
 .footer-nav { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
-.footer-nav h5 { font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--s-accent); margin-bottom: 1rem; }
-.footer-nav a { display: block; font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 0.5rem; text-decoration: none; transition: color var(--ease); }
-.footer-nav a:hover { color: var(--s); }
+.footer-nav-col h5 { font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--g-accent); margin-bottom: 1rem; }
+.footer-nav-col a { display: block; font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 0.5rem; text-decoration: none; transition: color var(--ease); }
+.footer-nav-col a:hover { color: var(--g-deep); }
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .footer-copy { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-faint); }
 .footer-links { display: flex; gap: 1.5rem; }
 .footer-links a { font-size: 0.72rem; color: var(--ink-faint); text-decoration: none; transition: color var(--ease); }
-.footer-links a:hover { color: var(--s); }
+.footer-links a:hover { color: var(--g-deep); }
 @media (max-width: 820px) { .footer-top { grid-template-columns: 1fr; gap: 2rem; } .footer-nav { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 480px) { .footer-nav { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } }
 
 /* ── SCROLL REVEAL ────────────────────────────────────────────── */
-.fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .fade-up.visible { opacity: 1; transform: none; }
 .d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; } .d4 { transition-delay: 0.32s; }
 
+/* ── SECTION PADDING RESPONSIVE ─────────────────────────────── */
 @media (max-width: 820px) { .section { padding: 4.5rem 1.5rem; } }
 @media (max-width: 480px) { .section { padding: 3.5rem 1.25rem; } }
 </style>
@@ -404,404 +452,343 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 <nav id="nav">
   <div class="nav-inner">
     <a class="nav-brand" href="#">
-      <div class="nav-mark">
-        <div class="nav-dot nav-core"></div>
-        <div class="nav-dot nav-r1"></div>
-        <div class="nav-dot nav-r2"></div>
+      <div class="nav-logo-mark">
+        <div class="nav-logo-dot nav-logo-core"></div>
+        <div class="nav-logo-dot nav-logo-r1"></div>
+        <div class="nav-logo-dot nav-logo-r2"></div>
       </div>
-      <div class="nav-words">
+      <div class="nav-wordmark">
         <span class="nav-name">Assistiv</span>
-        <span class="nav-sub">Services</span>
+        <span class="nav-sub">Systems</span>
       </div>
     </a>
     <ul class="nav-links">
-      <li><a href="#services">How It Works</a></li>
-      <li><a href="#principles">Our Principles</a></li>
+      <li><a href="#challenge">The Challenge</a></li>
+      <li><a href="#ecosystem">The Ecosystem</a></li>
+      <li><a href="#how">How It Works</a></li>
       <li><a href="#outcomes">Outcomes</a></li>
-      <li><a href="#advisors">Advisory Board</a></li>
+      <li><a href="#contact">Get in Touch</a></li>
     </ul>
-    <a class="nav-eco" href="https://www.assistiv.co">← assistiv.co</a>
     <a class="nav-cta" href="#contact">Get in touch</a>
     <button class="hamburger" id="hbg" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- ECOSYSTEM STRIP -->
-<div class="eco-strip">
-  <span>Assistiv Ecosystem</span>
-  <span class="eco-strip-sep">·</span>
-  <a href="https://www.assistiv.cloud">assistiv.cloud</a>
-  <span class="eco-strip-sep">→</span>
-  <a href="https://www.assistiv.tools">assistiv.tools</a>
-  <span class="eco-strip-sep">→</span>
-  <span class="eco-strip-here">assistiv.services</span>
-</div>
-
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mob-nav">
   <button class="m-close" id="mob-close">✕</button>
-  <a href="#services"   onclick="document.getElementById('mob-nav').classList.remove('open')">How It Works</a>
-  <a href="#principles" onclick="document.getElementById('mob-nav').classList.remove('open')">Our Principles</a>
-  <a href="#outcomes"   onclick="document.getElementById('mob-nav').classList.remove('open')">Outcomes</a>
-  <a href="#advisors"   onclick="document.getElementById('mob-nav').classList.remove('open')">Advisory Board</a>
-  <a href="#contact"    onclick="document.getElementById('mob-nav').classList.remove('open')">Get in Touch</a>
-  <a href="https://www.assistiv.co" style="font-size:1.1rem;opacity:0.5;">← assistiv.co</a>
+  <a href="#challenge" onclick="document.getElementById('mob-nav').classList.remove('open')">The Challenge</a>
+  <a href="#ecosystem" onclick="document.getElementById('mob-nav').classList.remove('open')">The Ecosystem</a>
+  <a href="#how"       onclick="document.getElementById('mob-nav').classList.remove('open')">How It Works</a>
+  <a href="#outcomes"  onclick="document.getElementById('mob-nav').classList.remove('open')">Outcomes</a>
+  <a href="#contact"   onclick="document.getElementById('mob-nav').classList.remove('open')">Get in Touch</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-grid">
 
-    <div>
-      <p class="hero-eyebrow fade-up">Preventative care platform</p>
+    <div class="hero-text">
+      <p class="hero-eyebrow fade-up">Infrastructure for independent living</p>
       <h1 class="hero-h1 fade-up d1">
-        Living well at home.<br>
-        On your terms.<br>
-        <em>Before anything goes wrong.</em>
+        Finding the people the system<br>
+        <em>cannot see.</em><br>Before crisis finds them.
       </h1>
       <p class="hero-body fade-up d2">
-        Assistiv Services is for the people who fall between existing services. Managing independently, but one event from crisis. We provide the support, tools, and connections that help people stay in control — chosen by them, at their pace, centred on what they actually want.
+        Assistiv is a closed-loop intelligence platform. We identify older adults at risk from open NHS data, deploy community screening at scale, and deliver the preventative care that keeps people independent — on their terms, before things go wrong.
       </p>
       <div class="hero-actions fade-up d3">
-        <a href="#services" class="btn-primary">See what we offer</a>
+        <a href="#ecosystem" class="btn-primary">Explore the ecosystem</a>
         <a href="#contact" class="btn-ghost">Talk to us</a>
       </div>
     </div>
 
-    <!-- Three audience perspectives -->
-    <div class="hero-persona-stack fade-up d2">
-      <div class="persona-card">
-        <div class="persona-who">For the person at home</div>
-        <p class="persona-text">
-          <strong>Margaret, 78, Faversham.</strong> Lives alone. Manages well most days. Worries about the nights. Her daughter worries more. No one has suggested anything helpful until now.
-        </p>
-      </div>
-      <div class="persona-card">
-        <div class="persona-who">For the family</div>
-        <p class="persona-text">
-          <strong>David, carer, lives 60 miles away.</strong> Calls every evening. Cannot always tell if she is really fine or being reassuring. Would give anything for visibility without intrusion.
-        </p>
-      </div>
-      <div class="persona-card">
-        <div class="persona-who">For the referral partner</div>
-        <p class="persona-text">
-          <strong>PCN Social Prescribing Link Worker.</strong> Sees people who need support before they need services. Needs somewhere safe and dignified to refer them that isn't a waiting list.
-        </p>
-      </div>
+    <div class="hero-domains fade-up d2">
+      <a href="https://www.assistiv.cloud" target="_blank" rel="noopener" class="domain-card cloud">
+        <div class="dc-icon">🧠</div>
+        <div class="dc-body">
+          <div class="dc-url">assistiv.cloud</div>
+          <div class="dc-title">Frailty Intelligence Layer</div>
+          <div class="dc-desc">FEP engine — 21 NHS signals, district-level risk scoring, updated daily. Tells commissioners exactly where to act.</div>
+        </div>
+        <div class="dc-arrow">→</div>
+      </a>
+      <a href="https://www.assistiv.tools" target="_blank" rel="noopener" class="domain-card tools">
+        <div class="dc-icon">🎙️</div>
+        <div class="dc-body">
+          <div class="dc-url">assistiv.tools</div>
+          <div class="dc-title">Community Screening</div>
+          <div class="dc-desc">Voice-first frailty screening deployed into high-risk districts. Identifies the Missing Middle at scale. No clinical training required.</div>
+        </div>
+        <div class="dc-arrow">→</div>
+      </a>
+      <a href="https://www.assistiv.services" target="_blank" rel="noopener" class="domain-card serv">
+        <div class="dc-icon">🏠</div>
+        <div class="dc-body">
+          <div class="dc-url">assistiv.services</div>
+          <div class="dc-title">Preventative Care Platform</div>
+          <div class="dc-desc">For people below the acute threshold: coordinated support, digital care tools, and community connections — delivered on the person's terms.</div>
+        </div>
+        <div class="dc-arrow">→</div>
+      </a>
     </div>
 
   </div>
 </section>
 
-<!-- QUOTE BREAK -->
-<div class="quote-break fade-up">
-  <blockquote>"The goal is not to remove dependency. It is to make it chosen."</blockquote>
-  <cite>Positive Interdependence — Assistiv design philosophy</cite>
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat fade-up"><div class="stat-n">3.5m</div><div class="stat-l">People in the UK's Missing Middle — independent, but one event from crisis</div></div>
+    <div class="stat fade-up d1"><div class="stat-n">£2.3bn</div><div class="stat-l">NHS annual cost of falls in England — 79% of which happen at home</div></div>
+    <div class="stat fade-up d2"><div class="stat-n">40%</div><div class="stat-l">Of dementia cases could be prevented or delayed with earlier intervention</div></div>
+    <div class="stat fade-up d3"><div class="stat-n">14:1</div><div class="stat-l">Estimated return on investment for NHS commissioning bodies at pilot scale</div></div>
+  </div>
 </div>
 
-<!-- SERVICES / HOW IT WORKS -->
-<section class="section services" id="services">
+<!-- CHALLENGE -->
+<section class="section problem" id="challenge">
   <div class="section-inner">
-    <div class="services-intro">
-      <div class="fade-up">
-        <span class="eyebrow">What we deliver</span>
-        <h2 class="section-h2">Technology that serves the person. <em>Not the system.</em></h2>
-      </div>
+    <span class="eyebrow fade-up">The challenge</span>
+    <div class="problem-grid">
       <div class="fade-up d1">
-        <p class="section-body">Every Assistiv service begins with a conversation — not a form, not an assessment, not a risk matrix. The person says what matters to them. Technology, if any, is introduced only in response to what they have named. Nothing is activated without explicit agreement. Everything is reversible.</p>
+        <h2 class="section-h2">The system was not designed for the people who need it most.</h2>
+        <p class="section-body">Three and a half million older adults in the UK live independently but sit outside the reach of formal health and social care. Not ill enough to qualify. Not yet dependent enough to be flagged. Invisible to existing systems until something goes wrong.</p>
+        <p class="section-body" style="margin-top:1.1rem;">By the time these individuals reach anyone who can help, the opportunity for early intervention has passed. The Assistiv ecosystem was built specifically for this population.</p>
       </div>
-    </div>
-
-    <div class="service-grid fade-up d1">
-      <div class="service-card">
-        <div class="service-icon">🎙️</div>
-        <div class="service-title">Conversational Check-ins</div>
-        <div class="service-body">A warm, unhurried monthly conversation across six quality-of-life domains. Adaptive, non-clinical, designed to surface what matters without pressure or clinical framing. The person speaks freely, in their own words.</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🏠</div>
-        <div class="service-title">Passive Home Safety</div>
-        <div class="service-body">Discreet mmWave radar and acoustic monitoring detects falls, changes in movement patterns, and nocturnal risk — without cameras, without wearables, without anything to remember or charge. Invisible in operation.</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">👨‍👩‍👧</div>
-        <div class="service-title">Inner Circle</div>
-        <div class="service-body">A private family platform connecting the person to the people they trust. Photos, voice notes, shared moments, and — with consent — gentle visibility into how things really are at home. No surveillance. No alarm bells. Just connection.</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📋</div>
-        <div class="service-title">Care Coordination</div>
-        <div class="service-body">A digital care wallet holding the person's preferences, history, and care information — accessible to whoever they choose. Structured referrals when needed. A single coherent picture in place of fragmented records.</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🔗</div>
-        <div class="service-title">Community Connections</div>
-        <div class="service-body">Social prescribing links, local voluntary sector connections, and community resources matched to what the person has said they want — not what the system decides they need. Meaningful activity, not managed decline.</div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📊</div>
-        <div class="service-title">Household Intelligence</div>
-        <div class="service-body">At-a-glance home environment monitoring — temperature, appliance safety, security status — surfaced to the person and, with their consent, to family. A quiet reassurance, not a control mechanism.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DESIGN YOUR LIFE ONBOARDING -->
-<section class="section dyl">
-  <div class="section-inner">
-    <div class="dyl-grid">
-      <div class="fade-up">
-        <span class="eyebrow">How it begins</span>
-        <h2 class="section-h2">Design Your Life.<br><em>Not a care plan.</em></h2>
-        <p class="section-body" style="margin-bottom:1.5rem;">The onboarding conversation is not an assessment. It is an invitation. The person sets the agenda. They name what independence means to them, what they want to protect, and what they are open to. Everything Assistiv does flows from that.</p>
-        <p class="section-body">Sensors and technology are only ever introduced in direct response to something the person has said they want. Not a package. Not a default. A response to a named need, at a pace that feels right.</p>
-      </div>
-      <div class="dyl-visual fade-up d2">
-        <div class="dyl-step">
-          <div class="dyl-num">01</div>
-          <div class="dyl-step-body">
-            <div class="dyl-step-title">A warm conversation about everyday life</div>
-            <div class="dyl-step-desc">What matters to you? What does a good day look like? No clinical framing, no assessment language. Just listening.</div>
-          </div>
+      <div class="prob-points fade-up d2">
+        <div class="prob-point">
+          <p class="pp-label">For the individual</p>
+          <p class="pp-text">Living with uncertainty. One fall, one health event from losing independence — not gradually, but suddenly. The system offers no warning, no net.</p>
         </div>
-        <div class="dyl-step">
-          <div class="dyl-num">02</div>
-          <div class="dyl-step-body">
-            <div class="dyl-step-title">You name what you want to protect</div>
-            <div class="dyl-step-desc">Your morning routine. Your garden. Your independence in the kitchen. The things that make home, home.</div>
-          </div>
+        <div class="prob-point">
+          <p class="pp-label">For families and carers</p>
+          <p class="pp-text">Constant worry, limited visibility, and no tool that tells them when or how to step in. An invisible burden the system does not acknowledge.</p>
         </div>
-        <div class="dyl-step">
-          <div class="dyl-num">03</div>
-          <div class="dyl-step-body">
-            <div class="dyl-step-title">Assistiv responds to what you've said</div>
-            <div class="dyl-step-desc">If you mentioned the nights, we might suggest the movement sensor. Only then. Only because you named it.</div>
-          </div>
-        </div>
-        <div class="dyl-step">
-          <div class="dyl-num">04</div>
-          <div class="dyl-step-body">
-            <div class="dyl-step-title">Everything is reversible, always</div>
-            <div class="dyl-step-desc">Change your mind. Remove a sensor. Leave Inner Circle. The system follows you — not the other way around.</div>
-          </div>
+        <div class="prob-point">
+          <p class="pp-label">For NHS commissioners</p>
+          <p class="pp-text">Avoidable admissions, delayed discharge, residential placements that could have been prevented months earlier. The longer the wait, the greater the cost.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRINCIPLES -->
-<section class="section principles" id="principles">
+<!-- ECOSYSTEM — signature section -->
+<section class="section ecosystem" id="ecosystem">
   <div class="section-inner">
-    <span class="eyebrow fade-up">Design principles</span>
-    <h2 class="section-h2 fade-up d1">Privacy and dignity are <em>not features.</em><br>They are the architecture.</h2>
-    <p class="section-body fade-up d2">Every technology choice is filtered through one question: does this serve the person's independence, or does it quietly undermine it? Assistiv is not surveillance. It is infrastructure that people choose, on their own terms, for their own reasons.</p>
-    <div class="principles-grid fade-up d2">
-      <div class="principle-card">
-        <div class="principle-title">The person is always the author</div>
-        <div class="principle-body">Nothing is activated without explicit agreement. Nothing is shared without consent. The person controls what is monitored and who can see it. Assistiv follows where they lead.</div>
+    <span class="eyebrow fade-up">The Assistiv Ecosystem</span>
+    <h2 class="section-h2 fade-up d1">Three platforms. <em>One closed loop.</em></h2>
+    <p class="section-body fade-up d2">Each platform does a distinct job. Together they form the only end-to-end system connecting NHS intelligence to community screening to preventative care delivery — and feeding outcomes back to make the whole system sharper over time.</p>
+
+    <div class="flow-map">
+      <div class="flow-row fade-up d1">
+
+        <!-- CLOUD -->
+        <div class="platform-card cloud">
+          <div class="pc-badge">Intelligence</div>
+          <div class="pc-url">assistiv.cloud</div>
+          <h3 class="pc-title">Frailty Emergence<br>Probability Engine</h3>
+          <p class="pc-body">Processes 21 open NHS signals — prescribing data, falls admissions, deprivation indices, 111 demand, winter mortality — to produce a daily FEP score for every district in Kent &amp; Medway. Tells commissioners exactly where to deploy.</p>
+          <div class="pc-features">
+            <div class="pc-feature"><div class="pc-feature-dot"></div>21 NHS signal inputs, updated daily</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>District-level FEP ranking and mapping</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Open data — no patient identifiers at this layer</div>
+          </div>
+          <a href="https://www.assistiv.cloud" target="_blank" rel="noopener" class="pc-link">Visit assistiv.cloud →</a>
+        </div>
+
+        <!-- ARROW 1 -->
+        <div class="flow-connector fade-up d1">
+          <div class="flow-conn-line"></div>
+          <div class="flow-conn-label">Targets<br>districts</div>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="platform-card tools">
+          <div class="pc-badge">Screening</div>
+          <div class="pc-url">assistiv.tools</div>
+          <h3 class="pc-title">Community Frailty<br>Screening</h3>
+          <p class="pc-body">Deployed into high-FEP districts: a dignified, voice-first conversation across 12 clinical domains. No forms, no tick-boxes, no clinical training required. Identifies the Missing Middle at scale and produces an ASSISTIV Screening Tool Score in real time.</p>
+          <div class="pc-features">
+            <div class="pc-feature"><div class="pc-feature-dot"></div>12-domain conversational assessment</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Minimisation detection — hears what isn't said</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Three-layer consent — person holds the keys</div>
+          </div>
+          <a href="https://www.assistiv.tools" target="_blank" rel="noopener" class="pc-link">Visit assistiv.tools →</a>
+        </div>
+
+        <!-- ARROW 2 -->
+        <div class="flow-connector fade-up d2">
+          <div class="flow-conn-line"></div>
+          <div class="flow-conn-label">Routes<br>people</div>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="platform-card serv">
+          <div class="pc-badge">Care Platform</div>
+          <div class="pc-url">assistiv.services</div>
+          <h3 class="pc-title">Preventative Care<br>at Scale</h3>
+          <p class="pc-body">For everyone below the acute threshold: preventative support, digital care tools, care coordination, and community connections. Delivered through a platform designed around dignity and chosen interdependence — not institutional convenience.</p>
+          <div class="pc-features">
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Passive safety monitoring — fall detection, ARC integration</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Design Your Life onboarding — person-led from day one</div>
+            <div class="pc-feature"><div class="pc-feature-dot"></div>Inner Circle family platform with shared care wallet</div>
+          </div>
+          <a href="https://www.assistiv.services" target="_blank" rel="noopener" class="pc-link">Visit assistiv.services →</a>
+        </div>
+
       </div>
-      <div class="principle-card">
-        <div class="principle-title">No cameras. No wearables. No burden.</div>
-        <div class="principle-body">Assistiv is invisible in operation. Nothing to remember, nothing to charge, nothing that broadcasts vulnerability. Passive by default, intrusive never.</div>
-      </div>
-      <div class="principle-card">
-        <div class="principle-title">Saying no is a valid outcome</div>
-        <div class="principle-body">A person who declines is not a failed engagement. They are exercising agency. The platform honours this at every step, without pressure or reframing.</div>
-      </div>
-      <div class="principle-card">
-        <div class="principle-title">Data processed at home, owned by the person</div>
-        <div class="principle-body">Derived signals, not raw data, are the only things that travel. The Iron Curtain architecture keeps home data and wellness data strictly separated. The person holds the keys.</div>
-      </div>
-      <div class="principle-card">
-        <div class="principle-title">Positive interdependence</div>
-        <div class="principle-body">Voluntarily releasing small autonomies to trusted carers and services as life evolves is healthy, not a failure. Assistiv gives people informed choice over how and when to accept help — on their own terms.</div>
-      </div>
-      <div class="principle-card">
-        <div class="principle-title">Graduated by design</div>
-        <div class="principle-body">A person can begin with a conversation and nothing else. Technology is introduced incrementally, chosen by them, for reasons they have named. Always reversible. Never imposed.</div>
+
+      <!-- Feedback loop indicator -->
+      <div class="flow-loop fade-up d3">
+        <div class="flow-loop-icon">↩</div>
+        <div class="flow-loop-text">
+          <strong>The feedback loop.</strong> Every outcome — who was referred, what happened, what worked — flows back to the intelligence layer. The FEP model recalibrates. The system learns and gets sharper over time. This is what makes the ecosystem a closed loop rather than three separate tools.
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- INNER CIRCLE -->
-<section class="section inner-circle">
+<!-- HOW IT WORKS -->
+<section class="section how" id="how">
   <div class="section-inner">
-    <div class="ic-grid">
-      <div>
-        <span class="eyebrow fade-up">Inner Circle</span>
-        <h2 class="section-h2 fade-up d1">The people who matter,<br><em>connected with care.</em></h2>
-        <p class="section-body fade-up d2" style="margin-bottom:1.5rem;">Inner Circle is the private family layer of the Assistiv platform. A dedicated space for the people the person trusts — not a monitoring dashboard, not a notification feed, but a place where family can stay genuinely connected.</p>
-        <div class="ic-features fade-up d2">
-          <div class="ic-feature">
-            <div class="ic-feature-icon">📷</div>
-            <div>
-              <div class="ic-feature-title">Shared moments, not alerts</div>
-              <div class="ic-feature-desc">Photos, voice notes, and messages in a private family space — the texture of daily life, shared on the person's terms.</div>
-            </div>
-          </div>
-          <div class="ic-feature">
-            <div class="ic-feature-icon">👶</div>
-            <div>
-              <div class="ic-feature-title">Grandchildren included</div>
-              <div class="ic-feature-desc">Child-friendly access means the youngest family members can be part of the circle — not just the worried adults.</div>
-            </div>
-          </div>
-          <div class="ic-feature">
-            <div class="ic-feature-icon">📖</div>
-            <div>
-              <div class="ic-feature-title">Memories</div>
-              <div class="ic-feature-desc">A structured digital life record, family-contributed, connected to reminiscence and memory support where needed.</div>
-            </div>
-          </div>
+    <span class="eyebrow fade-up">How it works end-to-end</span>
+    <h2 class="section-h2 fade-up d1">From NHS data exhaust <em>to preventative action.</em></h2>
+    <p class="section-body fade-up d2">A single continuous pathway — from open data signal to door-step care — with each platform doing exactly the job it was designed for.</p>
+
+    <div class="how-steps">
+      <div class="how-step fade-up">
+        <div class="how-num">01</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.cloud</div>
+          <div class="how-title">Open NHS data is collected and processed daily</div>
+          <div class="how-desc">Prescribing records, falls admissions, deprivation indices, 111 demand signals, winter mortality data, and 15 further open datasets are ingested and weighted by the FEP engine.</div>
         </div>
       </div>
-
-      <!-- Inner Circle mock -->
-      <div class="ic-visual fade-up d3">
-        <div class="ic-member">
-          <div class="ic-avatar" style="background:#e4ede8;color:#2d5c42;">M</div>
-          <div class="ic-member-info">
-            <div class="ic-member-name">Margaret</div>
-            <div class="ic-member-role">Inner Circle member</div>
-          </div>
-          <div class="ic-member-status status-active">Active</div>
+      <div class="how-step fade-up">
+        <div class="how-num">02</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.cloud</div>
+          <div class="how-title">Districts are ranked by Frailty Emergence Probability</div>
+          <div class="how-desc">A composite FEP score is produced for each district. High-scoring areas are flagged for deployment. Commissioners see exactly where the unmet need is concentrated.</div>
         </div>
-        <div class="ic-member">
-          <div class="ic-avatar" style="background:#fdf3e3;color:#8a4012;">D</div>
-          <div class="ic-member-info">
-            <div class="ic-member-name">David (son)</div>
-            <div class="ic-member-role">Family · London</div>
-          </div>
-          <div class="ic-member-status status-notified">Notified</div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">03</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.tools</div>
+          <div class="how-title">Community screening is deployed into priority zones</div>
+          <div class="how-desc">ASSISTIV.TOOLS is deployed via community settings, social prescribing networks, PCN staff, and voluntary sector partners. No clinical training required. The conversation does the work.</div>
         </div>
-        <div class="ic-member">
-          <div class="ic-avatar" style="background:#eef2fb;color:#1e3a7a;">S</div>
-          <div class="ic-member-info">
-            <div class="ic-member-name">Sarah (daughter)</div>
-            <div class="ic-member-role">Family · Maidstone</div>
-          </div>
-          <div class="ic-member-status status-active">Active</div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">04</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.tools</div>
+          <div class="how-title">Each person receives a Screening Tool Score and a Wellness Guide</div>
+          <div class="how-desc">The score determines the pathway. The Wellness Guide is returned directly to the person — affirming, practical, and genuinely useful regardless of their outcome. Something of real value from the conversation.</div>
         </div>
-        <div class="ic-member">
-          <div class="ic-avatar" style="background:#f4f7f5;color:#3d7a56;">E</div>
-          <div class="ic-member-info">
-            <div class="ic-member-name">Emily (granddaughter)</div>
-            <div class="ic-member-role">Child access · Age 9</div>
-          </div>
-          <div class="ic-member-status status-joined">Joined</div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">05</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.services</div>
+          <div class="how-title">High-risk individuals are referred to the PCN Hub Support Pathway</div>
+          <div class="how-desc">Those on the verge of acute care are immediately routed to Primary Care Network Hubs for clinical review. The structured referral — including domain scores and minimisation notes — is ready to hand.</div>
         </div>
-        <div class="ic-visual-label">Inner Circle — private to this family</div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">06</div>
+        <div class="how-body">
+          <div class="how-platform">assistiv.services</div>
+          <div class="how-title">Everyone else enters the preventative care platform</div>
+          <div class="how-desc">The broader population below the acute threshold is offered coordinated support through Assistiv Services — passive safety monitoring, digital care tools, community links, and carer support — on their own terms.</div>
+        </div>
+      </div>
+      <div class="how-step fade-up">
+        <div class="how-num">07</div>
+        <div class="how-body">
+          <div class="how-platform">Feedback Loop</div>
+          <div class="how-title">Outcomes feed back to the intelligence layer</div>
+          <div class="how-desc">Every referral outcome, intervention result, and care trajectory is anonymised and returned to the ASSISTIV.CLOUD intelligence layer. The FEP model recalibrates. The loop closes. The system gets better.</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- OUTCOMES -->
-<section class="section outcomes" id="outcomes">
+<section class="section" id="outcomes" style="background:var(--white);">
   <div class="section-inner">
-    <span class="eyebrow fade-up">What the platform delivers</span>
-    <h2 class="section-h2 fade-up d1">Earlier support. <em>Measurable impact.</em> Across the whole system.</h2>
-    <p class="section-body fade-up d2">Assistiv produces measurable outcomes at the level of the individual, their family, and the commissioning system. The Kent ICB pilot projection models £1.2m in system savings against £88k commissioning cost in the first quarter alone.</p>
+    <span class="eyebrow fade-up">What the system delivers</span>
+    <h2 class="section-h2 fade-up d1">Measured outcomes <em>for every stakeholder.</em></h2>
+    <p class="section-body fade-up d2">The ecosystem is designed to produce tangible value at every point of contact — for the person, their family, the clinical team, and the commissioning body.</p>
     <div class="outcomes-grid">
       <div class="outcome-card fade-up d1">
-        <div class="oc-who">For the person</div>
+        <div class="oc-who">For the individual</div>
         <div class="oc-title">Independence preserved, on their terms</div>
         <ul class="oc-list">
-          <li>Lives longer at home with confidence</li>
-          <li>Earlier cognitive and physical support</li>
-          <li>Dignity and autonomy throughout</li>
-          <li>Meaningful activity sustained</li>
-          <li>Freedom from fear of falling undetected</li>
-          <li>Real connection to family and community</li>
+          <li>A Wellness Guide from every conversation</li>
+          <li>Proactive support before crisis strikes</li>
+          <li>Control over what is shared and with whom</li>
+          <li>Technology introduced at their pace</li>
+          <li>Dignity maintained throughout</li>
         </ul>
       </div>
       <div class="outcome-card fade-up d2">
-        <div class="oc-who">For carers and families</div>
-        <div class="oc-title">Awareness without intrusion</div>
+        <div class="oc-who">For NHS &amp; commissioners</div>
+        <div class="oc-title">Prevention at population scale</div>
         <ul class="oc-list">
-          <li>Real-time awareness replaces constant worry</li>
-          <li>Family visits restored — not crisis management</li>
-          <li>Carer wellbeing monitored and protected</li>
-          <li>Objective data for difficult conversations</li>
-          <li>Reduced time spent on care coordination</li>
+          <li>District-level frailty intelligence, daily</li>
+          <li>Reduced avoidable admissions</li>
+          <li>Earlier identification of the Missing Middle</li>
+          <li>Structured referrals ready for clinical review</li>
+          <li>14:1 estimated ROI at pilot scale</li>
         </ul>
       </div>
       <div class="outcome-card fade-up d3">
-        <div class="oc-who">For NHS &amp; commissioners</div>
-        <div class="oc-title">Prevention, not reaction</div>
+        <div class="oc-who">For care partners &amp; PCNs</div>
+        <div class="oc-title">Intelligence that drives action</div>
         <ul class="oc-list">
-          <li>Avoidable crisis admissions prevented</li>
-          <li>Safe rapid home discharge enabled</li>
-          <li>Residential transition deferred months or years</li>
-          <li>Evidence base for Care Act and GP reviews</li>
-          <li>14:1 return on investment at pilot scale</li>
+          <li>Community screening without clinical burden</li>
+          <li>PCN Hub pathway with scored referrals</li>
+          <li>ARC integration for passive safety monitoring</li>
+          <li>Outcome data returned to commissioners</li>
+          <li>A system that learns from every deployment</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ADVISORY BOARD -->
-<section class="section advisors" id="advisors">
-  <div class="section-inner">
-    <span class="eyebrow fade-up">Advisory Board</span>
-    <h2 class="section-h2 fade-up d1">The clinical and academic <em>foundation.</em></h2>
-    <p class="section-body fade-up d2">Assistiv Services is grounded in validated frameworks and built with the guidance of leading academic and clinical voices in ageing, social care outcomes, data science, and public policy.</p>
-    <div class="advisor-grid">
-      <div class="advisor-card fade-up d1">
-        <div class="advisor-name">Prof. Ann Netten</div>
-        <div class="advisor-role">Emeritus Professor, University of Kent · Creator of ASCOT · Former Director, PSSRU</div>
-        <div class="advisor-note">Creator of the Adult Social Care Outcomes Toolkit, now embedded in national policy across the UK and internationally. Her framework directly underpins the quality-of-life measurement architecture at the heart of Assistiv.</div>
+<!-- PARTNERS -->
+<section class="partners" id="partners">
+  <div class="partners-inner">
+    <span class="eyebrow fade-up">Who we work with</span>
+    <h2 class="section-h2 fade-up d1">Built for the people who carry the system.</h2>
+    <p class="section-body fade-up d2">Assistiv is designed for NHS commissioners, Primary Care Networks, housing providers, and security technology partners who want to deliver preventative care before the crisis arrives.</p>
+    <div class="partners-grid">
+      <div class="partner-card fade-up">
+        <div class="partner-icon">🏛️</div>
+        <div class="partner-title">NHS Commissioners</div>
+        <div class="partner-body">ICBs and PCNs looking for population frailty intelligence and a commissioning-ready pathway to early intervention in their highest-need districts.</div>
       </div>
-      <div class="advisor-card fade-up d2">
-        <div class="advisor-name">Mark Greenfield</div>
-        <div class="advisor-role">Emeritus, Northumbria University · Ageing and Nursing</div>
-        <div class="advisor-note">Validated Assistiv's three-state model of independence and introduced the concept of Positive Interdependence that sits at the heart of the platform's philosophy. Nursing and ageing expertise spanning academic and community dimensions of later life.</div>
+      <div class="partner-card fade-up d1">
+        <div class="partner-icon">🏠</div>
+        <div class="partner-title">Housing &amp; Security Technology</div>
+        <div class="partner-body">Housing associations, monitoring providers, and security technology partners who need a clinical intelligence layer behind their existing home-safety infrastructure.</div>
       </div>
-      <div class="advisor-card fade-up d1">
-        <div class="advisor-name">Prof. John Jerrim</div>
-        <div class="advisor-role">Professor of Education and Social Statistics, UCL · Director, Quantitative Social Science Research Centre</div>
-        <div class="advisor-note">Winner of the inaugural ESRC Early Career Outstanding Impact Award. Brings rigorous large-scale data methodology and population-level research expertise to Assistiv's evidence base and future academic funding pathways.</div>
+      <div class="partner-card fade-up d2">
+        <div class="partner-icon">🤝</div>
+        <div class="partner-title">Community &amp; Voluntary Sector</div>
+        <div class="partner-body">Social prescribing networks, community connectors, and voluntary sector organisations who want to contribute to early identification without clinical burden.</div>
       </div>
-      <div class="advisor-card fade-up d2">
-        <div class="advisor-name">Prof. Tim Legrand</div>
-        <div class="advisor-role">Professor of Politics, University of Adelaide · ARC Future Fellowship 2025–2029</div>
-        <div class="advisor-note">Expert in government policy, public administration, and policy transfer. Brings deep expertise in navigating NHS and local authority commissioning landscapes and in understanding how innovation enters public sector systems.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ECOSYSTEM POSITION -->
-<section class="position" id="ecosystem">
-  <div class="position-inner">
-    <span class="eyebrow fade-up">Part of the Assistiv Ecosystem</span>
-    <h2 class="position-h2 fade-up d1">Where you are in <em>the system.</em></h2>
-    <p class="position-body fade-up d2">Assistiv Services is the third stage of a closed-loop ecosystem. Intelligence identifies where people are at risk. Screening finds them. Services supports them. Every outcome feeds back to sharpen the whole.</p>
-    <div class="position-cards fade-up d2">
-      <a href="https://www.assistiv.cloud" target="_blank" rel="noopener" class="position-card">
-        <div class="pos-tag">Intelligence Layer</div>
-        <div class="pos-domain">assistiv.cloud</div>
-        <div class="pos-title">Frailty Emergence Probability Engine</div>
-        <div class="pos-desc">21 NHS signals. District-level risk scoring. Daily updates. Tells commissioners exactly where to deploy screening.</div>
-        <div class="pos-link">Visit assistiv.cloud →</div>
-      </a>
-      <a href="https://www.assistiv.tools" target="_blank" rel="noopener" class="position-card">
-        <div class="pos-tag">Screening Layer</div>
-        <div class="pos-domain">assistiv.tools</div>
-        <div class="pos-title">Community Frailty Screening</div>
-        <div class="pos-desc">Voice-first, 12-domain community screening deployed into high-risk districts. Identifies the Missing Middle at scale.</div>
-        <div class="pos-link">Visit assistiv.tools →</div>
-      </a>
-      <div class="position-card current">
-        <div class="pos-tag">Care Platform</div>
-        <div class="pos-domain">assistiv.services</div>
-        <div class="pos-title">Preventative Care at Scale</div>
-        <div class="pos-desc">For everyone below the acute threshold. Passive safety, Inner Circle, care coordination, community connections.</div>
-        <div class="pos-you">You are here</div>
+      <div class="partner-card fade-up d3">
+        <div class="partner-icon">🔬</div>
+        <div class="partner-title">Academic &amp; Clinical Research</div>
+        <div class="partner-body">University departments and geriatric medicine clinical leads seeking validated population intelligence tools and outcome data from deployed screening programmes.</div>
       </div>
     </div>
   </div>
@@ -811,9 +798,9 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 <section class="contact" id="contact">
   <div class="contact-inner">
     <span class="eyebrow fade-up" style="display:block;text-align:center;margin-bottom:1.25rem;">Get in touch</span>
-    <h2 class="contact-h2 fade-up d1">Start the <em>right conversation.</em></h2>
-    <p class="contact-body fade-up d2">We are in active conversation with NHS commissioners, ICBs, PCNs, housing providers, and technology partners. If you are working in early intervention, ageing-in-place, or community care — we would be glad to speak.</p>
-    <div class="contact-email fade-up d3">hello@assistiv.services</div>
+    <h2 class="contact-title fade-up d1">The right conversation <em>starts here.</em></h2>
+    <p class="contact-body fade-up d2">Whether you are an NHS commissioner, a housing provider, a PCN lead, or a potential technology partner — we would like to talk. The system is ready. The pathway is clear.</p>
+    <div class="contact-email fade-up d3">hello@assistiv.co</div>
   </div>
 </section>
 
@@ -823,37 +810,37 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
     <div class="footer-top">
       <div>
         <div class="footer-brand">
-          <div class="nav-mark" style="width:26px;height:26px;">
-            <div class="nav-dot nav-core" style="width:6px;height:6px;"></div>
-            <div class="nav-dot nav-r1"   style="width:14px;height:14px;"></div>
-            <div class="nav-dot nav-r2"   style="width:24px;height:24px;"></div>
+          <div class="nav-logo-mark" style="width:26px;height:26px;">
+            <div class="nav-logo-dot nav-logo-core" style="width:6px;height:6px;"></div>
+            <div class="nav-logo-dot nav-logo-r1" style="width:14px;height:14px;"></div>
+            <div class="nav-logo-dot nav-logo-r2" style="width:24px;height:24px;"></div>
           </div>
-          <div class="nav-words">
-            <span class="nav-name" style="font-size:0.9rem;">Assistiv</span>
-            <span class="nav-sub">Services</span>
+          <div class="nav-wordmark">
+            <span class="nav-name" style="font-size:0.95rem;">Assistiv</span>
+            <span class="nav-sub">Systems</span>
           </div>
         </div>
-        <p class="footer-tagline">Preventative care and support for independent living. Before crisis. On your terms.</p>
+        <p class="footer-tagline">Infrastructure for independent living. Identifying risk before crisis, at population scale.</p>
       </div>
       <div class="footer-nav">
-        <div>
-          <h5>The Platform</h5>
-          <a href="#services">How It Works</a>
-          <a href="#principles">Our Principles</a>
-          <a href="#outcomes">Outcomes</a>
-          <a href="#advisors">Advisory Board</a>
-        </div>
-        <div>
+        <div class="footer-nav-col">
           <h5>Ecosystem</h5>
-          <a href="https://www.assistiv.co">assistiv.co</a>
-          <a href="https://www.assistiv.cloud">assistiv.cloud</a>
-          <a href="https://www.assistiv.tools">assistiv.tools</a>
+          <a href="https://www.assistiv.cloud" target="_blank" rel="noopener">assistiv.cloud</a>
+          <a href="https://www.assistiv.tools" target="_blank" rel="noopener">assistiv.tools</a>
+          <a href="https://www.assistiv.services" target="_blank" rel="noopener">assistiv.services</a>
         </div>
-        <div>
+        <div class="footer-nav-col">
+          <h5>Company</h5>
+          <a href="#challenge">The Challenge</a>
+          <a href="#ecosystem">The Ecosystem</a>
+          <a href="#how">How It Works</a>
+          <a href="#outcomes">Outcomes</a>
+        </div>
+        <div class="footer-nav-col">
           <h5>Contact</h5>
-          <a href="mailto:hello@assistiv.services">hello@assistiv.services</a>
+          <a href="mailto:hello@assistiv.co">hello@assistiv.co</a>
+          <a href="#partners">Partners</a>
           <a href="#contact">Get in Touch</a>
-          <a href="https://www.assistiv.co">Back to assistiv.co</a>
         </div>
       </div>
     </div>
@@ -861,21 +848,27 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
       <p class="footer-copy">© <span id="yr"></span> Assistiv Systems Limited. Faversham, Kent.</p>
       <div class="footer-links">
         <a href="#">Privacy</a>
-        <a href="#">Accessibility</a>
-        <a href="https://www.assistiv.co">assistiv.co</a>
+        <a href="#">Terms</a>
+        <a href="https://www.assistiv.cloud" target="_blank" rel="noopener">assistiv.cloud</a>
+        <a href="https://www.assistiv.tools" target="_blank" rel="noopener">assistiv.tools</a>
+        <a href="https://www.assistiv.services" target="_blank" rel="noopener">assistiv.services</a>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
+/* Year */
 document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* Mobile nav */
 document.getElementById('hbg').addEventListener('click', () => document.getElementById('mob-nav').classList.add('open'));
 document.getElementById('mob-close').addEventListener('click', () => document.getElementById('mob-nav').classList.remove('open'));
 
+/* Scroll reveal */
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-}, { threshold: 0.1 });
+}, { threshold: 0.12 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 </script>
 
