@@ -106,38 +106,34 @@ body {
   .hamburger { display: flex; }
 }
 
+
+
 /* ── HERO ─────────────────────────────────────────────────────── */
 .hero {
-  padding: 116px 2rem 0;
+  padding: 116px 2rem 4rem;
   max-width: 1160px; margin: 0 auto;
-  min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: center;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: center;
-  padding-bottom: 5rem;
+  text-align: center;
 }
 .hero-eyebrow {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--g-accent); margin-bottom: 1.75rem;
-  display: flex; align-items: center; gap: 0.65rem;
+  display: inline-flex; align-items: center; gap: 0.65rem;
 }
-.hero-eyebrow::before { content: ''; display: block; width: 22px; height: 1px; background: var(--g-accent); }
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; display: block; width: 22px; height: 1px; background: var(--g-accent);
+}
 .hero-h1 {
   font-family: var(--serif);
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  font-weight: 300; line-height: 1.1; letter-spacing: -0.02em;
+  font-size: clamp(2.6rem, 4.5vw, 4.2rem);
+  font-weight: 300; line-height: 1.08; letter-spacing: -0.02em;
   color: var(--ink); margin-bottom: 1.5rem;
 }
 .hero-h1 em { font-style: italic; color: var(--g-deep); }
 .hero-body {
-  font-size: 1rem; font-weight: 300; color: var(--ink-mid);
-  line-height: 1.72; margin-bottom: 2.25rem; max-width: 480px;
+  font-size: 1.05rem; font-weight: 300; color: var(--ink-mid);
+  line-height: 1.72; margin: 0 auto 2.25rem; max-width: 640px;
 }
-.hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+.hero-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; justify-content: center; }
 .btn-primary {
   font-family: var(--sans); font-size: 0.875rem; font-weight: 600;
   color: var(--white); background: var(--g-deep);
@@ -153,55 +149,76 @@ body {
 }
 .btn-ghost:hover { border-color: var(--g-accent); color: var(--g-deep); }
 
-/* Hero right — domain cards */
-.hero-domains {
-  display: flex; flex-direction: column; gap: 0.75rem;
-}
-.domain-card {
+/* ── ECOSYSTEM ANIMATION EMBED ──────────────────────────────── */
+.eco-anim-section {
   background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.1rem 1.4rem;
-  display: flex; align-items: flex-start; gap: 1rem;
-  text-decoration: none; color: inherit;
-  transition: box-shadow var(--ease), border-color var(--ease), transform var(--ease);
-  position: relative; overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-.domain-card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; border-radius: 3px 0 0 3px;
+.eco-stage-bar {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  background: var(--white); overflow-x: auto;
 }
-.domain-card.cloud::before  { background: var(--cloud); }
-.domain-card.tools::before  { background: var(--tools); }
-.domain-card.serv::before   { background: var(--serv-mid); }
-.domain-card:hover {
-  box-shadow: 0 6px 28px rgba(10,95,68,0.1);
-  transform: translateX(3px);
+.eco-sstep {
+  flex: 1; min-width: 0;
+  padding: 0.65rem 0.75rem 0.6rem;
+  border-right: 1px solid var(--border);
+  cursor: pointer; transition: background 0.2s;
+  position: relative; text-align: center;
 }
-.domain-card.cloud:hover  { border-color: var(--cloud); }
-.domain-card.tools:hover  { border-color: var(--tools); }
-.domain-card.serv:hover   { border-color: var(--serv-mid); }
-.dc-icon {
-  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+.eco-sstep:last-child { border-right: none; }
+.eco-sstep:hover { background: #f0f4f0; }
+.eco-sstep.active { background: #f0f4f0; }
+.eco-sstep.active::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--g-accent);
 }
-.domain-card.cloud .dc-icon  { background: var(--cloud-pale); }
-.domain-card.tools .dc-icon  { background: var(--tools-pale); }
-.domain-card.serv .dc-icon   { background: var(--serv-pale); }
-.dc-body { flex: 1; min-width: 0; }
-.dc-url {
-  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
-  font-weight: 500; margin-bottom: 0.2rem;
+.eco-sstep-num {
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.15rem;
 }
-.domain-card.cloud .dc-url  { color: var(--cloud); }
-.domain-card.tools .dc-url  { color: var(--tools); }
-.domain-card.serv .dc-url   { color: var(--serv-mid); }
-.dc-title { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; line-height: 1.3; }
-.dc-desc  { font-size: 0.78rem; font-weight: 300; color: var(--ink-soft); line-height: 1.5; }
-.dc-arrow { font-size: 0.75rem; color: var(--ink-faint); align-self: center; flex-shrink: 0; transition: color var(--ease); }
-.domain-card:hover .dc-arrow { color: var(--ink-soft); }
-@media (max-width: 820px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 3rem; padding-bottom: 4rem; }
+.eco-sstep-label {
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  color: var(--ink); line-height: 1.3;
+}
+.eco-sstep.active .eco-sstep-num { color: var(--g-accent); }
+.eco-sstep.active .eco-sstep-label { color: var(--g-deep); }
+#eco-canvas { display: block; width: 100%; }
+.eco-caption-bar {
+  padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.eco-caption-text { font-size: 0.875rem; color: var(--ink-mid); line-height: 1.5; flex: 1; }
+.eco-caption-text strong { color: var(--g-deep); font-weight: 500; }
+.eco-caption-controls { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.eco-btn {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: var(--white); color: var(--ink-mid);
+  cursor: pointer; transition: all 0.15s;
+}
+.eco-btn:hover { border-color: var(--g-accent); color: var(--g-deep); }
+.eco-btn.primary { background: var(--g-deep); color: var(--white); border-color: var(--g-deep); }
+.eco-btn.primary:hover { background: var(--g-mid); }
+.eco-legend {
+  display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid var(--border); background: var(--white);
+}
+.eco-legend-item {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--mono); font-size: 0.6rem;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft);
+}
+.eco-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+@media (max-width: 640px) {
+  .eco-stage-bar { flex-wrap: wrap; }
+  .eco-sstep { min-width: 33.33%; }
+  #eco-canvas { height: 300px !important; }
+  .eco-caption-bar { flex-direction: column; align-items: flex-start; }
 }
 
 /* ── STAT STRIP ───────────────────────────────────────────────── */
@@ -486,55 +503,77 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-grid">
-
-    <div class="hero-text">
-      <p class="hero-eyebrow fade-up">Infrastructure for independent living</p>
-      <h1 class="hero-h1 fade-up d1">
-        Finding the people the system<br>
-        <em>cannot see.</em><br>Before crisis finds them.
-      </h1>
-      <p class="hero-body fade-up d2">
-        Assistiv is a closed-loop intelligence platform. We identify older adults at risk from open NHS data, deploy community screening at scale, and deliver the preventative care that keeps people independent — on their terms, before things go wrong.
-      </p>
-      <div class="hero-actions fade-up d3">
-        <a href="#ecosystem" class="btn-primary">Explore the ecosystem</a>
-        <a href="#contact" class="btn-ghost">Talk to us</a>
-      </div>
-    </div>
-
-    <div class="hero-domains fade-up d2">
-      <a href="https://www.assistiv.cloud" target="_blank" rel="noopener" class="domain-card cloud">
-        <div class="dc-icon">🧠</div>
-        <div class="dc-body">
-          <div class="dc-url">assistiv.cloud</div>
-          <div class="dc-title">Frailty Intelligence Layer</div>
-          <div class="dc-desc">FEP engine — 21 NHS signals, district-level risk scoring, updated daily. Tells commissioners exactly where to act.</div>
-        </div>
-        <div class="dc-arrow">→</div>
-      </a>
-      <a href="https://www.assistiv.tools" target="_blank" rel="noopener" class="domain-card tools">
-        <div class="dc-icon">🎙️</div>
-        <div class="dc-body">
-          <div class="dc-url">assistiv.tools</div>
-          <div class="dc-title">Community Screening</div>
-          <div class="dc-desc">Voice-first frailty screening deployed into high-risk districts. Identifies the Missing Middle at scale. No clinical training required.</div>
-        </div>
-        <div class="dc-arrow">→</div>
-      </a>
-      <a href="https://www.assistiv.services" target="_blank" rel="noopener" class="domain-card serv">
-        <div class="dc-icon">🏠</div>
-        <div class="dc-body">
-          <div class="dc-url">assistiv.services</div>
-          <div class="dc-title">Preventative Care Platform</div>
-          <div class="dc-desc">For people below the acute threshold: coordinated support, digital care tools, and community connections — delivered on the person's terms.</div>
-        </div>
-        <div class="dc-arrow">→</div>
-      </a>
-    </div>
-
+  <p class="hero-eyebrow fade-up">Infrastructure for independent living</p>
+  <h1 class="hero-h1 fade-up d1">
+    Finding the people the system <em>cannot see.</em><br>Before crisis finds them.
+  </h1>
+  <p class="hero-body fade-up d2">
+    Assistiv is a closed-loop intelligence platform. We identify older adults at risk from open NHS data, deploy community screening at scale, and deliver the preventative care that keeps people independent — on their terms, before things go wrong.
+  </p>
+  <div class="hero-actions fade-up d3">
+    <a href="#ecosystem" class="btn-primary">Explore the ecosystem</a>
+    <a href="#contact" class="btn-ghost">Talk to us</a>
   </div>
 </section>
+
+<!-- ECOSYSTEM ANIMATION — full width -->
+<div class="eco-anim-section">
+
+  <!-- Stage nav -->
+  <div class="eco-stage-bar">
+    <div class="eco-sstep active" data-es="0">
+      <div class="eco-sstep-num">01</div>
+      <div class="eco-sstep-label">NHS Data<br>Exhaust</div>
+    </div>
+    <div class="eco-sstep" data-es="1">
+      <div class="eco-sstep-num">02</div>
+      <div class="eco-sstep-label">Intelligence<br>Layer</div>
+    </div>
+    <div class="eco-sstep" data-es="2">
+      <div class="eco-sstep-num">03</div>
+      <div class="eco-sstep-label">Target<br>Populations</div>
+    </div>
+    <div class="eco-sstep" data-es="3">
+      <div class="eco-sstep-num">04</div>
+      <div class="eco-sstep-label">Community<br>Screening</div>
+    </div>
+    <div class="eco-sstep" data-es="4">
+      <div class="eco-sstep-num">05</div>
+      <div class="eco-sstep-label">PCN Hub<br>Pathway</div>
+    </div>
+    <div class="eco-sstep" data-es="5">
+      <div class="eco-sstep-num">06</div>
+      <div class="eco-sstep-label">Assistiv<br>Platform</div>
+    </div>
+    <div class="eco-sstep" data-es="6">
+      <div class="eco-sstep-num">07</div>
+      <div class="eco-sstep-label">Feedback<br>Loop</div>
+    </div>
+  </div>
+
+  <canvas id="eco-canvas" height="440" aria-label="Assistiv ecosystem funnel animation"></canvas>
+
+  <div class="eco-caption-bar">
+    <div class="eco-caption-text" id="eco-caption">
+      <strong>NHS Data Exhaust</strong> — Millions of data points across prescribing records, falls admissions, deprivation indices, 111 demand, and census signals. Individually noise. Together, a signal.
+    </div>
+    <div class="eco-caption-controls">
+      <button class="eco-btn" id="eco-btn-play">Pause</button>
+      <button class="eco-btn primary" id="eco-btn-next">Next →</button>
+    </div>
+  </div>
+
+  <div class="eco-legend">
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#3d7a56"></div>NHS / Open Data</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#2a5880"></div>Intelligence signals</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#b07d2a"></div>At-risk population</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#7aab90"></div>ASSISTIV.TOOLS screening</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#c04040"></div>PCN Hub — acute pathway</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#1a3a2a"></div>Assistiv Platform</div>
+    <div class="eco-legend-item"><div class="eco-legend-dot" style="background:#8a3a4a"></div>Feedback to intelligence</div>
+  </div>
+
+</div>
 
 <!-- STATS -->
 <div class="stats">
@@ -858,6 +897,362 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 </footer>
 
 <script>
+/* ── ECOSYSTEM ANIMATION ─────────────────────────────────────── */
+(function() {
+const ecoCanvas = document.getElementById('eco-canvas');
+const ecoCtx = ecoCanvas.getContext('2d');
+let eW, eH, eT = 0, eStage = 0, eRaf, eRunning = true, eAutoTimer = null;
+
+const ECO_CAPTIONS = [
+  '<strong>NHS Data Exhaust</strong> — Millions of data points across prescribing records, falls admissions, deprivation indices, 111 demand, and census signals. Individually noise. Together, a signal.',
+  '<strong>Intelligence Layer</strong> — The Assistiv.Cloud FEP engine weighs 21 signals to produce a Frailty Emergence Probability score for every district in Kent & Medway. Updated daily from open NHS data.',
+  '<strong>Target Populations & Locations</strong> — High-FEP districts are ranked and mapped. The intelligence layer pinpoints which communities — and which people within them — carry the highest unmet need.',
+  '<strong>Community Screening via ASSISTIV.TOOLS</strong> — Deployed into priority zones: 12 conversational questions, scored in real time using the ASSISTIV Screening Tool Score. No clinical training required. Identifies the Missing Middle at scale.',
+  '<strong>PCN Hub — Primary & Acute Pathway</strong> — People on the verge of acute care are immediately referred to Primary Care Network Hubs for urgent clinical review, preventing avoidable hospital admission.',
+  '<strong>Assistiv Platform</strong> — For everyone else: preventative care, digital support, community connections, and coordinated services delivered through the Assistiv platform. Prevention at scale.',
+  '<strong>Feedback Loop</strong> — Every outcome — who was referred, what happened, what worked — feeds back into the intelligence layer. The FEP model recalibrates. The system learns and gets sharper over time.',
+];
+
+const EC = {
+  sage:'#3d7a56', sageL:'#7aab90', sagePale:'#e8f0eb',
+  blue:'#2a5880', blueL:'#6a9ab8',
+  amber:'#b07d2a', amberL:'#d4a84b',
+  red:'#c04040', redL:'#e07070',
+  forest:'#1a3a2a', forestL:'#2d5c42',
+  rose:'#8a3a4a', roseL:'#c07080',
+  ink:'#0f1a14', inkMid:'#3a4a3f', inkSoft:'#6b7d72',
+  cream:'#f9f7f4', white:'#ffffff', border:'#d8e0da',
+};
+
+let eParts = [];
+function eMakePart(o={}) {
+  return { x:o.x??Math.random()*eW, y:o.y??Math.random()*eH,
+    vx:o.vx??(Math.random()-.5)*.6, vy:o.vy??(Math.random()-.5)*.4,
+    col:o.col??EC.sage, r:o.r??2.5, alpha:o.alpha??(.6+Math.random()*.4),
+    life:1, decay:0, phase:o.phase??Math.random()*Math.PI*2,
+    label:o.label??null, progress:0, speed:.008+Math.random()*.006 };
+}
+
+function eResize() {
+  const DPR = window.devicePixelRatio || 1;
+  const r = ecoCanvas.parentElement.getBoundingClientRect();
+  const cssW = Math.floor(r.width) || 900;
+  const cssH = Math.max(380, Math.floor(cssW * 0.52));
+  ecoCanvas.width  = Math.round(cssW * DPR);
+  ecoCanvas.height = Math.round(cssH * DPR);
+  ecoCanvas.style.width  = cssW + 'px';
+  ecoCanvas.style.height = cssH + 'px';
+  ecoCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  eW = cssW; eH = cssH;
+}
+
+function ePill(x,y,w,h,col,label,alpha=1,fontSize=9) {
+  const r=h/2; ecoCtx.save(); ecoCtx.globalAlpha=alpha;
+  ecoCtx.fillStyle=col+'22'; ecoCtx.strokeStyle=col; ecoCtx.lineWidth=1;
+  ecoCtx.beginPath(); ecoCtx.roundRect(x-w/2,y-h/2,w,h,r); ecoCtx.fill(); ecoCtx.stroke();
+  if(label){
+    ecoCtx.fillStyle=col; ecoCtx.textAlign='center';
+    const mW=w-10; let fs=fontSize;
+    ecoCtx.font=`500 ${fs}px DM Mono,monospace`;
+    while(ecoCtx.measureText(label).width>mW&&fs>5){fs-=.5;ecoCtx.font=`500 ${fs}px DM Mono,monospace`;}
+    ecoCtx.fillText(label,x,y+fs*.35);
+  }
+  ecoCtx.restore();
+}
+
+function eBadge(x,y,w,h,col,label,sub=null,alpha=1) {
+  ecoCtx.save(); ecoCtx.globalAlpha=alpha;
+  ecoCtx.fillStyle=col; ecoCtx.shadowColor=col+'44'; ecoCtx.shadowBlur=16;
+  ecoCtx.beginPath(); ecoCtx.roundRect(x-w/2,y-h/2,w,h,8); ecoCtx.fill();
+  ecoCtx.shadowBlur=0; ecoCtx.fillStyle='#fff'; ecoCtx.textAlign='center';
+  const mW=w-12; let fs=11;
+  ecoCtx.font=`500 ${fs}px DM Mono,monospace`;
+  while(ecoCtx.measureText(label).width>mW&&fs>5){fs-=.5;ecoCtx.font=`500 ${fs}px DM Mono,monospace`;}
+  ecoCtx.fillText(label,x,sub?y-3:y+fs*.4);
+  if(sub){
+    let sfs=8.5; ecoCtx.font=`400 ${sfs}px DM Mono,monospace`;
+    while(ecoCtx.measureText(sub).width>mW&&sfs>5){sfs-=.5;ecoCtx.font=`400 ${sfs}px DM Mono,monospace`;}
+    ecoCtx.fillStyle='rgba(255,255,255,0.7)'; ecoCtx.fillText(sub,x,y+12);
+  }
+  ecoCtx.restore();
+}
+
+function eCurvePath(pts,col,alpha=.4,dash=false) {
+  if(pts.length<2)return;
+  ecoCtx.save(); ecoCtx.globalAlpha=alpha; ecoCtx.strokeStyle=col; ecoCtx.lineWidth=1.5;
+  if(dash){ecoCtx.setLineDash([5,7]);ecoCtx.lineDashOffset=-(eT*1.2)%12;}
+  ecoCtx.beginPath(); ecoCtx.moveTo(pts[0].x,pts[0].y);
+  for(let i=1;i<pts.length-1;i++){
+    const mx=(pts[i].x+pts[i+1].x)/2,my=(pts[i].y+pts[i+1].y)/2;
+    ecoCtx.quadraticCurveTo(pts[i].x,pts[i].y,mx,my);
+  }
+  ecoCtx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
+  ecoCtx.stroke(); ecoCtx.setLineDash([]); ecoCtx.restore();
+}
+
+function eFunnel() {
+  const top=eH*.03,split=eH*.50,cx=eW/2;
+  const topL=cx-eW*.41,topR=cx+eW*.41,splL=cx-eW*.11,splR=cx+eW*.11;
+  ecoCtx.save(); ecoCtx.globalAlpha=.07; ecoCtx.fillStyle=EC.sage;
+  ecoCtx.beginPath(); ecoCtx.moveTo(topL,top); ecoCtx.lineTo(topR,top);
+  ecoCtx.lineTo(splR,split); ecoCtx.lineTo(splL,split); ecoCtx.closePath(); ecoCtx.fill();
+  ecoCtx.globalAlpha=.15; ecoCtx.strokeStyle=EC.sage; ecoCtx.lineWidth=1; ecoCtx.setLineDash([4,6]);
+  ecoCtx.beginPath();ecoCtx.moveTo(topL,top);ecoCtx.lineTo(splL,split);ecoCtx.stroke();
+  ecoCtx.beginPath();ecoCtx.moveTo(topR,top);ecoCtx.lineTo(splR,split);ecoCtx.stroke();
+  ecoCtx.setLineDash([]); ecoCtx.restore();
+}
+
+function eLayerLbl(y,txt,col,a=.5){
+  ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=col;
+  ecoCtx.font='400 9px DM Mono,monospace';ecoCtx.textAlign='left';ecoCtx.fillText(txt,12,y);ecoCtx.restore();
+}
+
+function eDrawS0(){
+  const top=eH*.04,split=eH*.49,cx=eW/2;
+  eFunnel(); eLayerLbl(top+14,'NHS DATA EXHAUST',EC.sage,.4);
+  const SIGS=[['Falls 65+',EC.sage],['Prescribing EPD',EC.blue],['Deprivation',EC.amber],
+    ['Alone 75+',EC.sage],['111 Demand',EC.blue],['Hip fractures',EC.rose],
+    ['Winter deaths',EC.amber],['Dementia Dx',EC.blue],['CQC gap',EC.rose],
+    ['Loneliness',EC.sage],['RAVI rural',EC.amber],['Hypnotics ↑',EC.blue],
+    ['Bisphosphonates',EC.sage],['Antidepressants',EC.amber],['Census 2021',EC.rose],
+    ['A&E demand',EC.blue],['OAB treatment',EC.sage],['Nutrition ONS',EC.amber]];
+  const pulse=.5+.5*Math.sin(eT*.025);
+  SIGS.forEach(([lbl,col],i)=>{
+    const seed=i*137.5;
+    const x=((seed*1.618)%1)*eW*.78+eW*.11+Math.sin(eT*.018+i*.7)*6;
+    const y=top+20+((seed*.618)%1)*(split-top-40)+Math.cos(eT*.014+i*.9)*5;
+    ePill(x,y,lbl.length*5.8+16,20,col,lbl,.45+.2*Math.sin(eT*.022+i)+.08*pulse,9);
+  });
+  ecoCtx.save();
+  SIGS.forEach(([,c1],i)=>{SIGS.forEach(([,c2],j)=>{
+    if(j<=i)return;
+    const s1=i*137.5,s2=j*137.5;
+    const x1=((s1*1.618)%1)*eW*.78+eW*.11+Math.sin(eT*.018+i*.7)*6;
+    const y1=top+20+((s1*.618)%1)*(split-top-40)+Math.cos(eT*.014+i*.9)*5;
+    const x2=((s2*1.618)%1)*eW*.78+eW*.11+Math.sin(eT*.018+j*.7)*6;
+    const y2=top+20+((s2*.618)%1)*(split-top-40)+Math.cos(eT*.014+j*.9)*5;
+    const d=Math.hypot(x2-x1,y2-y1);
+    if(d<100){ecoCtx.globalAlpha=.12-.0008*d;ecoCtx.strokeStyle=c1;ecoCtx.lineWidth=.5;
+      ecoCtx.beginPath();ecoCtx.moveTo(x1,y1);ecoCtx.lineTo(x2,y2);ecoCtx.stroke();}
+  });}); ecoCtx.restore();
+}
+
+function eDrawS1(){
+  const cx=eW/2,cy=eH*.24;
+  eFunnel(); eLayerLbl(eH*.04+14,'NHS DATA EXHAUST → INTELLIGENCE',EC.sage,.4);
+  const pulse=.5+.5*Math.sin(eT*.035);
+  ecoCtx.save();
+  for(const[r,a]of[[55,.06+.04*pulse],[38,.1+.06*pulse],[24,.18+.08*pulse]]){
+    ecoCtx.globalAlpha=a;ecoCtx.strokeStyle=EC.sage;ecoCtx.lineWidth=1;
+    ecoCtx.beginPath();ecoCtx.arc(cx,cy,r,0,Math.PI*2);ecoCtx.stroke();
+  }
+  ecoCtx.restore();
+  eBadge(cx,cy,88,42,EC.forest,'ASSISTIV.CLOUD','FEP Engine',.92);
+  const RSIGS=[['Falls','#3d7a56'],['Prescribing','#2a5880'],['Deprivation','#b07d2a'],
+    ['Alone 75+','#3d7a56'],['111 calls','#2a5880'],['Hip fracture','#8a3a4a'],
+    ['Winter Dx','#b07d2a'],['Dementia','#2a5880']];
+  RSIGS.forEach(([lbl,col],i)=>{
+    const a=(i/RSIGS.length)*Math.PI*2-Math.PI/2;
+    const dist=Math.min(eW,eH)*.27;
+    const sx=cx+Math.cos(a)*dist,sy=cy+Math.sin(a)*dist;
+    const prog=Math.min(1,(eT%120)/80);
+    const px=sx+(cx-sx)*(.6+.4*prog),py=sy+(cy-sy)*(.6+.4*prog);
+    const fade=1-prog*.7;
+    ecoCtx.save();ecoCtx.globalAlpha=.12+.3*prog;ecoCtx.strokeStyle=col;ecoCtx.lineWidth=.8;
+    ecoCtx.setLineDash([4,6]);ecoCtx.beginPath();ecoCtx.moveTo(sx,sy);ecoCtx.lineTo(cx,cy);ecoCtx.stroke();
+    ecoCtx.setLineDash([]);ecoCtx.restore();
+    ePill(px,py,lbl.length*5.5+14,18,col,lbl,fade*.9,8.5);
+  });
+}
+
+function eDrawS2(){
+  eFunnel(); eLayerLbl(eH*.04+14,'INTELLIGENCE → TARGET ZONES',EC.sage,.4);
+  const cx=eW/2;
+  const DISTS=[{n:'Thanet',s:82,r:'critical'},{n:'Folkestone',s:76,r:'high'},
+    {n:'Dover',s:73,r:'high'},{n:'Swale',s:68,r:'high'},{n:'Medway',s:65,r:'high'},
+    {n:'Gravesham',s:62,r:'high'},{n:'Ashford',s:57,r:'moderate'},{n:'Shepway',s:54,r:'moderate'},
+    {n:'Canterbury',s:48,r:'moderate'},{n:'Maidstone',s:46,r:'moderate'}];
+  function rCol(r){return r==='critical'?EC.red:r==='high'?EC.amber:EC.sage;}
+  const cols=5,gW=Math.min(eW*.78,560),gH=Math.min(eH*.52,175);
+  const cw=gW/cols,ch=gH/2,x0=(eW-gW)/2,y0=eH*.06;
+  ecoCtx.save();
+  DISTS.forEach((d,i)=>{
+    const col=i%cols,row=Math.floor(i/cols);
+    const dcx=x0+col*cw+cw/2,dcy=y0+row*ch+ch/2;
+    const w=cw-12,h=ch-10,rc=rCol(d.r);
+    const delay=i*5,prog=Math.min(1,Math.max(0,(eT-delay)/30));
+    if(!prog)return;
+    const pulse=d.r==='critical'?.5+.5*Math.sin(eT*.06+i):1;
+    ecoCtx.globalAlpha=(d.r==='critical'?.9:d.r==='high'?.75:.55)*prog*pulse;
+    ecoCtx.fillStyle=rc+'1a';ecoCtx.strokeStyle=rc;ecoCtx.lineWidth=d.r==='critical'?1.5:1;
+    ecoCtx.beginPath();ecoCtx.roundRect(dcx-w/2,dcy-h/2,w,h,5);ecoCtx.fill();ecoCtx.stroke();
+    ecoCtx.globalAlpha=prog;
+    ecoCtx.fillStyle=rc;ecoCtx.font='500 8.5px DM Mono,monospace';ecoCtx.textAlign='center';
+    ecoCtx.fillText(d.n,dcx,dcy-7);
+    ecoCtx.fillStyle='#0f1a14';ecoCtx.font='500 16px DM Sans,sans-serif';ecoCtx.fillText(d.s,dcx,dcy+5);
+    ecoCtx.fillStyle=rc;ecoCtx.font='400 7px DM Mono,monospace';ecoCtx.fillText(d.r.toUpperCase(),dcx,dcy+18);
+  });
+  ecoCtx.restore();
+}
+
+function eDrawS3(){
+  eFunnel(); eLayerLbl(eH*.04+14,'TARGET ZONES → COMMUNITY SCREENING',EC.sageL,.5);
+  const cx=eW/2,ry=eH*.28;
+  const pulse=.5+.5*Math.sin(eT*.04);
+  ecoCtx.save();
+  for(const[r,a]of[[48,.05+.04*pulse],[32,.1+.05*pulse]]){
+    ecoCtx.globalAlpha=a;ecoCtx.strokeStyle=EC.sageL;ecoCtx.lineWidth=1;
+    ecoCtx.beginPath();ecoCtx.arc(cx,ry,r,0,Math.PI*2);ecoCtx.stroke();
+  }
+  ecoCtx.restore();
+  eBadge(cx,ry,130,42,'#2d5c42','ASSISTIV.TOOLS','Community screen',.95);
+  const N=15;
+  for(let i=0;i<N;i++){
+    const seed=i*83.7,xBase=cx+Math.cos(seed)*(eW*.32),yBase=eH*.04+(seed%1)*eH*.08;
+    const prog=((eT*.007+i/N)%1),px=xBase+(cx-xBase)*prog,py=yBase+(ry-yBase)*prog;
+    const a=Math.sin(prog*Math.PI)*.8;
+    ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=EC.amber;
+    ecoCtx.beginPath();ecoCtx.arc(px,py-3,4,0,Math.PI*2);ecoCtx.fill();
+    ecoCtx.beginPath();ecoCtx.arc(px,py+6,6,Math.PI,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  }
+  const QUES=['Mobility?','Falls risk?','Social contact?','Medication?','Nutrition?'];
+  QUES.forEach((q,i)=>{
+    const a=(i/QUES.length)*Math.PI+Math.PI/6,dist=90+Math.sin(eT*.03+i)*8;
+    ePill(cx+Math.cos(a)*dist,ry+Math.sin(a)*dist,q.length*6+14,18,EC.sageL,q,.6+.2*Math.sin(eT*.04+i),8);
+  });
+  eBadge(cx,eH*.46,160,36,EC.sage,'ASSISTIV Screening Tool Score',null,Math.min(.9,eT/80));
+}
+
+function eDrawSplit(){
+  eFunnel(); eLayerLbl(eH*.04+14,'SCREENING → TRIAGE SPLIT',EC.amber,.4);
+  const cx=eW/2,splitY=eH*.50,lx=eW*.28,ly=eH*.68,rx=eW*.72,ry2=eH*.68;
+  ecoCtx.save();ecoCtx.globalAlpha=.2;ecoCtx.strokeStyle=EC.amber;ecoCtx.lineWidth=1.5;ecoCtx.setLineDash([5,6]);
+  ecoCtx.beginPath();ecoCtx.moveTo(cx,splitY);ecoCtx.lineTo(lx,ly-25);ecoCtx.stroke();
+  ecoCtx.beginPath();ecoCtx.moveTo(cx,splitY);ecoCtx.lineTo(rx,ry2-25);ecoCtx.stroke();
+  ecoCtx.setLineDash([]);ecoCtx.globalAlpha=.5;
+  ecoCtx.font='400 8px DM Mono,monospace';ecoCtx.fillStyle=EC.red;
+  ecoCtx.textAlign='center';ecoCtx.fillText('VERGE OF ACUTE CARE',lx,ly-50);
+  ecoCtx.fillStyle=EC.sage;ecoCtx.fillText('PREVENTION PATHWAY',rx,ry2-50);ecoCtx.restore();
+  eBadge(cx,eH*.38,130,32,'#2d5c42','ASSISTIV.TOOLS',null,.75);
+  ePill(cx,eH*.48,180,20,EC.amber,'ASSISTIV Screening Tool Score',.6,8);
+}
+
+function eDrawS4(){
+  eDrawSplit();
+  const lx=eW*.28,ly=eH*.68,pulse=.5+.5*Math.sin(eT*.05);
+  ecoCtx.save();ecoCtx.globalAlpha=.12+.06*pulse;ecoCtx.fillStyle=EC.red;
+  ecoCtx.beginPath();ecoCtx.arc(lx,ly,70,0,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  eBadge(lx,ly,140,46,EC.red,'PCN Hub Support Pathway',null,.95);
+  const rx=eW*.72,ry2=eH*.68,splitX=eW/2,splitY=eH*.52;
+  eBadge(rx,ry2,120,46,EC.inkSoft,'ASSISTIV','Preventative platform',.3);
+  for(let i=0;i<6;i++){
+    const prog=((eT*.008+i/6)%1),px=splitX+(lx-splitX)*prog,py=splitY+(ly-splitY)*prog,a=Math.sin(prog*Math.PI)*.85;
+    ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=EC.red;
+    ecoCtx.beginPath();ecoCtx.arc(px,py-3,4,0,Math.PI*2);ecoCtx.fill();
+    ecoCtx.beginPath();ecoCtx.arc(px,py+6,6,Math.PI,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  }
+  ePill(eW/2,eH*.52,110,22,EC.amber,'ASSISTIV Screening Tool Score',.7,9);
+}
+
+function eDrawS5(){
+  eDrawSplit();
+  const lx=eW*.28,ly=eH*.68,rx=eW*.72,ry2=eH*.68,pulse=.5+.5*Math.sin(eT*.05);
+  ecoCtx.save();ecoCtx.globalAlpha=.1+.05*pulse;ecoCtx.fillStyle=EC.forest;
+  ecoCtx.beginPath();ecoCtx.arc(rx,ry2,70,0,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  eBadge(lx,ly,140,46,EC.red,'PCN Hub Support Pathway',null,.3);
+  eBadge(rx,ry2,120,46,EC.forest,'ASSISTIV','Prevention',.95);
+  const SVCS=['Digital support','Care coordination','Community links','Preventative plan','Carer support'];
+  SVCS.forEach((s,i)=>{
+    const a=(i/SVCS.length-.1)*Math.PI*.9-Math.PI*.05,dist=95+Math.sin(eT*.03+i)*6;
+    ePill(rx+Math.cos(a)*dist,ry2+Math.sin(a)*dist*.7,s.length*5.5+12,18,EC.forestL,s,.55+.2*Math.sin(eT*.04+i),7.5);
+  });
+  const splitX=eW/2,splitY=eH*.52;
+  for(let i=0;i<8;i++){
+    const prog=((eT*.007+i/8)%1),px=splitX+(rx-splitX)*prog,py=splitY+(ry2-splitY)*prog,a=Math.sin(prog*Math.PI)*.85;
+    ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=EC.sageL;
+    ecoCtx.beginPath();ecoCtx.arc(px,py-3,4,0,Math.PI*2);ecoCtx.fill();
+    ecoCtx.beginPath();ecoCtx.arc(px,py+6,6,Math.PI,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  }
+}
+
+function eDrawS6(){
+  eFunnel();
+  const cx=eW/2,splitY=eH*.50,lx=eW*.28,ly=eH*.68,rx=eW*.72,ry2=eH*.68,intelY=eH*.12;
+  eBadge(cx,intelY,160,40,EC.forest,'ASSISTIV.CLOUD Intelligence Layer',null,.9);
+  eBadge(cx,eH*.44,130,36,'#2d5c42','ASSISTIV.TOOLS Screening',null,.85);
+  ePill(cx,eH*.55,190,20,EC.amber,'ASSISTIV Screening Tool Score',.7,8);
+  eBadge(lx,ly,140,42,EC.red,'PCN Hub Support Pathway',null,.9);
+  eBadge(rx,ry2,114,42,EC.forest,'ASSISTIV','Prevention',.9);
+  ePill(lx,eH*.88,120,22,EC.red,'↓ NHS Support',.65,7.5);
+  ePill(rx,eH*.88,120,22,EC.sageL,'↑ Independence',.65,7.5);
+  const fbP=(eT%160)/160,fbA=Math.sin(fbP*Math.PI)*.7;
+  const lPts=[{x:lx-50,y:ly+20},{x:lx-85,y:eH*.57},{x:cx-110,y:eH*.40},{x:cx-75,y:eH*.24},{x:cx-50,y:intelY+20}];
+  const rPts=[{x:rx+50,y:ry2+20},{x:rx+85,y:eH*.57},{x:cx+110,y:eH*.40},{x:cx+75,y:eH*.24},{x:cx+50,y:intelY+20}];
+  eCurvePath(lPts,EC.rose,.4,true); eCurvePath(rPts,EC.rose,.4,true);
+  [lPts,rPts].forEach(pts=>{
+    const si=Math.floor(fbP*(pts.length-1)),sf=(fbP*(pts.length-1))-si;
+    if(si>=pts.length-1)return;
+    const a=pts[si],b=pts[si+1];
+    ecoCtx.save();ecoCtx.globalAlpha=fbA;ecoCtx.fillStyle=EC.rose;
+    ecoCtx.beginPath();ecoCtx.arc(a.x+(b.x-a.x)*sf,a.y+(b.y-a.y)*sf,5,0,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  });
+  ecoCtx.save();ecoCtx.globalAlpha=.55;ecoCtx.fillStyle=EC.rose;
+  ecoCtx.font='400 8px DM Mono,monospace';ecoCtx.textAlign='center';
+  ecoCtx.fillText('Outcomes feed back',cx-85,eH*.38);
+  ecoCtx.fillText('to enhance the FEP',cx+85,eH*.38);ecoCtx.restore();
+  for(let i=0;i<5;i++){
+    const prog=((eT*.006+i/5)%1),px=cx+(lx-cx)*prog,py=splitY+(ly-splitY)*prog,a=Math.sin(prog*Math.PI)*.7;
+    ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=EC.red;
+    ecoCtx.beginPath();ecoCtx.arc(px,py-2,3,0,Math.PI*2);ecoCtx.fill();
+    ecoCtx.beginPath();ecoCtx.arc(px,py+5,5,Math.PI,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  }
+  for(let i=0;i<7;i++){
+    const prog=((eT*.007+i/7)%1),px=cx+(rx-cx)*prog,py=splitY+(ry2-splitY)*prog,a=Math.sin(prog*Math.PI)*.7;
+    ecoCtx.save();ecoCtx.globalAlpha=a;ecoCtx.fillStyle=EC.sageL;
+    ecoCtx.beginPath();ecoCtx.arc(px,py-2,3,0,Math.PI*2);ecoCtx.fill();
+    ecoCtx.beginPath();ecoCtx.arc(px,py+5,5,Math.PI,Math.PI*2);ecoCtx.fill();ecoCtx.restore();
+  }
+}
+
+function eDraw(){
+  ecoCtx.clearRect(0,0,eW,eH);
+  ecoCtx.fillStyle=EC.white; ecoCtx.fillRect(0,0,eW,eH);
+  switch(eStage){
+    case 0:eDrawS0();break; case 1:eDrawS1();break; case 2:eDrawS2();break;
+    case 3:eDrawS3();break; case 4:eDrawS4();break; case 5:eDrawS5();break;
+    case 6:eDrawS6();break;
+  }
+  eT++;
+  if(eRunning) eRaf=requestAnimationFrame(eDraw);
+}
+
+function eSetStage(s){
+  eStage=s; eT=0;
+  document.querySelectorAll('.eco-sstep').forEach((el,i)=>el.classList.toggle('active',i===s));
+  document.getElementById('eco-caption').innerHTML=ECO_CAPTIONS[s];
+  if(!eRunning){eRunning=true;eRaf=requestAnimationFrame(eDraw);}
+  eResetAuto();
+}
+function eResetAuto(){
+  clearInterval(eAutoTimer);
+  eAutoTimer=setInterval(()=>{if(eRunning)eSetStage((eStage+1)%7);},10000);
+}
+
+document.querySelectorAll('.eco-sstep').forEach(el=>
+  el.addEventListener('click',()=>eSetStage(+el.dataset.es))
+);
+document.getElementById('eco-btn-next').addEventListener('click',()=>eSetStage((eStage+1)%7));
+document.getElementById('eco-btn-play').addEventListener('click',function(){
+  eRunning=!eRunning;
+  this.textContent=eRunning?'Pause':'Play';
+  if(eRunning){eRaf=requestAnimationFrame(eDraw);eResetAuto();}
+  else{cancelAnimationFrame(eRaf);clearInterval(eAutoTimer);}
+});
+window.addEventListener('resize',()=>{cancelAnimationFrame(eRaf);eResize();if(eRunning)eRaf=requestAnimationFrame(eDraw);});
+
+requestAnimationFrame(()=>{eResize();eDraw();eResetAuto();});
+})();
+
 /* Year */
 document.getElementById('yr').textContent = new Date().getFullYear();
 
