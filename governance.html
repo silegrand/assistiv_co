@@ -10,20 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --forest:      #1a3a2a;
-  --sage:        #2d6b47;
-  --sage-mid:    #4a7c5f;
-  --sage-pale:   #eaf3ee;
-  --sage-ghost:  rgba(45,107,71,0.07);
-  --cream:       #f7f5f0;
-  --cream-mid:   #efece3;
-  --cream-dark:  #ddd8ce;
+  --forest:      #1e1e2a;
+  --sage:        #4a4a5a;
+  --sage-mid:    #6b6b7a;
+  --sage-pale:   #f0f0f4;
+  --sage-ghost:  rgba(74,74,90,0.07);
+  --cream:       #f7f7f8;
+  --cream-mid:   #eeeeef;
+  --cream-dark:  #d8d8dc;
   --amber:       #8a6200;
   --amber-pale:  #fdf3dc;
   --blue:        #1e3a7a;
-  --ink:         #1a2e1e;
-  --ink-mid:     #3d5245;
-  --ink-muted:   #6b7f71;
+  --ink:         #1a1a24;
+  --ink-mid:     #3d3d4a;
+  --ink-muted:   #6b6b7a;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --mono:  'DM Mono', monospace;
   --sans:  'Nunito', system-ui, sans-serif;
@@ -42,11 +42,7 @@ nav {
 }
 .nav-inner { width: 100%; max-width: 920px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
 .logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
-.logo-mark { position: relative; width: 34px; height: 34px; }
-.logo-mark span { border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
-.logo-mark .d  { width: 9px; height: 9px; background: #fff; }
-.logo-mark .r1 { width: 19px; height: 19px; border: 1.5px solid rgba(255,255,255,0.6); }
-.logo-mark .r2 { width: 32px; height: 32px; border: 1.5px solid rgba(255,255,255,0.25); }
+/* pulse-ring logo rendered inline as SVG */
 .logo-name { font-weight: 700; font-size: 1.05rem; color: #fff; letter-spacing: -0.01em; }
 .nav-back { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none; }
 .nav-back:hover { color: #fff; }
@@ -144,7 +140,11 @@ footer a:hover { text-decoration: underline; }
 <nav>
   <div class="nav-inner">
     <a href="/" class="logo">
-      <div class="logo-mark"><span class="d"></span><span class="r1"></span><span class="r2"></span></div>
+      <div style="position:relative;width:32px;height:32px;flex-shrink:0;">
+        <div style="border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;background:#ffffff;z-index:2;"></div>
+        <div style="border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border:1.5px solid rgba(255,255,255,0.6);"></div>
+        <div style="border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border:1.5px solid rgba(255,255,255,0.25);"></div>
+      </div>
       <span class="logo-name">Assistiv Systems</span>
     </a>
     <a href="/" class="nav-back">&#8592; Back</a>
