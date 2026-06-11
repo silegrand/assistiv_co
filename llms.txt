@@ -36,7 +36,7 @@ The platform is graduated by design. A person can begin with conversation alone.
 
 **Scale:** 3.5 million older adults in the UK are independent but unserved by formal health and social care. They do not qualify for help. They are not flagged as at risk. They are invisible to the system until something goes wrong.
 
-**Cost:** Falls alone cost the NHS £2.3 billion annually in England. 79% happen at home. 40% of dementia cases could be prevented or delayed with earlier intervention.
+**Cost:** Falls alone cost the NHS £2.3 billion annually in England. 79% happen at home. 45% of dementia cases are linked to fourteen modifiable risk factors (Lancet Commission on Dementia, 2024) — addressable with earlier intervention.
 
 **Timing:** By the time the system reaches this population, the window for early intervention has usually closed. Assistiv exists to change when the system sees the person — not after crisis, but before it.
 
@@ -141,7 +141,7 @@ The platform is positioned for pilot commissioning. Professional enquiries are w
 |--------|--------|----------------|
 | UK "Missing Middle" population | 3.5 million | Older adults independent but outside formal care |
 | NHS annual cost of falls (England) | £2.3 billion | 79% of falls happen at home |
-| Dementia prevention potential | 40% | Cases that could be prevented or delayed with earlier intervention |
+| Dementia prevention potential | 45% | Cases linked to fourteen modifiable risk factors — Lancet Commission on Dementia, 2024 |
 | Pilot ROI | 14:1 | Estimated return for commissioning bodies at pilot scale |
 | Kent ICB Q1 projection | £1.2m savings vs £88k cost | First quarter savings model |
 

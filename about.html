@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="The founders and advisory board behind Assistiv Systems — fifteen years in health and social care, assistive technology, and public sector delivery.">
+<title>Founders &amp; Advisory Board — Assistiv Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:          #0f1a14;
+  --ink-mid:      #3a4a3f;
+  --ink-soft:     #6b7d72;
+  --ink-faint:    #9aaa9e;
+  --white:        #ffffff;
+  --cream:        #f7f5f1;
+  --border:       #d8e0da;
+  --g-deep:       #0A5F44;
+  --g-mid:        #0f7a57;
+  --g-accent:     #12966a;
+  --g-pale:       #e3eeea;
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --sans:   'DM Sans', system-ui, sans-serif;
+  --mono:   'DM Mono', monospace;
+  --ease:   0.22s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--white); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+#nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: 66px; background: rgba(255,255,255,0.97); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+.nav-inner { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+.nav-brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+.nav-logo-mark { position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.nav-logo-dot { border-radius: 50%; position: absolute; }
+.nav-logo-core { width: 8px; height: 8px; background: var(--g-deep); z-index: 2; }
+.nav-logo-r1   { width: 18px; height: 18px; border: 1.5px solid var(--g-deep); opacity: 0.45; background: none; }
+.nav-logo-r2   { width: 30px; height: 30px; border: 1.5px solid var(--g-deep); opacity: 0.18; background: none; }
+.nav-wordmark  { display: flex; flex-direction: column; gap: 1px; }
+.nav-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; color: var(--g-deep); line-height: 1; }
+.nav-sub  { font-family: var(--mono); font-size: 0.45rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g-deep); opacity: 0.6; }
+.nav-back { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mid); text-decoration: none; transition: color var(--ease); }
+.nav-back:hover { color: var(--g-deep); }
+
+.hero { padding: 128px 2rem 3.5rem; max-width: 860px; margin: 0 auto; }
+.eyebrow { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--g-accent); display: block; margin-bottom: 1.25rem; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.4rem, 4.2vw, 3.6rem); font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; }
+.hero h1 em { font-style: italic; color: var(--g-deep); }
+.hero p { font-size: 1.02rem; font-weight: 300; color: var(--ink-mid); line-height: 1.72; margin-top: 1.4rem; max-width: 640px; }
+
+.section { padding: 3.5rem 2rem; }
+.section-inner { max-width: 860px; margin: 0 auto; }
+.section h2 { font-family: var(--serif); font-size: clamp(1.7rem, 2.8vw, 2.3rem); font-weight: 300; letter-spacing: -0.01em; margin-bottom: 0.6rem; }
+.section h2 em { font-style: italic; color: var(--g-deep); }
+.section-lede { font-size: 0.95rem; font-weight: 300; color: var(--ink-mid); max-width: 620px; line-height: 1.7; }
+
+.founder { background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 2.4rem 2.3rem; margin-top: 2rem; }
+.founder-name { font-family: var(--serif); font-size: 1.85rem; font-weight: 600; color: var(--ink); }
+.founder-role { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-accent); margin: 0.45rem 0 1.3rem; }
+.founder ul { list-style: none; }
+.founder li { position: relative; padding-left: 1.3rem; font-size: 0.92rem; font-weight: 300; color: var(--ink-mid); line-height: 1.65; margin-bottom: 0.6rem; }
+.founder li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--g-accent); }
+.founder-link { display: inline-block; margin-top: 0.9rem; font-size: 0.84rem; font-weight: 600; color: var(--g-deep); text-decoration: none; border-bottom: 1px solid var(--g-accent); padding-bottom: 2px; transition: color var(--ease); }
+.founder-link:hover { color: var(--g-mid); }
+
+.advisors-section { background: var(--g-deep); }
+.advisors-section h2, .advisors-section .section-lede { color: var(--white); }
+.advisors-section .section-lede { color: rgba(255,255,255,0.6); }
+.advisors-section .eyebrow { color: rgba(255,255,255,0.45); }
+.adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; margin-top: 2.4rem; }
+.adv { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 1.8rem 1.7rem; }
+.adv-name { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--white); }
+.adv-role { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin: 0.4rem 0 0.9rem; line-height: 1.7; }
+.adv p { font-size: 0.86rem; font-weight: 300; color: rgba(255,255,255,0.68); line-height: 1.65; }
+
+.story p { font-size: 0.97rem; font-weight: 300; color: var(--ink-mid); line-height: 1.78; max-width: 680px; }
+.story p + p { margin-top: 1rem; }
+
+.cta-band { background: var(--cream); border-top: 1px solid var(--border); text-align: center; padding: 4rem 2rem; }
+.cta-band h2 { font-family: var(--serif); font-size: clamp(1.6rem, 2.6vw, 2.1rem); font-weight: 300; }
+.cta-band h2 em { font-style: italic; color: var(--g-deep); }
+.cta-band a.btn { display: inline-block; margin-top: 1.5rem; font-size: 0.875rem; font-weight: 600; color: var(--white); background: var(--g-deep); padding: 0.7rem 1.6rem; border-radius: 5px; text-decoration: none; transition: background var(--ease); }
+.cta-band a.btn:hover { background: var(--g-mid); }
+
+footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; }
+footer p { font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); line-height: 1.8; max-width: 760px; margin: 0 auto; }
+footer a { color: var(--ink-soft); text-decoration: none; }
+footer a:hover { color: var(--g-deep); }
+
+@media (max-width: 720px) { .adv-grid { grid-template-columns: 1fr; } .founder { padding: 1.8rem 1.5rem; } }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo-mark">
+        <div class="nav-logo-dot nav-logo-core"></div>
+        <div class="nav-logo-dot nav-logo-r1"></div>
+        <div class="nav-logo-dot nav-logo-r2"></div>
+      </div>
+      <div class="nav-wordmark">
+        <span class="nav-name">Assistiv</span>
+        <span class="nav-sub">Systems</span>
+      </div>
+    </a>
+    <a class="nav-back" href="index.html">&#8592; Back to assistiv.co</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <span class="eyebrow">Founders &amp; Advisory Board</span>
+  <h1>The people behind <em>the system.</em></h1>
+  <p>Assistiv Systems was founded by two people who spent thirteen years building technology businesses together — and who saw, from inside health and social care, the population the system cannot see. This page sets out who we are, what we have built before, and who keeps us honest.</p>
+</header>
+
+<section class="section">
+  <div class="section-inner">
+    <span class="eyebrow">The founders</span>
+    <h2>Two founders. <em>One track record.</em></h2>
+    <p class="section-lede">Simon and Paul co-founded Sunstone Systems in 2011 and built it over thirteen years into an exporting British technology company, acquired by an industry buyer in 2024. Assistiv Systems applies that experience to the hardest problem in health and social care: finding people before crisis does.</p>
+
+    <div class="founder">
+      <div class="founder-name">Simon Legrand MCIM</div>
+      <div class="founder-role">Co-Founder · Strategy, Partnerships &amp; Delivery</div>
+      <ul>
+        <li>Co-founder &amp; CMO, Sunstone Systems (2011–2024, acquired by an industry buyer)</li>
+        <li>Fifteen years in the public sector (1999–2017): Home Office, DfE, DoH, NHS NIHR and Local Authorities</li>
+        <li>Designed services for vulnerable adults and children across the voluntary, NHS and statutory sectors</li>
+        <li>Funded £7m+ in public sector programmes across Kent and Essex</li>
+        <li>Led the Chevron deployment: 58 systems designed, exported and deployed in Kazakhstan</li>
+        <li>MCIM Chartered Marketer · Mental Health First Aid Practitioner · Member, Responsible AI Institute</li>
+      </ul>
+      <a class="founder-link" href="https://www.linkedin.com/in/-simonlegrand-/" target="_blank" rel="noopener">Simon on LinkedIn →</a>
+    </div>
+
+    <div class="founder">
+      <div class="founder-name">Paul Schelhaas</div>
+      <div class="founder-role">Co-Founder · Technology, Product &amp; Operations</div>
+      <ul>
+        <li>Co-founder &amp; CEO, Sunstone Systems (2011–2024, acquired by an industry buyer)</li>
+        <li>Technical architect of solar-powered systems and IoT platforms</li>
+        <li>Eight years at Tempest IP Security as Area Manager &amp; IP Systems Designer before Sunstone</li>
+        <li>Led the Chevron deployment: 58 systems designed, exported and deployed in Kazakhstan</li>
+        <li>Won a competitive Rivian Automotive tender against fifteen UK, German and US firms</li>
+        <li>Listed inventor on three granted patents, alongside Simon</li>
+      </ul>
+      <a class="founder-link" href="https://www.linkedin.com/in/paul-schelhaas/" target="_blank" rel="noopener">Paul on LinkedIn →</a>
+    </div>
+  </div>
+</section>
+
+<section class="section advisors-section">
+  <div class="section-inner">
+    <span class="eyebrow">Advisory board</span>
+    <h2>The people whose job is to <em>disagree with us.</em></h2>
+    <p class="section-lede">Assistiv is grounded in validated frameworks and guided by leading academic and clinical voices in ageing, social care outcomes, data science and public policy. Their role is independent challenge, not endorsement.</p>
+    <div class="adv-grid">
+      <div class="adv">
+        <div class="adv-name">Prof. Ann Netten</div>
+        <div class="adv-role">Emeritus Professor, University of Kent · Creator of ASCOT · Former Director, PSSRU</div>
+        <p>Creator of the Adult Social Care Outcomes Toolkit, now embedded in national policy across the UK and internationally. Her framework directly underpins the quality-of-life measurement architecture at the heart of Assistiv.</p>
+      </div>
+      <div class="adv">
+        <div class="adv-name">Mark Greenfield</div>
+        <div class="adv-role">Emeritus, Northumbria University · Ageing and Nursing</div>
+        <p>Validated Assistiv's three-state model of independence and introduced the concept of Positive Interdependence that sits at the heart of the platform's philosophy. Nursing and ageing expertise spanning academic and community dimensions of later life.</p>
+      </div>
+      <div class="adv">
+        <div class="adv-name">Prof. John Jerrim</div>
+        <div class="adv-role">Professor of Education and Social Statistics, UCL · Director, Quantitative Social Science Research Centre</div>
+        <p>Winner of the inaugural ESRC Early Career Outstanding Impact Award. Brings rigorous large-scale data methodology and population-level research expertise to Assistiv's evidence base and future academic funding pathways.</p>
+      </div>
+      <div class="adv">
+        <div class="adv-name">Prof. Tim Legrand</div>
+        <div class="adv-role">Professor of Politics, University of Adelaide · ARC Future Fellowship 2025–2029</div>
+        <p>Expert in government policy, public administration and policy transfer. Brings deep expertise in navigating NHS and local authority commissioning landscapes and in understanding how innovation enters public sector systems.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section story">
+  <div class="section-inner">
+    <span class="eyebrow">Why Assistiv</span>
+    <h2>From thirteen years of building, <em>to this.</em></h2>
+    <p>Sunstone taught us how to design, build and export complex systems into demanding environments — from oilfields in Kazakhstan to public infrastructure in the UK. Assistiv applies the same engineering discipline to a quieter problem: the three and a half million older adults living independently but invisible to health and social care until something goes wrong.</p>
+    <p>We build with restraint. Open data before personal data. Conversation before sensors. Consent before everything. The technology should be, in the words of one early reviewer, the most boring car with a supercar engine in it: nothing flashy at the surface, everything serious underneath.</p>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>The right conversation <em>starts here.</em></h2>
+  <a class="btn" href="mailto:simon@assistiv.co">simon@assistiv.co</a>
+</div>
+
+<footer>
+  <p>© 2026 Assistiv Systems Limited. Registered in England and Wales. Company number 17082597. Open Data: NHS Fingertips, NHSBSA EPD, ONS Census 2021, MHCLG IMD 2025. For research and commissioning intelligence purposes only.<br>
+  <a href="index.html">assistiv.co</a> · <a href="https://www.assistiv.cloud">assistiv.cloud</a> · <a href="https://www.assistiv.tools">assistiv.tools</a> · <a href="https://www.assistiv.services">assistiv.services</a> · <a href="governance.html">Governance</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="accessibility.html">Accessibility</a></p>
+</footer>
+
+</body>
+</html>

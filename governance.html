@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Governance &amp; Assurance — Assistiv Systems</title>
-<meta name="description" content="How Assistiv approaches data protection, safeguarding, clinical safety and regulatory positioning across the ecosystem: assistiv.cloud, assistiv.tools and assistiv.services.">
+<title>Governance, Assurance &amp; DTAC Readiness — Assistiv Systems</title>
+<meta name="description" content="Assistiv's governance and DTAC readiness position: clinical safety, data protection, technical security, interoperability, and usability and accessibility — across assistiv.cloud, assistiv.tools and assistiv.services.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -158,9 +158,11 @@ footer a:hover { text-decoration: underline; }
   <h1>How we keep people, data and decisions safe</h1>
   <p class="lede">
     Assistiv builds assistive technology for independent living. This page sets out, in plain
-    English, how we approach data protection, safeguarding, clinical safety and regulation
-    across the ecosystem, what is in place today, and what is in progress. We would rather
-    show you an honest status than a polished claim.
+    English, where we stand against the NHS Digital Technology Assessment Criteria — clinical
+    safety, data protection, technical security, interoperability, and usability and
+    accessibility — alongside our safeguarding and regulatory positioning. What is in place
+    today, and what is in progress. We would rather show you an honest status than a
+    polished claim.
   </p>
 </header>
 
@@ -279,53 +281,105 @@ footer a:hover { text-decoration: underline; }
   </div>
 </section>
 
-<section>
-  <h2>Standards and assurance: honest status</h2>
+<section id="dtac">
+  <h2>DTAC readiness: our position against the five criteria</h2>
   <p>
-    We publish our assurance position the same way we publish our data: with its current
-    state showing. Statuses below are updated as work completes.
+    NHS organisations assess digital health tools against the Digital Technology Assessment
+    Criteria (DTAC) — five areas covering clinical safety, data protection, technical
+    security, interoperability, and usability and accessibility. We have structured our
+    assurance position around those five criteria so that commissioners can see, before any
+    procurement conversation begins, exactly where we stand. Statuses are updated as work
+    completes. We would rather show you an honest status than a polished claim.
   </p>
-  <table class="status">
-    <tr><th>Standard / control</th><th>Status</th><th>What it covers</th></tr>
-    <tr>
-      <td><span class="what">UK GDPR &amp; Data Protection Act 2018</span><span class="why">Lawful basis, data minimisation, rights handling for any personal data we process</span></td>
-      <td><span class="badge live">In place</span></td>
-      <td>Applies to assistiv.tools and assistiv.services; the open-data layer holds no personal data</td>
-    </tr>
-    <tr>
-      <td><span class="what">Data Protection Impact Assessment (DPIA)</span><span class="why">Completed before any NHS engagement involving personal data</span></td>
-      <td><span class="badge prog">In progress</span></td>
-      <td>Drafted alongside first deployment conversations; shared with partners on request</td>
-    </tr>
-    <tr>
-      <td><span class="what">Medical device position (UK MDR / MHRA)</span><span class="why">Intended purpose: assistive technology for wellbeing and independent living</span></td>
-      <td><span class="badge live">Position stated</span></td>
-      <td>Not placed on the market as a medical device; reviewed before any feature change that could alter intended purpose</td>
-    </tr>
-    <tr>
-      <td><span class="what">DCB0129 / DCB0160 clinical safety</span><span class="why">NHS clinical risk management standards for health IT</span></td>
-      <td><span class="badge planned">Planned</span></td>
-      <td>Will accompany any commissioned NHS deployment, with a named clinical safety officer</td>
-    </tr>
-    <tr>
-      <td><span class="what">DTAC (Digital Technology Assessment Criteria)</span><span class="why">The NHS's standard procurement assessment for digital tools</span></td>
-      <td><span class="badge prog">In preparation</span></td>
-      <td>Evidence pack assembled for commissioning conversations</td>
-    </tr>
-    <tr>
-      <td><span class="what">Cyber Essentials</span><span class="why">Baseline UK cyber security certification</span></td>
-      <td><span class="badge planned">Planned</span></td>
-      <td>Scheduled ahead of first NHS data-sharing agreement</td>
-    </tr>
-    <tr>
-      <td><span class="what">Accessibility (WCAG 2.2 AA)</span><span class="why">Public-facing tools usable by older adults and people using assistive tech</span></td>
-      <td><span class="badge prog">In progress</span></td>
-      <td>Voice-first design reduces barriers by default; formal audit to follow</td>
-    </tr>
-  </table>
-  <p style="margin-top:0.9rem; font-size:0.88rem; color:var(--ink-muted)">
-    If a status above matters to your organisation and you need detail or evidence, ask us:
-    <a href="mailto:hello@assistiv.co" style="color:var(--sage)">hello@assistiv.co</a>.
+
+  <div class="layer-grid">
+
+    <div class="layer">
+      <div class="tag">DTAC C1 · Clinical safety <span class="badge prog">In preparation</span></div>
+      <h3>Assistive, not diagnostic — with clinical risk management to follow deployment</h3>
+      <p>
+        Our products inform, signpost and support; they do not diagnose, treat, or make
+        autonomous clinical decisions, and a human reviews every escalation. On this basis
+        they are not placed on the UK market as medical devices, a position we keep under
+        continuous review against MHRA software guidance.
+      </p>
+      <ul>
+        <li><strong>UK MDR / MHRA position:</strong> stated and published — reviewed before any feature change that could alter intended purpose</li>
+        <li><strong>DCB0129 / DCB0160:</strong> planned — a clinical safety case and named Clinical Safety Officer will accompany any commissioned NHS deployment</li>
+        <li><strong>Validated instruments:</strong> screening is built on PRISMA-7, the FRAIL Scale and BGS Fit for Frailty, scored as published</li>
+      </ul>
+    </div>
+
+    <div class="layer">
+      <div class="tag">DTAC C2 · Data protection <span class="badge live">Strong by design</span></div>
+      <h3>Open data where possible. Consent everywhere else.</h3>
+      <p>
+        The intelligence layer holds no personal data of any kind. The screening and home
+        platform layers are consent-first: nothing is stored, transmitted or shared unless
+        the person explicitly chooses it, and every consent is granular and revocable.
+      </p>
+      <ul>
+        <li><strong>UK GDPR &amp; Data Protection Act 2018:</strong> in place — lawful basis, data minimisation and rights handling documented in our <a href="privacy.html" style="color:var(--sage)">Privacy Notice</a></li>
+        <li><strong>DPIA:</strong> in progress — drafted alongside first deployment conversations; shared with partners on request</li>
+        <li><strong>Data Security and Protection Toolkit (DSPT):</strong> planned — registration scheduled ahead of any NHS data-sharing agreement</li>
+        <li><strong>Edge processing:</strong> raw sensor and audio data is processed inside the home and never leaves it; only derived signals travel</li>
+      </ul>
+    </div>
+
+    <div class="layer">
+      <div class="tag">DTAC C3 · Technical security <span class="badge prog">In progress</span></div>
+      <h3>A small attack surface, by architecture</h3>
+      <p>
+        Our public platforms are static sites with no user accounts, no databases of personal
+        information, and no stored credentials. The screening conversation is processed
+        transiently and is not retained by Assistiv. This is a deliberately small attack
+        surface, and we intend to certify it.
+      </p>
+      <ul>
+        <li><strong>Cyber Essentials:</strong> planned — scheduled ahead of the first NHS data-sharing agreement</li>
+        <li><strong>Hosting:</strong> served over HTTPS with TLS throughout; no server-side processing of personal data on public sites</li>
+        <li><strong>Secure development:</strong> all source published and inspectable; data freshness checkable live on our <a href="https://www.assistiv.cloud/datastatus.html" style="color:var(--sage)">data status page</a></li>
+      </ul>
+    </div>
+
+    <div class="layer">
+      <div class="tag">DTAC C4 · Interoperability <span class="badge prog">In preparation</span></div>
+      <h3>Structured outputs, open standards, honest gaps</h3>
+      <p>
+        Screening produces a structured clinical referral — domain scores, minimisation
+        notes and a CGA preparation brief — designed to be read by a frailty team today and
+        consumed by clinical systems tomorrow. The intelligence layer is built entirely on
+        open, published NHS and ONS datasets with documented provenance.
+      </p>
+      <ul>
+        <li><strong>Structured referral format:</strong> in place — human-readable today, designed for export</li>
+        <li><strong>FHIR / GP Connect integration:</strong> planned — scoped for commissioned deployment, in partnership with the receiving PCN's system supplier</li>
+        <li><strong>Open data provenance:</strong> in place — every signal source, weight and limitation published in the <a href="https://www.assistiv.cloud/methodology.html" style="color:var(--sage)">methodology</a></li>
+      </ul>
+    </div>
+
+    <div class="layer">
+      <div class="tag">DTAC C5 · Usability &amp; accessibility <span class="badge prog">In progress</span></div>
+      <h3>Voice-first because forms exclude the very people we serve</h3>
+      <p>
+        The screening tool is a spoken conversation precisely because tick-boxes and small
+        print exclude many older adults. Voice-first design reduces barriers by default, but
+        it does not exempt us from the standard: we are working towards WCAG 2.2 AA across
+        the estate and publish our position openly.
+      </p>
+      <ul>
+        <li><strong>WCAG 2.2 AA:</strong> in progress — current status, known issues and roadmap published in our <a href="accessibility.html" style="color:var(--sage)">Accessibility Statement</a></li>
+        <li><strong>NHS Service Standard alignment:</strong> design principles follow plain-language, person-led NHS service design guidance</li>
+        <li><strong>User research:</strong> next stage is formal co-development with geriatricians, frailty nurses and older adults themselves</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p style="margin-top:1.1rem; font-size:0.88rem; color:var(--ink-muted)">
+    If a status above matters to your organisation and you need detail or evidence — the DPIA
+    draft, the methodology pack, or the clinical safety scoping — ask us:
+    <a href="mailto:simon@assistiv.co" style="color:var(--sage)">simon@assistiv.co</a>.
   </p>
 </section>
 
@@ -370,18 +424,21 @@ footer a:hover { text-decoration: underline; }
     let an algorithm take a safeguarding action without a human decision. We will not
     describe modelled estimates as measurements, in our marketing or anywhere else. Where we
     fall short of any of these, we want to be told:
-    <a href="mailto:hello@assistiv.co" style="color:var(--sage)">hello@assistiv.co</a>.
+    <a href="mailto:simon@assistiv.co" style="color:var(--sage)">simon@assistiv.co</a>.
   </p>
 </section>
 
 </div>
 
 <footer>
-  Assistiv Systems Ltd · Faversham, Kent ·
+  © 2026 Assistiv Systems Limited. Registered in England and Wales. Company number 17082597.<br>
   <a href="https://www.assistiv.co">assistiv.co</a> ·
   <a href="https://www.assistiv.cloud">assistiv.cloud</a> ·
   <a href="https://www.assistiv.tools">assistiv.tools</a> ·
-  <a href="https://www.assistiv.services">assistiv.services</a>
+  <a href="https://www.assistiv.services">assistiv.services</a> ·
+  <a href="privacy.html">Privacy</a> ·
+  <a href="terms.html">Terms</a> ·
+  <a href="accessibility.html">Accessibility</a>
 </footer>
 
 </body>
