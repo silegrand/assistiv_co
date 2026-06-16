@@ -165,10 +165,10 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 .hero-eyebrow {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--g-accent); margin-bottom: 1.75rem;
-  display: inline-flex; align-items: center; gap: 0.65rem;
+  display: block;
 }
 .hero-eyebrow::before, .hero-eyebrow::after {
-  content: ''; display: block; width: 22px; height: 1px; background: var(--g-accent);
+  display: none;
 }
 .hero h1 {
   font-family: var(--serif); font-size: clamp(34px, 5vw, 58px);
@@ -299,15 +299,132 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
 .mp-desc  { font-size: 0.78rem; font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.55; }
 @media (max-width: 680px) { .mission-principles { grid-template-columns: 1fr; } }
 
-/* ── PRINT / PDF ─────────────────────────────────────────── */
+/* ── SUMMARY BOX ─────────────────────────────────────────── */
+.summary-section { padding: 4rem 2rem; background: var(--cream); border-top: 1px solid var(--border); }
+.summary-inner   { max-width: 900px; margin: 0 auto; }
+.summary-header  { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem; }
+.summary-header-text h2 {
+  font-family: var(--serif); font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 300; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+}
+.summary-header-text p { font-size: 0.88rem; font-weight: 300; color: var(--ink-soft); }
+.summary-copy-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: flex-start; }
+.scopy-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 1rem; border-radius: 5px; border: 1.5px solid var(--g-deep);
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  background: var(--white); color: var(--g-deep); cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.scopy-btn:hover         { background: var(--g-pale); }
+.scopy-btn.scopy-full    { background: var(--g-deep); color: var(--white); border-color: var(--g-deep); }
+.scopy-btn.scopy-full:hover { background: var(--g-mid); }
+.summary-box {
+  background: var(--white); border: 1.5px solid var(--g-deep);
+  border-radius: 12px; padding: 1.75rem 2rem;
+}
+.summary-intro {
+  font-size: 0.92rem; font-weight: 400; color: var(--ink-mid);
+  line-height: 1.65; margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);
+}
+.summary-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+.summary-list li {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  font-size: 0.9rem; font-weight: 300; color: var(--ink-mid); line-height: 1.6;
+}
+.summary-bullet {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  background: var(--g-pale); border: 1.5px solid var(--g-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.52rem; font-weight: 500;
+  color: var(--g-deep); margin-top: 0.18rem;
+}
+.summary-list li strong { color: var(--ink); font-weight: 600; }
+.summary-url {
+  margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+
+  /* Hero */
+  .hero { padding: 2.5rem 1.25rem 2.5rem; }
+  .hero h1 { font-size: 2rem; }
+  .hero-lead { font-size: 0.95rem; }
+  .hero-stat-row { gap: 1.25rem; }
+  .hero-stat-num { font-size: 1.5rem; }
+
+  /* Sections */
+  .section { padding: 3rem 1.25rem; }
+  .section-inner h2 { font-size: 1.6rem; }
+  .section-body { font-size: 0.92rem; }
+
+  /* Gap box */
+  .gap-box { padding: 1.1rem 1.25rem; }
+
+  /* Three groups — already collapses via existing rule */
+
+  /* Flow steps — already collapses */
+  .flow-step { padding: 1rem; }
+  .flow-step-title { font-size: 1rem; }
+
+  /* Platform cards */
+  .platform-card-body { padding: 1.1rem 1.25rem; }
+  .platform-card-name { font-size: 1.2rem; }
+  .platform-card-header { flex-direction: column; gap: 0.5rem; }
+  .platform-card-audience { align-self: flex-start; }
+  .platform-card-desc { font-size: 0.85rem; }
+  .platform-card-features { gap: 0.35rem; }
+  .feature-chip { font-size: 0.68rem; }
+
+  /* Journey */
+  .journey-label { font-size: 0.9rem; }
+  .journey-detail { font-size: 0.82rem; }
+  .journey-node { width: 30px; height: 30px; font-size: 0.75rem; }
+
+  /* Summary */
+  .summary-section { padding: 3rem 1.25rem; }
+  .summary-header { flex-direction: column; gap: 1rem; }
+  .summary-box { padding: 1.25rem; }
+  .summary-intro { font-size: 0.88rem; }
+  .summary-list li { font-size: 0.85rem; gap: 0.6rem; }
+  .summary-copy-btns { flex-direction: column; width: 100%; }
+  .scopy-btn { justify-content: center; }
+
+  /* Mission */
+  .mission-strip { padding: 2.5rem 1.25rem; }
+  .mission-head { font-size: 1.55rem; }
+  .mission-body { font-size: 0.88rem; }
+  .mission-principles { grid-template-columns: 1fr; }
+
+  /* Action bar */
+  .action-btns { flex-direction: column; width: 100%; }
+  .action-btn { justify-content: center; }
+}
+
+@media (max-width: 400px) {
+  .hero h1 { font-size: 1.7rem; }
+  .section-inner h2 { font-size: 1.4rem; }
+}
 @media print {
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  #nav, .action-bar, .mobile-nav, .hamburger, footer { display: none !important; }
+  #nav, .action-bar, .mobile-nav, .hamburger, footer,
+  .summary-copy-btns, .summary-header-text p { display: none !important; }
   body { font-size: 11pt; }
-  .hero, .section, .mission-strip { padding: 1.5rem 0; }
-  .hero-inner, .section-inner, .mission-inner { max-width: 100%; padding: 0; }
+  .hero, .section, .summary-section { padding: 1.2rem 0; }
+  .hero-inner, .section-inner, .mission-inner, .summary-inner { max-width: 100%; padding: 0; }
   .three-groups, .mission-principles { grid-template-columns: repeat(3,1fr); }
   .platform-card { break-inside: avoid; }
+  .summary-box   { break-inside: avoid; }
+  .mission-strip {
+    break-before: page;
+    padding: 1.5rem 0;
+    overflow: visible;
+  }
   .platform-card-link::after { content: " · " attr(href); font-size: 8pt; color: #555; }
   @page { margin: 1.5cm 1.8cm; size: A4; }
 }
@@ -587,6 +704,39 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
   </div>
 </section>
 
+<!-- SUMMARY BOX -->
+<section class="summary-section">
+  <div class="summary-inner">
+    <div class="summary-header fade-up">
+      <div class="summary-header-text">
+        <h2>Assistiv at a glance</h2>
+        <p>Copy the bullets for a short email, or copy the full version for a more detailed introduction.</p>
+      </div>
+      <div class="summary-copy-btns">
+        <button class="scopy-btn" onclick="copyBullets()">📋 Copy bullets</button>
+        <button class="scopy-btn scopy-full" onclick="copyFull()">📄 Copy full version</button>
+      </div>
+    </div>
+
+    <div class="summary-box fade-up d1">
+      <p class="summary-intro">Assistiv Systems is a UK health technology company helping older people stay safe and independent at home — before crisis, not after it. Here is the platform in ten points.</p>
+      <ol class="summary-list" id="summaryList">
+        <li><span class="summary-bullet">1</span><span><strong>The problem:</strong> 3.5 million older people in England are too well for formal care but too frail to manage alone. They are invisible to the system until something goes wrong — often a fall, a hospital admission, or a sudden loss of independence.</span></li>
+        <li><span class="summary-bullet">2</span><span><strong>The mission:</strong> Assistiv finds these people early, supports them at home on their own terms, and keeps families and clinicians informed — without surveillance, without intrusiveness, and without removing the person's control over their own life.</span></li>
+        <li><span class="summary-bullet">3</span><span><strong>assistiv.cloud — Population Intelligence:</strong> Analyses NHS open data across Kent and Medway to map where the need is greatest. Updated daily. Tells commissioners exactly which communities have the highest concentration of people at risk — before those people reach crisis.</span></li>
+        <li><span class="summary-bullet">4</span><span><strong>assistiv.tools — Community Screening:</strong> Deploys voice-first frailty screening into pharmacies, GP surgeries and community venues. A ten-minute conversational check — no forms, no clinical training required — that identifies people in the Missing Middle and connects them with the right support.</span></li>
+        <li><span class="summary-bullet">5</span><span><strong>assistiv.services — Home Support Platform:</strong> The service the older person and their family actually experience — passive home sensing, a private family app, a unified care record drawing from NHS and social care systems, and a 24/7 staffed response centre.</span></li>
+        <li><span class="summary-bullet">6</span><span><strong>Passive home sensing:</strong> Eleven invisible devices — radar, acoustic AI, energy monitors, door contacts, sleep sensors — detect falls, monitor routines and pick up early warning signs. No cameras. No wearables. All processing happens inside the home; only derived insights are ever transmitted.</span></li>
+        <li><span class="summary-bullet">7</span><span><strong>Inner Circle:</strong> A private family connection app where the older person controls exactly what their family can see. Warm updates and gentle alerts reach family members in plain, human language — not clinical notifications. The person configures everything; family members cannot change what they see.</span></li>
+        <li><span class="summary-bullet">8</span><span><strong>Assistiv Response Centre:</strong> A real person, available 24 hours a day, 365 days a year. Trained Response Workers receive graduated alerts — immediate, amber or welfare note — and follow a response protocol agreed in advance with the person. They see derived insight, never raw sensor data.</span></li>
+        <li><span class="summary-bullet">9</span><span><strong>Clinical and academic foundation:</strong> The platform is designed around the ASCOT quality-of-life framework, created by Professor Ann Netten (University of Kent), who sits on the Assistiv advisory board alongside Professor John Jerrim (UCL) and Professor Tim Legrand (University of Adelaide). Three patents have been granted covering the core sensing technology.</span></li>
+        <li><span class="summary-bullet">10</span><span><strong>The principle:</strong> Nothing is done to the person. Everything is done with them. Technology enters the home only in response to something the person says matters to them, introduced one step at a time, always reversible. Dignity and autonomy are not features — they are the architecture.</span></li>
+      </ol>
+      <p class="summary-url">assistiv.co · assistiv.cloud · assistiv.tools · assistiv.services · simon@assistiv.co</p>
+    </div>
+  </div>
+</section>
+
 <!-- MISSION -->
 <section class="mission-strip">
   <div class="mission-inner">
@@ -686,7 +836,36 @@ footer { background: var(--white); border-top: 1px solid var(--border); padding:
     });
   }
 
-  // Native share with copy fallback
+  // Copy bullets only
+  function copyBullets() {
+    const items = document.querySelectorAll('#summaryList li');
+    const text = Array.from(items).map((li, i) => {
+      return `${i + 1}. ${li.querySelector('span:last-child').textContent.trim()}`;
+    }).join('\n\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('[onclick="copyBullets()"]');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // Copy full version (intro + bullets + URL)
+  function copyFull() {
+    const intro = document.querySelector('.summary-intro').textContent.trim();
+    const items = document.querySelectorAll('#summaryList li');
+    const bullets = Array.from(items).map((li, i) => {
+      return `${i + 1}. ${li.querySelector('span:last-child').textContent.trim()}`;
+    }).join('\n\n');
+    const url = document.querySelector('.summary-url').textContent.trim();
+    const full = `${intro}\n\n${bullets}\n\n${url}`;
+    navigator.clipboard.writeText(full).then(() => {
+      const btn = document.querySelector('[onclick="copyFull()"]');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
   function shareNative() {
     if (navigator.share) {
       navigator.share({
