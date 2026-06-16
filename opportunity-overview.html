@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Assistiv Systems — commercial opportunity overview. The scale of the market, our current position, the path to Series A, and what strategic partnership unlocks.">
+<title>Opportunity Overview — Assistiv Systems</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ── TOKENS ──────────────────────────────────────────────── */
+:root {
+  --ink:        #0f1a14;
+  --ink-mid:    #3a4a3f;
+  --ink-soft:   #6b7d72;
+  --ink-faint:  #9aaa9e;
+  --white:      #ffffff;
+  --cream:      #f7f5f1;
+  --border:     #d8e0da;
+
+  --g-deep:     #0A5F44;
+  --g-mid:      #0f7a57;
+  --g-accent:   #12966a;
+  --g-pale:     #e3eeea;
+
+  --cloud:      #365EBF;
+  --cloud-pale: #eef2fb;
+  --tools:      #C4702A;
+  --tools-pale: #fdf3e3;
+  --serv:       #1a3a2a;
+  --serv-pale:  #e8f0eb;
+
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'DM Sans', system-ui, sans-serif;
+  --mono:  'DM Mono', monospace;
+  --ease:  0.22s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--sans); background: var(--white);
+  color: var(--ink); line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 66px; background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.nav-inner {
+  width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.nav-brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+.nav-logo-mark { position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.nav-logo-dot  { border-radius: 50%; position: absolute; }
+.nav-logo-core { width: 8px; height: 8px; background: var(--g-deep); z-index: 2; }
+.nav-logo-r1   { width: 18px; height: 18px; border: 1.5px solid var(--g-deep); opacity: 0.45; background: none; }
+.nav-logo-r2   { width: 30px; height: 30px; border: 1.5px solid var(--g-deep); opacity: 0.18; background: none; }
+.nav-wordmark  { display: flex; flex-direction: column; gap: 1px; }
+.nav-name { font-family: var(--sans); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; color: var(--g-deep); line-height: 1; }
+.nav-sub  { font-family: var(--mono); font-size: 0.45rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g-deep); opacity: 0.6; }
+.nav-links { display: flex; align-items: center; gap: 1.8rem; list-style: none; }
+.nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--ink-mid); text-decoration: none; transition: color var(--ease); }
+.nav-links a:hover { color: var(--g-deep); }
+.nav-cta {
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 600;
+  color: var(--white); background: var(--g-deep); padding: 0.5rem 1.2rem;
+  border-radius: 5px; text-decoration: none; transition: background var(--ease); white-space: nowrap;
+}
+.nav-cta:hover { background: var(--g-mid); }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; }
+.mobile-nav {
+  display: none; position: fixed; inset: 0; background: var(--cream); z-index: 998;
+  flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a { font-family: var(--serif); font-size: 1.8rem; font-weight: 300; color: var(--ink); text-decoration: none; }
+.mobile-nav a:hover { color: var(--g-deep); }
+.m-close { position: absolute; top: 1.4rem; right: 1.75rem; font-size: 1.4rem; background: none; border: none; cursor: pointer; color: var(--ink); }
+@media (max-width: 820px) { .nav-links, .nav-cta { display: none; } .hamburger { display: flex; } }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+footer { background: var(--white); border-top: 1px solid var(--border); padding: 4rem 0 2.25rem; }
+.footer-inner { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+.footer-top { display: grid; grid-template-columns: 220px 1fr; gap: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+.footer-tagline { font-size: 0.8rem; font-weight: 300; color: var(--ink-soft); line-height: 1.7; max-width: 200px; }
+.footer-nav { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.footer-nav-col h5 { font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--g-accent); margin-bottom: 1rem; }
+.footer-nav-col a { display: block; font-size: 0.82rem; color: var(--ink-mid); margin-bottom: 0.5rem; text-decoration: none; transition: color var(--ease); }
+.footer-nav-col a:hover { color: var(--g-deep); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-copy { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-faint); }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a { font-size: 0.72rem; color: var(--ink-faint); text-decoration: none; transition: color var(--ease); }
+.footer-links a:hover { color: var(--g-deep); }
+@media (max-width: 820px) { .footer-top { grid-template-columns: 1fr; gap: 2rem; } .footer-nav { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px) { .footer-nav { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } }
+
+/* ── UTILS ───────────────────────────────────────────────── */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+.d1{transition-delay:0.08s} .d2{transition-delay:0.16s} .d3{transition-delay:0.24s} .d4{transition-delay:0.32s}
+@media (prefers-reduced-motion: reduce) { .fade-up { opacity:1; transform:none; transition:none; } }
+
+.eyebrow {
+  display: block; font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--g-accent); margin-bottom: 0.85rem;
+}
+.section-h2 {
+  font-family: var(--serif); font-size: clamp(26px, 3.5vw, 40px);
+  font-weight: 300; color: var(--ink); line-height: 1.12;
+  letter-spacing: -0.01em; margin-bottom: 1rem;
+}
+.section-h2 em { font-style: italic; color: var(--g-deep); }
+.section-body { font-size: 1rem; font-weight: 300; color: var(--ink-mid); line-height: 1.78; max-width: 66ch; }
+
+/* ── ACTION BAR ──────────────────────────────────────────── */
+.action-bar {
+  background: var(--g-pale); border-bottom: 1px solid var(--border);
+  padding: 0.65rem 2rem; margin-top: 66px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.action-bar-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-deep); }
+.action-btns { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+.action-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.42rem 1rem; border-radius: 5px; border: none;
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; text-decoration: none; transition: all 0.15s;
+}
+.btn-dl    { background: var(--g-deep); color: var(--white); }
+.btn-dl:hover { background: var(--g-mid); }
+.btn-copy  { background: var(--white); color: var(--g-deep); border: 1.5px solid var(--g-deep); }
+.btn-copy:hover { background: var(--g-pale); }
+.btn-share { background: var(--white); color: var(--ink-mid); border: 1.5px solid var(--border); }
+.btn-share:hover { border-color: var(--g-deep); color: var(--g-deep); }
+@media (max-width: 600px) { .action-bar { flex-direction: column; align-items: flex-start; } }
+
+/* ── HERO ────────────────────────────────────────────────── */
+.hero { padding: 4rem 2rem 3.5rem; background: var(--white); border-bottom: 1px solid var(--border); }
+.hero-inner { max-width: 900px; margin: 0 auto; }
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(34px, 5vw, 60px);
+  font-weight: 300; line-height: 1.07; letter-spacing: -0.02em;
+  color: var(--ink); margin-bottom: 1.25rem;
+}
+.hero h1 em { font-style: italic; color: var(--g-deep); }
+.hero-lead { font-size: 1.05rem; font-weight: 300; color: var(--ink-mid); line-height: 1.75; max-width: 62ch; margin-bottom: 2rem; }
+.hero-stat-row { display: flex; flex-wrap: wrap; gap: 2rem; }
+.hero-stat { border-left: 2px solid var(--border); padding-left: 1rem; }
+.hero-stat-num   { font-family: var(--serif); font-size: 2rem; font-weight: 600; color: var(--g-deep); line-height: 1; }
+.hero-stat-label { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); margin-top: 3px; }
+
+/* ── SECTION ─────────────────────────────────────────────── */
+.section { padding: 4rem 2rem; }
+.section-inner { max-width: 900px; margin: 0 auto; }
+
+/* ── POSITION CARDS ──────────────────────────────────────── */
+.position-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.25rem; margin-top: 2rem; }
+.position-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.4rem 1.5rem;
+}
+.position-card-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.position-card-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; }
+.position-card-body  { font-size: 0.85rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+.position-card.strong { border-color: var(--g-accent); border-width: 1.5px; }
+.position-card.strong .position-card-title { color: var(--g-deep); }
+@media (max-width: 680px) { .position-grid { grid-template-columns: 1fr; } }
+
+/* ── CALLOUT ─────────────────────────────────────────────── */
+.callout {
+  background: var(--white); border: 1px solid var(--border);
+  border-left: 4px solid var(--g-deep); border-radius: 0 10px 10px 0;
+  padding: 1.4rem 1.75rem; margin: 1.5rem 0;
+}
+.callout p { font-size: 0.95rem; font-weight: 300; color: var(--ink-mid); line-height: 1.72; font-style: italic; }
+.callout-attr { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g-accent); margin-top: 0.5rem; display: block; }
+
+/* ── MILESTONE STEPS ─────────────────────────────────────── */
+.milestone-steps { display: flex; flex-direction: column; margin-top: 2rem; }
+.ms { display: flex; align-items: flex-start; gap: 1.25rem; }
+.ms-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.ms-node {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+}
+.ms-connector { width: 2px; height: 28px; margin: 3px 0; background: var(--border); }
+.ms-content { padding-bottom: 1.6rem; flex: 1; }
+.ms-label  { font-size: 0.95rem; font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; }
+.ms-detail { font-size: 0.85rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+.ms-target {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  margin-top: 0.5rem; padding: 0.22rem 0.7rem; border-radius: 100px;
+  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ── ROUND CARDS ─────────────────────────────────────────── */
+.round-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; margin-top: 2rem; }
+.round-card { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.round-card-header { padding: 1.4rem 1.6rem 1rem; }
+.round-card-header h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; color: var(--white); margin-bottom: 0.25rem; }
+.round-card-header p  { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+.round-card-body  { background: var(--white); padding: 1.25rem 1.6rem 1.5rem; }
+.round-amount { font-family: var(--serif); font-size: 1.9rem; font-weight: 600; color: var(--g-deep); line-height: 1; margin-bottom: 0.5rem; }
+.round-amount span { font-size: 1rem; color: var(--ink-soft); font-weight: 300; }
+.round-timeline { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+.round-items { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+.round-items li { display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.83rem; font-weight: 300; color: var(--ink-mid); line-height: 1.55; }
+.ri-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--g-accent); flex-shrink: 0; margin-top: 0.44rem; }
+@media (max-width: 680px) { .round-grid { grid-template-columns: 1fr; } }
+
+/* ── ROLES TABLE ─────────────────────────────────────────── */
+.roles-table { margin-top: 2rem; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.roles-row {
+  display: grid; grid-template-columns: 1fr 120px 180px;
+  gap: 0; border-bottom: 1px solid var(--border);
+  align-items: stretch;
+}
+.roles-row:last-child { border-bottom: none; }
+.roles-row.header { background: var(--g-deep); }
+.roles-row.header .rc { color: rgba(255,255,255,0.7); font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.rc { padding: 0.9rem 1.1rem; font-size: 0.85rem; color: var(--ink-mid); font-weight: 300; border-right: 1px solid var(--border); }
+.rc:last-child { border-right: none; }
+.rc-title { font-weight: 600; color: var(--ink); font-size: 0.88rem; display: block; margin-bottom: 0.15rem; }
+.rc-sub   { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+.rc-cost  { font-family: var(--mono); font-size: 0.75rem; color: var(--g-deep); font-weight: 500; }
+.rc-note  { font-size: 0.78rem; font-weight: 300; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 680px) {
+  .roles-row { grid-template-columns: 1fr; }
+  .roles-row.header { display: none; }
+  .rc { border-right: none; border-bottom: 1px solid var(--border); }
+  .rc:last-child { border-bottom: none; }
+}
+
+/* ── PARTNER SECTION ─────────────────────────────────────── */
+.partner-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-top: 2rem; }
+.partner-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem 1.5rem; }
+.partner-card-icon  { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.partner-card-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; }
+.partner-card-body  { font-size: 0.83rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+@media (max-width: 680px) { .partner-grid { grid-template-columns: 1fr; } }
+
+/* ── FOUNDERS ────────────────────────────────────────────── */
+.founders-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.25rem; margin-top: 2rem; }
+.founder-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
+.founder-name { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
+.founder-role { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--g-accent); margin-bottom: 0.75rem; display: block; }
+.founder-bio  { font-size: 0.85rem; font-weight: 300; color: var(--ink-soft); line-height: 1.65; }
+@media (max-width: 680px) { .founders-grid { grid-template-columns: 1fr; } }
+
+/* ── SUMMARY BOX ─────────────────────────────────────────── */
+.summary-section { padding: 4rem 2rem; background: var(--cream); border-top: 1px solid var(--border); }
+.summary-inner   { max-width: 900px; margin: 0 auto; }
+.summary-header  { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem; }
+.summary-header-text h2 {
+  font-family: var(--serif); font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 300; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 0.4rem;
+}
+.summary-header-text p { font-size: 0.88rem; font-weight: 300; color: var(--ink-soft); }
+.summary-copy-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: flex-start; }
+.scopy-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 1rem; border-radius: 5px; border: 1.5px solid var(--g-deep);
+  font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+  background: var(--white); color: var(--g-deep); cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.scopy-btn:hover { background: var(--g-pale); }
+.scopy-btn.scopy-full { background: var(--g-deep); color: var(--white); }
+.scopy-btn.scopy-full:hover { background: var(--g-mid); }
+.summary-box {
+  background: var(--white); border: 1.5px solid var(--g-deep); border-radius: 12px; padding: 1.75rem 2rem;
+}
+.summary-intro { font-size: 0.92rem; font-weight: 400; color: var(--ink-mid); line-height: 1.65; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.summary-list  { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+.summary-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; font-weight: 300; color: var(--ink-mid); line-height: 1.6; }
+.summary-bullet {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  background: var(--g-pale); border: 1.5px solid var(--g-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.52rem; font-weight: 500; color: var(--g-deep); margin-top: 0.18rem;
+}
+.summary-list li strong { color: var(--ink); font-weight: 600; }
+.summary-url { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--ink-faint); }
+
+/* ── CLOSING STRIP ───────────────────────────────────────── */
+.closing-strip { background: var(--g-deep); padding: 3.5rem 2rem; }
+.closing-inner { max-width: 900px; margin: 0 auto; }
+.closing-head { font-family: var(--serif); font-size: clamp(24px, 3.2vw, 38px); font-weight: 300; color: var(--white); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 1.25rem; }
+.closing-head em { font-style: italic; color: #7dd4b0; }
+.closing-body { font-size: 0.95rem; font-weight: 300; color: rgba(255,255,255,0.72); line-height: 1.78; max-width: 62ch; margin-bottom: 2rem; }
+.closing-contact { display: flex; flex-wrap: wrap; gap: 1rem; }
+.closing-contact a {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.6rem 1.25rem; border-radius: 5px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.85rem; font-weight: 600; transition: all 0.15s;
+}
+.cc-primary { background: var(--white); color: var(--g-deep); }
+.cc-primary:hover { background: var(--g-pale); }
+.cc-ghost { border: 1.5px solid rgba(255,255,255,0.35); color: var(--white); }
+.cc-ghost:hover { background: rgba(255,255,255,0.1); }
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hero { padding: 2.5rem 1.25rem; }
+  .hero h1 { font-size: 2rem; }
+  .hero-lead { font-size: 0.95rem; }
+  .hero-stat-row { gap: 1.25rem; }
+  .hero-stat-num { font-size: 1.5rem; }
+  .section { padding: 3rem 1.25rem; }
+  .section-h2 { font-size: 1.6rem; }
+  .callout { padding: 1rem 1.25rem; }
+  .summary-section { padding: 3rem 1.25rem; }
+  .summary-header { flex-direction: column; }
+  .summary-box { padding: 1.25rem; }
+  .summary-copy-btns { flex-direction: column; width: 100%; }
+  .scopy-btn { justify-content: center; }
+  .closing-strip { padding: 2.5rem 1.25rem; }
+  .closing-head { font-size: 1.55rem; }
+  .action-btns { flex-direction: column; width: 100%; }
+  .action-btn { justify-content: center; }
+}
+
+/* ── PRINT ───────────────────────────────────────────────── */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  #nav, .action-bar, .mobile-nav, .hamburger, footer,
+  .summary-copy-btns, .closing-contact { display: none !important; }
+  body { font-size: 11pt; }
+  .hero, .section, .summary-section { padding: 1.2rem 0; }
+  .hero-inner, .section-inner, .summary-inner, .closing-inner { max-width: 100%; padding: 0; }
+  .position-grid, .round-grid, .founders-grid { grid-template-columns: repeat(2,1fr); }
+  .partner-grid { grid-template-columns: repeat(3,1fr); }
+  .position-card, .round-card, .founder-card, .summary-box { break-inside: avoid; }
+  .closing-strip { break-before: page; padding: 1.5rem 0; overflow: visible; }
+  @page { margin: 1.5cm 1.8cm; size: A4; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="https://www.assistiv.co">
+      <div class="nav-logo-mark">
+        <div class="nav-logo-dot nav-logo-core"></div>
+        <div class="nav-logo-dot nav-logo-r1"></div>
+        <div class="nav-logo-dot nav-logo-r2"></div>
+      </div>
+      <div class="nav-wordmark">
+        <span class="nav-name">Assistiv</span>
+        <span class="nav-sub">Systems</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#challenge">The Challenge</a></li>
+      <li><a href="index.html#ecosystem">The Ecosystem</a></li>
+      <li><a href="index.html#outcomes">Outcomes</a></li>
+      <li><a href="index.html#people">People</a></li>
+      <li><a href="governance.html">Governance</a></li>
+    </ul>
+    <a class="nav-cta" href="index.html#contact">Get in touch</a>
+    <button class="hamburger" id="hbg" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mob-nav">
+  <button class="m-close" id="mob-close">✕</button>
+  <a href="index.html#challenge" onclick="document.getElementById('mob-nav').classList.remove('open')">The Challenge</a>
+  <a href="index.html#ecosystem" onclick="document.getElementById('mob-nav').classList.remove('open')">The Ecosystem</a>
+  <a href="index.html#outcomes"  onclick="document.getElementById('mob-nav').classList.remove('open')">Outcomes</a>
+  <a href="index.html#people"    onclick="document.getElementById('mob-nav').classList.remove('open')">People</a>
+  <a href="governance.html"      onclick="document.getElementById('mob-nav').classList.remove('open')">Governance</a>
+  <a href="index.html#contact"   onclick="document.getElementById('mob-nav').classList.remove('open')">Get in Touch</a>
+</div>
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+  <span class="action-bar-label">Assistiv Systems · Opportunity Overview · 2026</span>
+  <div class="action-btns">
+    <button class="action-btn btn-dl"    onclick="window.print()">⬇ Download PDF</button>
+    <button class="action-btn btn-copy"  onclick="copyLink()">🔗 Copy link</button>
+    <button class="action-btn btn-share" onclick="shareNative()">↗ Share</button>
+  </div>
+</div>
+
+<!-- ── HERO ──────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow fade-up">Assistiv Systems · Opportunity Overview · 2026</span>
+    <h1 class="fade-up d1">The scale of the opportunity.<br><em>Where we are. Where we are going.</em></h1>
+    <p class="hero-lead fade-up d2">Assistiv Systems is building the infrastructure for independent living at scale — identifying 3.5 million older people before crisis, screening them in community settings, and supporting them at home with passive sensing technology. This document sets out our current position, the path to Series A funding, and what strategic partnership unlocks.</p>
+    <div class="hero-stat-row fade-up d3">
+      <div class="hero-stat">
+        <div class="hero-stat-num">3.5m</div>
+        <div class="hero-stat-label">People in the Missing Middle · England</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">£37bn</div>
+        <div class="hero-stat-label">Annual preventable admission cost · NHS</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">14:1</div>
+        <div class="hero-stat-label">Modelled ROI at pilot scale</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Proprietary sensing technologies · protected IP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CURRENT POSITION ──────────────────────────────────── -->
+<section class="section" style="background:var(--cream);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">Where we are</span>
+    <h2 class="section-h2 fade-up d1">Stronger than<br><em>pre-seed. Proven further.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:1.5rem;">Most startups at this stage have an idea and a deck. Assistiv has materially more — a coherent platform, clinical credibility, IP, active NHS relationships and inbound commercial interest. This is an early seed position with proof points, not a concept looking for validation.</p>
+
+    <div class="position-grid">
+      <div class="position-card strong fade-up d1">
+        <div class="position-card-icon">🔬</div>
+        <div class="position-card-title">Proprietary technology stack</div>
+        <div class="position-card-body">A purpose-built sensing architecture covering mmWave radar, acoustic AI and IoT edge processing for home-based frailty monitoring. The technology is proprietary and protected. Details are available under NDA to serious partners and investors.</div>
+      </div>
+      <div class="position-card strong fade-up d2">
+        <div class="position-card-icon">🎓</div>
+        <div class="position-card-title">Academic advisory board</div>
+        <div class="position-card-body">Professor Ann Netten (creator of ASCOT, University of Kent), Professor John Jerrim (UCL), Professor Tim Legrand (University of Adelaide) and Mark Greenfield. The platform is designed around ASCOT — the national standard for social care outcomes measurement.</div>
+      </div>
+      <div class="position-card strong fade-up d3">
+        <div class="position-card-icon">🏥</div>
+        <div class="position-card-title">Active NHS relationships</div>
+        <div class="position-card-body">assistiv.cloud is in active use with NHS Kent &amp; Medway commissioners. A direct route into Kent hospital trust clinical leadership exists through Professor Jerrim's network. A clinical validation pathway is within reach.</div>
+      </div>
+      <div class="position-card strong fade-up d4">
+        <div class="position-card-icon">💻</div>
+        <div class="position-card-title">Built and running platform</div>
+        <div class="position-card-body">assistiv.cloud, assistiv.tools and assistiv.services are live. The FEP intelligence pipeline runs daily. The Cloudflare Worker proxy, sensor data architecture and AI agent stack are operational. This is not a wireframe.</div>
+      </div>
+    </div>
+
+    <div class="callout fade-up">
+      <p>"This is not a pre-seed position in the conventional sense. That is early seed with proof points. The right move is a structured seed round, sized to get to the milestones that attract a Series A."</p>
+      <span class="callout-attr">Assistiv strategic assessment · June 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE MARKET ─────────────────────────────────────────── -->
+<section class="section" style="background:var(--white);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">The market</span>
+    <h2 class="section-h2 fade-up d1">A problem the system<br><em>cannot ignore for much longer.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:1.25rem;">The UK's ageing population is not a future problem — it is a present crisis. Emergency admissions for older people are rising faster than NHS capacity. Social care waiting lists are at record lengths. The cost of delayed intervention is measured in billions. Assistiv addresses the upstream cause: 3.5 million people who fall between the gaps in the current system.</p>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">The addressable market spans three revenue streams across NHS commissioning, individual and family subscriptions, and commercial partnerships with care and security providers. The platform is architected to serve all three simultaneously from a single infrastructure — creating compounding defensibility as each stream grows.</p>
+
+    <div class="position-grid">
+      <div class="position-card fade-up d1">
+        <div class="position-card-icon">🏥</div>
+        <div class="position-card-title">Model A — Commercial partnership</div>
+        <div class="position-card-body">Passive safety monitoring and ARC-integrated fall detection, white-labelled or co-branded with a strategic security partner. Recurring per-home licence revenue. Low sales cycle. Strong ROI case for the partner.</div>
+      </div>
+      <div class="position-card fade-up d2">
+        <div class="position-card-icon">👨‍👩‍👧</div>
+        <div class="position-card-title">Model B — Individual subscription</div>
+        <div class="position-card-body">Full platform — sensing, Inner Circle, Unified Care Record, ARC — delivered direct to older people and their families. Monthly subscription, hardware included. The primary IP asset and long-term revenue engine.</div>
+      </div>
+      <div class="position-card fade-up d3">
+        <div class="position-card-icon">📊</div>
+        <div class="position-card-title">Model C — NHS commissioning</div>
+        <div class="position-card-body">Population intelligence and virtual ward integration, commissioned by ICBs and PCNs. assistiv.cloud is already in this conversation. The 14:1 modelled ROI makes the commissioning case compelling at pilot scale.</div>
+      </div>
+      <div class="position-card fade-up d4">
+        <div class="position-card-icon">🔒</div>
+        <div class="position-card-title">Strategic security partner route</div>
+        <div class="position-card-body">An established security and monitoring partner brings existing ARC infrastructure, trusted installer networks, and a customer base that maps directly onto the Assistiv target population. Model A is the entry point — Models B and C follow.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PATH TO SERIES A ───────────────────────────────────── -->
+<section class="section" style="background:var(--cream);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">The roadmap</span>
+    <h2 class="section-h2 fade-up d1">Four milestones to<br><em>Series A readiness.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">The gap between current position and Series A is not large — but it is specific. Four concrete proof points transform the investment narrative from compelling to closed. All four are achievable within 12–16 weeks with the right partner relationships in place.</p>
+
+    <div class="milestone-steps">
+      <div class="ms fade-up d1">
+        <div class="ms-line">
+          <div class="ms-node" style="background:var(--g-pale);color:var(--g-deep);">01</div>
+          <div class="ms-connector"></div>
+        </div>
+        <div class="ms-content">
+          <div class="ms-label">Signed commercial agreement or letter of intent</div>
+          <div class="ms-detail">A signed LOI or paid pilot agreement — even at modest value — transforms "commercial interest exists" into "commercial validation secured." This is the single most important near-term task. A Model A pilot changes the valuation conversation significantly.</div>
+          <span class="ms-target" style="background:var(--g-pale);color:var(--g-deep);">Target: 8–12 weeks</span>
+        </div>
+      </div>
+
+      <div class="ms fade-up d2">
+        <div class="ms-line">
+          <div class="ms-node" style="background:var(--cloud-pale);color:var(--cloud);">02</div>
+          <div class="ms-connector"></div>
+        </div>
+        <div class="ms-content">
+          <div class="ms-label">One home pilot deployment — sensors live</div>
+          <div class="ms-detail">A single household with sensors installed, data flowing and a consented resident. This is the difference between concept and proof of concept. An established partner with installer networks makes this achievable in weeks, not months.</div>
+          <span class="ms-target" style="background:var(--cloud-pale);color:var(--cloud);">Target: 12–16 weeks</span>
+        </div>
+      </div>
+
+      <div class="ms fade-up d3">
+        <div class="ms-line">
+          <div class="ms-node" style="background:var(--tools-pale);color:var(--tools);">03</div>
+          <div class="ms-connector"></div>
+        </div>
+        <div class="ms-content">
+          <div class="ms-label">Named CTO with hardware and embedded systems experience</div>
+          <div class="ms-detail">Investors in IoT health platforms ask this question early. A named CTO owning firmware, LoRaWAN integration and edge processing architecture — committed for equity at this stage — closes this gap immediately. Target: identify 3–5 candidates now.</div>
+          <span class="ms-target" style="background:var(--tools-pale);color:var(--tools);">Target: 8 weeks</span>
+        </div>
+      </div>
+
+      <div class="ms fade-up d4">
+        <div class="ms-line">
+          <div class="ms-node" style="background:var(--serv-pale);color:var(--serv);">04</div>
+        </div>
+        <div class="ms-content" style="padding-bottom:0;">
+          <div class="ms-label">Clinical validation pathway — letter of intent from a GP practice or PCN</div>
+          <div class="ms-detail">Not the study itself — the agreement to do one. A letter of intent from a Kent GP practice, PCN or hospital trust to participate in a feasibility study gives investors a clinical validation pathway to assess. Professor Jerrim's route into the Kent trust clinical lead is the fastest path.</div>
+          <span class="ms-target" style="background:var(--serv-pale);color:var(--serv);">Target: 12 weeks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FUNDING PATHWAY ────────────────────────────────────── -->
+<section class="section" style="background:var(--white);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">Funding pathway</span>
+    <h2 class="section-h2 fade-up d1">Seed to Series A —<br><em>a clear two-stage path.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">A very small pre-seed round would be the wrong move — giving away meaningful equity for capital that will not last long enough to reach the milestones that unlock the next round. The right transaction is a structured seed round that funds the proof points above, then positions for a Series A on demonstrably stronger terms.</p>
+
+    <div class="round-grid">
+      <div class="round-card fade-up d1">
+        <div class="round-card-header" style="background:var(--g-deep);">
+          <h3>Seed Round</h3>
+          <p>Target: 6–9 months</p>
+        </div>
+        <div class="round-card-body">
+          <div class="round-amount">£800k–£1.2m <span>target raise</span></div>
+          <div class="round-timeline">18–24 months runway to Series A readiness</div>
+          <ul class="round-items">
+            <li><div class="ri-dot"></div>Co-founder salaries at sustainable levels (£40k–£55k each)</li>
+            <li><div class="ri-dot"></div>CTO hire — seed salary £60k–£80k plus equity</li>
+            <li><div class="ri-dot"></div>Hardware procurement for pilot deployments</li>
+            <li><div class="ri-dot"></div>Regulatory advice — MHRA, ICO, CQC positioning</li>
+            <li><div class="ri-dot"></div>IP and technology legal structure for due diligence</li>
+            <li><div class="ri-dot"></div>Clinical feasibility study costs</li>
+            <li><div class="ri-dot"></div>6 months operating runway buffer</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="round-card fade-up d2">
+        <div class="round-card-header" style="background:var(--cloud);">
+          <h3>Series A</h3>
+          <p>Target: 18–24 months from now</p>
+        </div>
+        <div class="round-card-body">
+          <div class="round-amount">£3m–£7m <span>target raise</span></div>
+          <div class="round-timeline">Requires: revenue, clinical study results, 50–100 households live</div>
+          <ul class="round-items">
+            <li><div class="ri-dot"></div>Revenue live from at least one commercial stream</li>
+            <li><div class="ri-dot"></div>Clinical feasibility study with preliminary results</li>
+            <li><div class="ri-dot"></div>50–100 households in real-world deployment</li>
+            <li><div class="ri-dot"></div>Full senior team: CTO, Chief Clinical Officer</li>
+            <li><div class="ri-dot"></div>MHRA registration pathway confirmed</li>
+            <li><div class="ri-dot"></div>Relevant investors: Mercia, Parkwalk, Healthtech 1, SFC Capital</li>
+            <li><div class="ri-dot"></div>Innovate UK grant applications in parallel (non-dilutive)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── KEY ROLES AND COSTS ────────────────────────────────── -->
+<section class="section" style="background:var(--cream);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">Roles and costs</span>
+    <h2 class="section-h2 fade-up d1">What the seed round<br><em>needs to fund.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">These are the roles required to reach Series A readiness, in priority order. At seed stage, senior hires take below-market salary with meaningful equity. Indicative costs are at UK health technology market rates.</p>
+
+    <div class="roles-table fade-up d1">
+      <div class="roles-row header">
+        <div class="rc">Role</div>
+        <div class="rc">Cost</div>
+        <div class="rc">Note</div>
+      </div>
+      <div class="roles-row" style="background:var(--g-pale);">
+        <div class="rc"><span class="rc-title">Simon Legrand</span><span class="rc-sub">Co-founder · Chief Health Officer · MCIM</span></div>
+        <div class="rc"><span class="rc-cost">£40k–£55k salary</span></div>
+        <div class="rc rc-note">Owns clinical strategy, NHS commissioner relationships, health system navigation and platform vision. 15 years in UK public health and social care; co-founder of Sunstone Systems (acquired 2024).</div>
+      </div>
+      <div class="roles-row" style="background:var(--g-pale);">
+        <div class="rc"><span class="rc-title">Paul Schelhaas</span><span class="rc-sub">Co-founder · CTO / CIMO</span></div>
+        <div class="rc"><span class="rc-cost">£40k–£55k salary</span></div>
+        <div class="rc rc-note">Owns technology architecture, hardware integration and commercial partnership development. Operational background in physical security and monitored systems deployment. Central to the Model A commercial route.</div>
+      </div>
+      <div class="roles-row">
+        <div class="rc"><span class="rc-title">Senior Engineer / Hardware Lead</span><span class="rc-sub">LoRaWAN · firmware · edge processing</span></div>
+        <div class="rc"><span class="rc-cost">£55k–£75k + 1–3% equity</span></div>
+        <div class="rc rc-note">Supports the CTO/CIMO on firmware, LoRaWAN integration and edge processing architecture. Frees the founder layer for commercial and partnership priorities as the company scales.</div>
+      </div>
+      <div class="roles-row">
+        <div class="rc"><span class="rc-title">Clinical Lead / CCO</span><span class="rc-sub">Advisory arrangement initially</span></div>
+        <div class="rc"><span class="rc-cost">£500–£1k/day + 0.5–1.5% equity</span></div>
+        <div class="rc rc-note">A named consultant geriatrician on the advisory board changes NHS commissioner conversations significantly. Prof. Jerrim's Kent trust connection is the priority target.</div>
+      </div>
+      <div class="roles-row">
+        <div class="rc"><span class="rc-title">Regulatory Advisor</span><span class="rc-sub">MHRA · ICO · CQC · one-time engagement</span></div>
+        <div class="rc"><span class="rc-cost">£5k–£10k total</span></div>
+        <div class="rc rc-note">Maps regulatory position. Determines whether health inferences cross MHRA medical device territory. One substantive conversation with a specialist, not a full ongoing engagement.</div>
+      </div>
+      <div class="roles-row">
+        <div class="rc"><span class="rc-title">IP &amp; Technology Solicitor</span><span class="rc-sub">Technology law · one-time engagement</span></div>
+        <div class="rc"><span class="rc-cost">£5k–£15k total</span></div>
+        <div class="rc rc-note">Investor-grade IP documentation and freedom-to-operate review. Ensures proprietary technology is correctly structured for due diligence. Marks &amp; Clerk, Withers &amp; Rogers or equivalent.</div>
+      </div>
+      <div class="roles-row">
+        <div class="rc"><span class="rc-title">Part-time FD</span><span class="rc-sub">Financial modelling · management accounts</span></div>
+        <div class="rc"><span class="rc-cost">£1.5k–£3k/month</span></div>
+        <div class="rc rc-note">Investor-grade financial model showing 36-month revenue ramp across three streams. Management accounts and cap table maintenance. Scrutinised closely at seed stage.</div>
+      </div>
+    </div>
+  </div>
+</section> ───────────────────────────── -->
+<section class="section" style="background:var(--white);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">Strategic partnership</span>
+    <h2 class="section-h2 fade-up d1">What the right partner<br><em>brings to the table.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">The Assistiv platform is designed to be deployed through a partner with existing ARC infrastructure, installer networks, and a trusted customer base. Assistiv provides the intelligence and protocol. The partner provides the operational reach that turns proof of concept into commercial scale.</p>
+
+    <div class="partner-grid">
+      <div class="partner-card fade-up d1">
+        <div class="partner-card-icon">🏗</div>
+        <div class="partner-card-title">ARC infrastructure</div>
+        <div class="partner-card-body">An existing, staffed Alarm Receiving Centre provides the 24/7 response capability the Assistiv Response Centre requires — without the cost and time of building one. This is years of infrastructure, available immediately.</div>
+      </div>
+      <div class="partner-card fade-up d2">
+        <div class="partner-card-icon">🔧</div>
+        <div class="partner-card-title">Installer networks</div>
+        <div class="partner-card-body">Trained installation teams who already enter homes, already have insurance and compliance frameworks, and already have relationships with the property sector and social housing. The home pilot deployment milestone becomes a matter of weeks, not months.</div>
+      </div>
+      <div class="partner-card fade-up d3">
+        <div class="partner-card-icon">👥</div>
+        <div class="partner-card-title">Existing customer base</div>
+        <div class="partner-card-body">A security and monitoring partner's existing customers include the exact population Assistiv targets — older people, families and local authorities already paying for monitoring services. Model A is a product upgrade for customers they already hold.</div>
+      </div>
+    </div>
+
+    <div class="callout fade-up" style="margin-top:2rem;">
+      <p>"A strategic security partner brings existing ARC infrastructure, trusted installer networks, and a customer base that maps directly onto the Assistiv target population. Model A is the entry point — and Models B and C follow as the relationship deepens."</p>
+      <span class="callout-attr">Assistiv commercial strategy · June 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOUNDERS ───────────────────────────────────────────── -->
+<section class="section" style="background:var(--cream);">
+  <div class="section-inner">
+    <span class="eyebrow fade-up">The founders</span>
+    <h2 class="section-h2 fade-up d1">Built by people who have<br><em>done this before.</em></h2>
+    <p class="section-body fade-up d2" style="margin-bottom:2rem;">Assistiv is led by two co-founders with complementary track records across technology, health and social care, physical security, and hardware commercialisation.</p>
+
+    <div class="founders-grid">
+      <div class="founder-card fade-up d1">
+        <div class="founder-name">Simon Legrand</div>
+        <span class="founder-role">Co-founder · Chief Health Officer · MCIM</span>
+        <p class="founder-bio">Simon co-founded Sunstone Systems in 2011 — a solar-powered surveillance and IoT company that secured contracts with Chevron, Rivian Automotive and Network Rail before acquisition in 2024. He spent 15 years prior in UK health and social care across The Children's Society, Kent County Council, Essex County Council and consulting to the Department of Health, DfE and Home Office. MCIM-qualified, he is the architect of the platform's clinical strategy, NHS commissioner relationships and commercial architecture.</p>
+      </div>
+      <div class="founder-card fade-up d2">
+        <div class="founder-name">Paul Schelhaas</div>
+        <span class="founder-role">Co-founder · CTO / CIMO</span>
+        <p class="founder-bio">Paul brings deep operational experience in physical security, public sector technology and commercial partnership development. His background spans deployment of large-scale monitored security systems and working relationships within the security and monitoring sector that directly underpin Assistiv's Model A commercial route. Paul owns technology architecture, hardware integration and the strategic partnership conversations currently in progress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SUMMARY BOX ────────────────────────────────────────── -->
+<section class="summary-section">
+  <div class="summary-inner">
+    <div class="summary-header fade-up">
+      <div class="summary-header-text">
+        <h2>The opportunity at a glance</h2>
+        <p>Copy the bullets for a short email, or copy the full version for a more complete introduction.</p>
+      </div>
+      <div class="summary-copy-btns">
+        <button class="scopy-btn" onclick="copyBullets()">📋 Copy bullets</button>
+        <button class="scopy-btn scopy-full" onclick="copyFull()">📄 Copy full version</button>
+      </div>
+    </div>
+
+    <div class="summary-box fade-up d1">
+      <p class="summary-intro" id="summaryIntro">Assistiv Systems is a UK health technology company building infrastructure for independent living at population scale. We are at early seed stage with proof points, seeking a seed round of £800k–£1.2m and a strategic commercial partner. Here is the opportunity in ten points.</p>
+      <ol class="summary-list" id="summaryList">
+        <li><span class="summary-bullet">1</span><span><strong>The market:</strong> 3.5 million older people in England sit between full independence and formal care — the Missing Middle. They are invisible to the system until crisis. Each avoidable emergency admission costs the NHS an average of £12,000. The scale of unmet need is documented, growing, and politically urgent.</span></li>
+        <li><span class="summary-bullet">2</span><span><strong>The platform:</strong> Assistiv is a three-product ecosystem — assistiv.cloud (population intelligence for NHS commissioners), assistiv.tools (community frailty screening), and assistiv.services (home support platform including passive sensing, family app, unified care record and 24/7 response centre). All three are live.</span></li>
+        <li><span class="summary-bullet">3</span><span><strong>Current position:</strong> Proprietary sensing technology (details available under NDA). An academic advisory board including the creator of ASCOT — the national standard for social care outcomes. Active NHS Kent &amp; Medway commissioner relationships. A live, running platform across three domains. This is early seed with proof points, not a concept in search of validation.</span></li>
+        <li><span class="summary-bullet">4</span><span><strong>The founders:</strong> Simon Legrand (Co-founder &amp; Chief Health Officer) — co-founder of Sunstone Systems (acquired 2024; contracts with Chevron, Rivian, Network Rail), 15 years in UK health and social care, MCIM-qualified. Paul Schelhaas (Co-founder, CTO/CIMO) — operational and technology background in physical security and monitored systems, central to the commercial partnership strategy.</span></li>
+        <li><span class="summary-bullet">5</span><span><strong>The commercial routes:</strong> Model A — passive safety monitoring via a strategic security partner (ARC-integrated, recurring per-home licence). Model B — full platform direct to individuals and families (monthly subscription). Model C — NHS commissioning via ICBs and PCNs. The 14:1 modelled ROI makes the commissioning case compelling at pilot scale.</span></li>
+        <li><span class="summary-bullet">6</span><span><strong>What strategic partnership unlocks:</strong> An established security and monitoring partner brings ARC infrastructure, trained installer networks, and an existing customer base that maps directly onto the Assistiv target population. Model A is a product upgrade for customers they already hold. Models B and C follow as the relationship deepens.</span></li>
+        <li><span class="summary-bullet">7</span><span><strong>The four milestones to Series A:</strong> (1) A signed commercial LOI or pilot agreement — 8–12 weeks. (2) One home pilot deployment with sensors live — 12–16 weeks. (3) A named CTO with hardware/embedded experience committed — 8 weeks. (4) A clinical validation letter of intent from a GP practice or PCN — 12 weeks. All four are achievable with the right partner in place.</span></li>
+        <li><span class="summary-bullet">8</span><span><strong>The seed round:</strong> £800k–£1.2m target. Covers: co-founder salaries (£40k–£55k each), senior engineer hire, hardware procurement for pilot deployments, regulatory advice, IP and technology legal structure, clinical study costs, and 6 months operating buffer. Target close: 6–9 months.</span></li>
+        <li><span class="summary-bullet">9</span><span><strong>The Series A:</strong> £3m–£7m target at 18–24 months from now. Requires: live revenue from at least one commercial stream, clinical feasibility study with preliminary results, 50–100 households in deployment, full senior team including a Chief Clinical Officer. Target investors: Mercia, Parkwalk, Healthtech 1, SFC Capital. Innovate UK grant applications run in parallel (non-dilutive).</span></li>
+        <li><span class="summary-bullet">10</span><span><strong>The ask:</strong> A strategic partnership discussion with a view to a Model A pilot agreement, and a seed investment conversation. Simon Legrand — simon@assistiv.co. Paul Schelhaas — available via simon@assistiv.co. Platform overview at assistiv.co/platform-overview.</span></li>
+      </ol>
+      <p class="summary-url" id="summaryUrl">assistiv.co · assistiv.cloud · assistiv.tools · assistiv.services · simon@assistiv.co · 2026</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CLOSING ────────────────────────────────────────────── -->
+<section class="closing-strip">
+  <div class="closing-inner">
+    <span class="eyebrow fade-up" style="color:rgba(255,255,255,0.5);">Get in touch</span>
+    <h2 class="closing-head fade-up d1">The right partnership<br>makes this move <em>faster.</em></h2>
+    <p class="closing-body fade-up d2">We are looking for a strategic partner who sees the same opportunity we do — a defensible, clinically grounded platform with a clear commercial route and the IP to protect it. The conversation we want to have is straightforward: here is what we have built, here is what the partnership unlocks, here is what the next twelve months look like together.</p>
+    <div class="closing-contact fade-up d3">
+      <a href="mailto:simon@assistiv.co" class="cc-primary">✉ simon@assistiv.co</a>
+      <a href="platform-overview.html" class="cc-ghost">Platform overview →</a>
+      <a href="https://www.assistiv.cloud" target="_blank" rel="noopener" class="cc-ghost">assistiv.cloud →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <div class="nav-logo-mark" style="width:26px;height:26px;">
+            <div class="nav-logo-dot nav-logo-core" style="width:6px;height:6px;"></div>
+            <div class="nav-logo-dot nav-logo-r1" style="width:14px;height:14px;"></div>
+            <div class="nav-logo-dot nav-logo-r2" style="width:24px;height:24px;"></div>
+          </div>
+          <div class="nav-wordmark">
+            <span class="nav-name" style="font-size:0.95rem;">Assistiv</span>
+            <span class="nav-sub">Systems</span>
+          </div>
+        </div>
+        <p class="footer-tagline">Infrastructure for independent living. Identifying risk before crisis, at population scale.</p>
+        <p class="footer-tagline" style="margin-top:0.6rem;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);">Powered by Anthropic technologies</p>
+      </div>
+      <div class="footer-nav">
+        <div class="footer-nav-col">
+          <h5>Ecosystem</h5>
+          <a href="https://www.assistiv.cloud" target="_blank" rel="noopener">assistiv.cloud</a>
+          <a href="https://www.assistiv.tools" target="_blank" rel="noopener">assistiv.tools</a>
+          <a href="https://www.assistiv.services" target="_blank" rel="noopener">assistiv.services</a>
+        </div>
+        <div class="footer-nav-col">
+          <h5>Company</h5>
+          <a href="index.html#challenge">The Challenge</a>
+          <a href="index.html#ecosystem">The Ecosystem</a>
+          <a href="about.html">Founders &amp; Advisory Board</a>
+          <a href="governance.html">Governance &amp; Assurance</a>
+        </div>
+        <div class="footer-nav-col">
+          <h5>Contact</h5>
+          <a href="mailto:simon@assistiv.co">simon@assistiv.co</a>
+          <a href="platform-overview.html">Platform Overview</a>
+          <a href="index.html#contact">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Assistiv Systems Limited. Registered in England and Wales. Company number 17082597. This document is for discussion purposes only and does not constitute an offer of securities.</p>
+      <div class="footer-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="governance.html">Governance</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav
+  document.getElementById('hbg').addEventListener('click', () => document.getElementById('mob-nav').classList.add('open'));
+  document.getElementById('mob-close').addEventListener('click', () => document.getElementById('mob-nav').classList.remove('open'));
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+  // Copy link
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = document.querySelector('[onclick="copyLink()"]');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // Share
+  function shareNative() {
+    if (navigator.share) {
+      navigator.share({ title: 'Assistiv Systems — Opportunity Overview', text: 'Assistiv Systems: early seed with proof points. 3.5m older people, £800k–£1.2m seed round, strategic partnership opportunity.', url: window.location.href });
+    } else { copyLink(); }
+  }
+
+  // Copy bullets
+  function copyBullets() {
+    const items = document.querySelectorAll('#summaryList li');
+    const text = Array.from(items).map((li, i) =>
+      `${i + 1}. ${li.querySelector('span:last-child').textContent.trim()}`
+    ).join('\n\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('[onclick="copyBullets()"]');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // Copy full
+  function copyFull() {
+    const intro   = document.getElementById('summaryIntro').textContent.trim();
+    const items   = document.querySelectorAll('#summaryList li');
+    const bullets = Array.from(items).map((li, i) =>
+      `${i + 1}. ${li.querySelector('span:last-child').textContent.trim()}`
+    ).join('\n\n');
+    const url = document.getElementById('summaryUrl').textContent.trim();
+    navigator.clipboard.writeText(`${intro}\n\n${bullets}\n\n${url}`).then(() => {
+      const btn = document.querySelector('[onclick="copyFull()"]');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+</script>
+</body>
+</html>
