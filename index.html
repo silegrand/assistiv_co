@@ -277,12 +277,12 @@ body {
 .flow-row {
   display: grid;
   grid-template-columns: 1fr 72px 1fr 72px 1fr;
-  align-items: center;
+  align-items: stretch;
   gap: 0;
 }
 .flow-connector {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.4rem; padding: 0 4px; z-index: 1;
+  gap: 0.4rem; padding: 0 4px; z-index: 1; align-self: center;
 }
 .flow-conn-line {
   width: 100%; height: 1px; background: var(--border); position: relative;
