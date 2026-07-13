@@ -223,17 +223,17 @@
     <span class="badge">Private development prototype &middot; not for public release</span>
   </header>
 
-  <div class="card ai-setup" id="ai-setup">
-    <p class="h2sec">Step 1 &middot; Anthropic API key required</p>
-    <p class="ai-intro">This tool needs your Anthropic API key to run. The key powers the AI reflections and the safeguarding read of the free text. The tick-box answers and the ASCOT score are never changed by AI. The key is held in memory for this session only, and is checked with a live request before the tool unlocks. For anything beyond your own private testing, move the key to a Cloudflare Worker proxy so it is never in the browser.</p>
+  <details class="card ai-setup" id="ai-setup" open>
+    <summary>AI reflections (optional)</summary>
+    <p class="ai-intro">Add your Anthropic API key to turn on AI reflections. The tick-box answers and the ASCOT score do not change. The AI only reads the extra detail a person chooses to write in their own words: it offers a gentle reflection back to them, and flags for the practitioner where the words suggest more difficulty than the option selected. The key is held in memory for this session only. For anything beyond your own private testing, move the key to a Cloudflare Worker proxy so it is never in the browser.</p>
     <div class="ai-row">
       <input class="key-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
-      <button type="button" class="reflect-btn" id="ai-enable">Unlock tool</button>
+      <button type="button" class="reflect-btn" id="ai-enable">Turn on AI</button>
     </div>
-    <p class="ai-status" id="ai-status">Enter your key and select Unlock to begin.</p>
-  </div>
+    <p class="ai-status" id="ai-status">AI is off. The screening works without it. Free-text boxes still save what is written.</p>
+  </details>
 
-  <form id="screen" novalidate style="display:none">
+  <form id="screen" novalidate>
     <div id="questions"></div>
 
     <div class="card safeguard">
@@ -510,54 +510,26 @@ QUESTIONS.forEach((q)=>{
 
 // ---- AI free-text layer (optional, does not affect the ASCOT score) ----
 let AI_KEY = '';
-// Model: your existing tool's Sonnet. Update to a newer Sonnet (e.g. 'claude-sonnet-5') if your account has access.
-const AI_MODEL = 'claude-sonnet-4-20250514';
+// Model: current Sonnet. Change here if you prefer another model your account can access.
+const AI_MODEL = 'claude-sonnet-5';
 const detailAI = {}; // q.key -> { reflection, practitioner_note, possible_minimisation, safeguarding_concern }
 
 const aiStatus = document.getElementById('ai-status');
 const enableBtn = document.getElementById('ai-enable');
 const keyInput = document.getElementById('apiKeyInput');
 
-async function unlock(){
+function enableAI(){
   const v = keyInput.value.trim();
   if(!v){ aiStatus.textContent = 'Please paste an Anthropic API key first.'; aiStatus.classList.remove('on'); return; }
   if(!v.startsWith('sk-ant-')){ aiStatus.textContent = 'That does not look like an Anthropic key. It should start with sk-ant-.'; aiStatus.classList.remove('on'); return; }
-  enableBtn.disabled = true;
-  aiStatus.classList.remove('on');
-  aiStatus.textContent = 'Checking the key\u2026';
-  try{
-    await verifyKey(v);
-    AI_KEY = v;
-    document.getElementById('screen').style.display = '';
-    aiStatus.textContent = 'Key verified. The tool is unlocked for this session.';
-    aiStatus.classList.add('on');
-    enableBtn.textContent = 'Unlocked';
-    keyInput.disabled = true;
-    updateReflectButtons();
-  }catch(err){
-    aiStatus.textContent = 'The key could not be verified: '+(err.message||'error')+'. The tool stays locked.';
-    enableBtn.disabled = false;
-  }
+  AI_KEY = v;
+  aiStatus.textContent = 'AI is on for this session. Reflections appear when you add detail and press Reflect.';
+  aiStatus.classList.add('on');
+  enableBtn.textContent = 'AI on';
+  updateReflectButtons();
 }
-enableBtn.addEventListener('click', unlock);
-keyInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); unlock(); } });
-
-async function verifyKey(key){
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':key,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
-    body: JSON.stringify({ model: AI_MODEL, max_tokens: 4, messages:[{ role:'user', content:'ping' }] })
-  });
-  const data = await resp.json();
-  if(data.error) throw new Error(data.error.message);
-  if(!data.content) throw new Error('unexpected response');
-  return true;
-}
+enableBtn.addEventListener('click', enableAI);
+keyInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); enableAI(); } });
 
 function updateReflectButtons(){
   document.querySelectorAll('[data-reflect]').forEach(btn=>{
@@ -784,7 +756,6 @@ const results = document.getElementById('results');
 
 form.addEventListener('submit', function(e){
   e.preventDefault();
-  if(!AI_KEY){ return; }
   const indices = {};
   let missing = false;
   QUESTIONS.forEach(q=>{
