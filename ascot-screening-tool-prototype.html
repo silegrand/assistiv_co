@@ -163,6 +163,12 @@
   .reflect-btn:hover:not(:disabled){border-color:var(--primary)}
   .reflect-btn:disabled{opacity:.45;cursor:default}
   .spinner{font-size:.85rem;color:var(--muted)}
+  .mic-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:600;font-size:.9rem;padding:9px 14px;border-radius:9px;background:var(--surface);color:var(--primary);border:1.5px solid var(--line-strong);cursor:pointer}
+  .mic-btn:hover{border-color:var(--primary)}
+  .mic-btn.on{background:var(--high);color:#fff;border-color:var(--high)}
+  .mic-btn.on .mic-ico{animation:micpulse 1s ease-in-out infinite}
+  .mic-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  @keyframes micpulse{0%,100%{opacity:1}50%{opacity:.35}}
   .reflection{margin-top:12px;padding:14px 16px;border-radius:10px;background:var(--primary-tint);border:1px solid #cfe0df;font-size:.96rem;display:none}
   .reflection.show{display:block}
   .reflection .rtitle{font-family:var(--display);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);margin:0 0 6px}
@@ -206,7 +212,7 @@
     h1{font-size:1.7rem}
     .score-num{font-size:2.2rem}
   }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -499,6 +505,7 @@ QUESTIONS.forEach((q)=>{
     '<label for="detail_'+q.key+'">In your own words <span class="sub">(optional). Anything you want to add about your answer.</span></label>'+
     '<textarea id="detail_'+q.key+'" data-key="'+q.key+'" placeholder="You can leave this blank, or add a little more if you like."></textarea>'+
     '<div class="detail-actions">'+
+      '<button type="button" class="mic-btn" data-mic="'+q.key+'" aria-pressed="false" aria-label="Speak your answer"><svg class="mic-ico" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"></path><path d="M17 11a1 1 0 0 0-2 0 3 3 0 0 1-6 0 1 1 0 0 0-2 0 5 5 0 0 0 4 4.9V19H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-3v-3.1A5 5 0 0 0 17 11z"></path></svg><span class="mic-label">Speak</span></button>'+
       '<button type="button" class="reflect-btn" data-reflect="'+q.key+'" disabled>Reflect on this</button>'+
       '<span class="spinner" data-spin="'+q.key+'"></span>'+
     '</div>'+
@@ -627,6 +634,72 @@ function escapeHtml(str){
 }
 
 updateReflectButtons();
+
+// ---- Voice input for the free-text boxes ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let activeRec = null, activeKey = null;
+
+if(!SR){
+  document.querySelectorAll('.mic-btn').forEach(b=>{ b.style.display='none'; });
+} else {
+  qWrap.addEventListener('click',(e)=>{
+    const btn = e.target.closest('[data-mic]');
+    if(btn) toggleMic(btn.getAttribute('data-mic'));
+  });
+}
+
+function setMicState(key, on){
+  const btn = document.querySelector('[data-mic="'+key+'"]');
+  if(!btn) return;
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on?'true':'false');
+  const lab = btn.querySelector('.mic-label');
+  if(lab) lab.textContent = on ? 'Listening\u2026' : 'Speak';
+}
+
+function stopMic(){ if(activeRec){ try{ activeRec.stop(); }catch(e){} } }
+
+function toggleMic(key){
+  if(activeKey===key && activeRec){ stopMic(); return; }
+  if(activeRec){ stopMic(); }
+  startMic(key);
+}
+
+function startMic(key){
+  const ta = document.getElementById('detail_'+key);
+  const spin = document.querySelector('[data-spin="'+key+'"]');
+  const rec = new SR();
+  rec.lang = 'en-GB';
+  rec.continuous = true;
+  rec.interimResults = false;
+  activeRec = rec; activeKey = key;
+  setMicState(key, true);
+  if(spin) spin.textContent = '';
+  rec.onresult = (e)=>{
+    let finalT = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) finalT += e.results[i][0].transcript;
+    }
+    finalT = finalT.trim();
+    if(finalT){
+      ta.value = (ta.value.trim() ? ta.value.trim()+' ' : '') + finalT;
+      updateReflectButtons();
+    }
+  };
+  rec.onerror = (e)=>{
+    let msg = 'Voice input stopped.';
+    if(e.error==='not-allowed' || e.error==='service-not-allowed') msg = 'Microphone blocked. Allow mic access in the browser to use voice.';
+    else if(e.error==='no-speech') msg = 'Did not catch that. Try again.';
+    else if(e.error==='audio-capture') msg = 'No microphone found.';
+    if(spin) spin.textContent = msg;
+  };
+  rec.onend = ()=>{
+    setMicState(key, false);
+    if(activeKey===key){ activeRec=null; activeKey=null; }
+  };
+  try{ rec.start(); }
+  catch(err){ setMicState(key,false); if(spin) spin.textContent = 'Could not start voice input.'; }
+}
 
 // ---- Scoring ----
 function scrqol(indices){
