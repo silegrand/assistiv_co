@@ -180,6 +180,27 @@
   .qrow .qnote-r.min{color:var(--some);font-weight:500}
   .qrow .qnote-r.safe{color:var(--high);font-weight:600}
 
+  /* two-view results */
+  .view-toggle{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px;margin:0 0 18px}
+  .vt{flex:1;font-family:var(--display);font-weight:600;font-size:.92rem;padding:11px 12px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+  .vt.on{background:var(--primary);color:#fff}
+  .vt:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .person-intro h2{font-family:var(--display);font-weight:700;font-size:1.5rem;margin:0 0 8px}
+  .person-intro p{margin:0;color:var(--muted)}
+  .band-eyebrow{font-family:var(--display);font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;color:var(--primary)}
+  .steer.urgent .band-eyebrow{color:var(--high)}
+  .steer.statutory .band-eyebrow{color:var(--some)}
+  .steer.assistiv .band-eyebrow{color:var(--ideal)}
+  .steer.rescreen .band-eyebrow{color:var(--noneeds)}
+  .action-line{margin:12px 0 0;font-weight:600;color:var(--ink);font-size:.98rem}
+  .p-area{padding:16px 0;border-bottom:1px solid var(--line)}
+  .p-area:last-child{border-bottom:0}
+  .p-area .pa-name{font-family:var(--display);font-weight:600;margin:0 0 6px}
+  .p-area .pa-reflect{margin:0 0 8px}
+  .p-area .pa-sign{margin:0;color:var(--muted);font-size:.92rem}
+  .offer-actions{display:flex;gap:12px;flex-wrap:wrap}
+  .offer-ack{margin:14px 0 0;color:var(--ideal);font-weight:500}
+
   @media (max-width:560px){
     body{font-size:17px;padding:24px 16px 80px}
     h1{font-size:1.7rem}
@@ -202,17 +223,17 @@
     <span class="badge">Private development prototype &middot; not for public release</span>
   </header>
 
-  <details class="card ai-setup" id="ai-setup">
-    <summary>AI reflections (optional)</summary>
-    <p class="ai-intro">Add your Anthropic API key to turn on AI reflections. The tick-box answers and the ASCOT score do not change. The AI only reads the extra detail a person chooses to write in their own words: it offers a gentle reflection back to them, and flags for the practitioner where the words suggest more difficulty than the option selected. For anything beyond your own private testing, move the key to a Cloudflare Worker proxy so it is never in the browser.</p>
+  <div class="card ai-setup" id="ai-setup">
+    <p class="h2sec">Step 1 &middot; Anthropic API key required</p>
+    <p class="ai-intro">This tool needs your Anthropic API key to run. The key powers the AI reflections and the safeguarding read of the free text. The tick-box answers and the ASCOT score are never changed by AI. The key is held in memory for this session only, and is checked with a live request before the tool unlocks. For anything beyond your own private testing, move the key to a Cloudflare Worker proxy so it is never in the browser.</p>
     <div class="ai-row">
       <input class="key-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
-      <button type="button" class="reflect-btn" id="ai-enable">Turn on AI</button>
+      <button type="button" class="reflect-btn" id="ai-enable">Unlock tool</button>
     </div>
-    <p class="ai-status" id="ai-status">AI is off. Free-text boxes still save what is written.</p>
-  </details>
+    <p class="ai-status" id="ai-status">Enter your key and select Unlock to begin.</p>
+  </div>
 
-  <form id="screen" novalidate>
+  <form id="screen" novalidate style="display:none">
     <div id="questions"></div>
 
     <div class="card safeguard">
@@ -230,42 +251,76 @@
   </form>
 
   <section id="results" aria-live="polite">
-    <div class="card steer" id="steer-card">
-      <h2 id="steer-title"></h2>
-      <p id="steer-body"></p>
-      <p class="reason" id="steer-reason"></p>
+
+    <div class="view-toggle" role="tablist" aria-label="Choose view">
+      <button type="button" class="vt on" id="tab-person" role="tab" aria-selected="true">For the person</button>
+      <button type="button" class="vt" id="tab-prac" role="tab" aria-selected="false">For the practitioner</button>
     </div>
 
-    <div class="card">
-      <div class="score-head">
-        <div>
-          <p class="h2sec">Current SCRQoL score</p>
-          <div class="score-num" id="score-num"></div>
-        </div>
-        <div class="score-label" id="score-word"></div>
+    <!-- PERSON VIEW: soft, no score, no clinical labels -->
+    <div id="view-person" role="tabpanel">
+      <div class="card person-intro">
+        <h2 id="p-title">Thank you for taking the time</h2>
+        <p id="p-lede"></p>
       </div>
-      <div class="scale"><div class="mark" id="score-mark"></div></div>
-      <div class="scale-ends"><span>Lower quality of life</span><span>Ideal (1.00)</span></div>
-      <details>
-        <summary>How this is scored</summary>
-        <p>Each of the eight scored domains carries a preference weight for the answer chosen. The weights are summed and converted with the ASCOT-SCT4 formula <code>SCRQoL = 0.203 &times; weighted score &minus; 0.466</code>, giving a figure anchored to the ideal state at 1.00. The dignity filter question is asked but not scored, as per the ASCOT guidance. Weighting and thresholds follow the ASCOT-SCT4 guidance (Version 2.0, September 2025).</p>
-      </details>
+
+      <div class="card" id="p-areas-card" style="display:none">
+        <p class="h2sec">Things you mentioned</p>
+        <div id="p-areas"></div>
+      </div>
+
+      <div class="card" id="p-offer-card">
+        <p class="h2sec">If you would like</p>
+        <p id="p-offer-text" style="margin:0 0 14px;color:var(--muted)"></p>
+        <div class="offer-actions">
+          <button type="button" class="primary-btn" id="p-yes">I would like to explore support</button>
+          <button type="button" class="ghost-btn" id="p-no">Not right now</button>
+        </div>
+        <p class="offer-ack" id="p-ack" style="display:none"></p>
+      </div>
     </div>
 
-    <div class="card">
-      <p class="h2sec">Domain by domain</p>
-      <div class="domains" id="domains"></div>
-    </div>
+    <!-- PRACTITIONER VIEW: analysis and action -->
+    <div id="view-prac" role="tabpanel" style="display:none">
+      <div class="card steer" id="steer-card">
+        <p class="band-eyebrow" id="band-eyebrow"></p>
+        <h2 id="steer-title"></h2>
+        <p id="steer-body"></p>
+        <p class="reason" id="steer-reason"></p>
+        <p class="action-line" id="action-line"></p>
+      </div>
 
-    <div class="card" id="qual-card" style="display:none">
-      <p class="h2sec">In their own words</p>
-      <p style="margin:0 0 8px;color:var(--muted);font-size:.85rem">Free-text detail and any AI notes. These add context and flags for the practitioner. They do not change the ASCOT score.</p>
-      <div class="qual" id="qual"></div>
-    </div>
+      <div class="card">
+        <div class="score-head">
+          <div>
+            <p class="h2sec">Current SCRQoL score</p>
+            <div class="score-num" id="score-num"></div>
+          </div>
+          <div class="score-label" id="score-word"></div>
+        </div>
+        <div class="scale"><div class="mark" id="score-mark"></div></div>
+        <div class="scale-ends"><span>Lower quality of life</span><span>Ideal (1.00)</span></div>
+        <details>
+          <summary>How this is scored, and how the band is set</summary>
+          <p>Each of the eight scored domains carries a preference weight for the answer chosen. The weights are summed and converted with the ASCOT-SCT4 formula <code>SCRQoL = 0.203 &times; weighted score &minus; 0.466</code>, anchored to the ideal state at 1.00. The dignity filter question is asked but not scored. The action band is separate from this score: it reads the worst domain state and the spread, not the composite, so a single high-level need is not masked by a good average. Band logic is Assistiv operational triage over ASCOT-native states, configurable and for validation with clinical advisers, not a clinical cut-off.</p>
+        </details>
+      </div>
 
-    <div class="card">
-      <p class="h2sec">What happens next</p>
-      <p id="handoff" style="margin:0;color:var(--muted)"></p>
+      <div class="card">
+        <p class="h2sec">Domain by domain</p>
+        <div class="domains" id="domains"></div>
+      </div>
+
+      <div class="card" id="qual-card" style="display:none">
+        <p class="h2sec">In their own words</p>
+        <p style="margin:0 0 8px;color:var(--muted);font-size:.85rem">Free-text detail and any AI notes. These add context and flags for the practitioner. They do not change the ASCOT score.</p>
+        <div class="qual" id="qual"></div>
+      </div>
+
+      <div class="card">
+        <p class="h2sec">What happens next</p>
+        <p id="handoff" style="margin:0;color:var(--muted)"></p>
+      </div>
     </div>
 
     <div class="actions">
@@ -371,11 +426,41 @@ const QUESTIONS = [
       'The way I\u2019m helped and treated completely undermines the way I think and feel about myself'] }
 ];
 
-// ---- Triage thresholds (configurable defaults, not clinical cut-offs) ----
+// ---- Banding (configurable defaults, not clinical cut-offs) ----
+// Band reads the worst domain state and the spread, not the composite score.
+//   all Ideal/No needs        -> no action, general signposting
+//   any Some needs, no High   -> candidate for Assistiv / support services
+//   any High-level need       -> routing into services indicated
+//   safety High, or safeguard -> route to a person now (override)
+// Calibration point for Ann: whether a single high-level need in any domain
+// should always route to services, or only in certain domains.
 const FLAG_FROM = 2;   // Some needs and worse counts as a flag
 const HIGH = 3;        // High-level needs index
-const STATUTORY_HIGH = 2;   // this many high-level needs -> statutory
-const STATUTORY_FLAGS = 4;  // this many flagged domains -> statutory
+
+// Plain, non-clinical names for the person-facing view.
+const PERSON_NAME = {
+  control:'having a say in your day',
+  personal_care:'keeping clean and comfortable',
+  food:'food and drink',
+  safety:'feeling safe',
+  social:'seeing people',
+  occupation:'spending your time',
+  accommodation:'your home',
+  dignity:'how you are treated'
+};
+
+// Category-level signposting. EDITABLE DEFAULTS: localise to Kent using the
+// Community Outreach Map and district data rather than these generic pointers.
+const SIGNPOST = {
+  control:'An advocate, or a care needs assessment through the council, can help you keep more say over your day. Age UK offers free advice.',
+  personal_care:'A GP or an occupational therapist can help with keeping clean and comfortable, and homecare support may help too.',
+  food:'Local lunch clubs, meal delivery, and dietitian advice through a GP can all help with food and drink. Age UK can point you to what is nearby.',
+  safety:'A GP can arrange a falls check, and the fire service offers free home safety visits. If you ever feel at risk from someone, adult social care can help.',
+  social:'Local community groups and befriending services can help with staying connected. Age UK runs befriending schemes.',
+  occupation:'Community activities, day services and volunteering can help fill the day in ways you enjoy. Libraries and community centres often have listings.',
+  accommodation:'Home improvement agencies, handyperson schemes and warm-home energy support can help your home feel comfortable. The council can advise.',
+  dignity:'If the way you are helped affects how you feel about yourself, an advocate can support you, and you can raise concerns about the quality of care.'
+};
 
 // ---- Build the form ----
 const qWrap = document.getElementById('questions');
@@ -430,14 +515,49 @@ const AI_MODEL = 'claude-sonnet-4-20250514';
 const detailAI = {}; // q.key -> { reflection, practitioner_note, possible_minimisation, safeguarding_concern }
 
 const aiStatus = document.getElementById('ai-status');
-document.getElementById('ai-enable').addEventListener('click', ()=>{
-  const v = document.getElementById('apiKeyInput').value.trim();
-  if(!v){ aiStatus.textContent = 'Please paste an Anthropic API key first.'; return; }
-  AI_KEY = v;
-  aiStatus.textContent = 'AI is on for this session. Reflections appear when you add detail and press Reflect.';
-  aiStatus.classList.add('on');
-  updateReflectButtons();
-});
+const enableBtn = document.getElementById('ai-enable');
+const keyInput = document.getElementById('apiKeyInput');
+
+async function unlock(){
+  const v = keyInput.value.trim();
+  if(!v){ aiStatus.textContent = 'Please paste an Anthropic API key first.'; aiStatus.classList.remove('on'); return; }
+  if(!v.startsWith('sk-ant-')){ aiStatus.textContent = 'That does not look like an Anthropic key. It should start with sk-ant-.'; aiStatus.classList.remove('on'); return; }
+  enableBtn.disabled = true;
+  aiStatus.classList.remove('on');
+  aiStatus.textContent = 'Checking the key\u2026';
+  try{
+    await verifyKey(v);
+    AI_KEY = v;
+    document.getElementById('screen').style.display = '';
+    aiStatus.textContent = 'Key verified. The tool is unlocked for this session.';
+    aiStatus.classList.add('on');
+    enableBtn.textContent = 'Unlocked';
+    keyInput.disabled = true;
+    updateReflectButtons();
+  }catch(err){
+    aiStatus.textContent = 'The key could not be verified: '+(err.message||'error')+'. The tool stays locked.';
+    enableBtn.disabled = false;
+  }
+}
+enableBtn.addEventListener('click', unlock);
+keyInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); unlock(); } });
+
+async function verifyKey(key){
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model: AI_MODEL, max_tokens: 4, messages:[{ role:'user', content:'ping' }] })
+  });
+  const data = await resp.json();
+  if(data.error) throw new Error(data.error.message);
+  if(!data.content) throw new Error('unexpected response');
+  return true;
+}
 
 function updateReflectButtons(){
   document.querySelectorAll('[data-reflect]').forEach(btn=>{
@@ -551,7 +671,7 @@ function scoreWord(s){
   return 'Marked quality-of-life impact';
 }
 
-// ---- Triage ----
+// ---- Triage / banding ----
 function triage(indices, safeguard){
   const scored = QUESTIONS.filter(q=>q.scored);
   const flagged = scored.filter(q=>indices[q.key]>=FLAG_FROM);
@@ -559,28 +679,103 @@ function triage(indices, safeguard){
   const safetyHigh = indices['safety']===HIGH;
 
   if(safeguard || safetyHigh){
-    return { key:'urgent', title:'Route to a person now',
+    return { key:'urgent', band:'Route to a person now',
+      title:'Route to a person now',
       body:'This needs a person, not a form. Based on '+(safeguard?'the safeguarding concern flagged':'the safety response')+', the steer is to connect this person with someone who can help now, not to suggest monitoring.',
-      reason:(safeguard?'Safeguarding concern flagged by practitioner. ':'')+(safetyHigh?'Personal safety recorded at high-level needs. ':'')+'The tool does not sit between a person and urgent help.',
+      reason:(safeguard?'Safeguarding concern flagged. ':'')+(safetyHigh?'Personal safety recorded at high-level needs. ':'')+'The tool does not sit between a person and urgent help.',
+      action:'Action: warm handoff to a person now.',
       handoff:'Warm handoff to adult social care or the relevant urgent service, with consent. No sensor recommendation is made at this point.' };
   }
-  if(highs.length>=STATUTORY_HIGH || flagged.length>=STATUTORY_FLAGS){
-    return { key:'statutory', title:'Steer to statutory services',
-      body:'Several areas show need at a level that usually meets local-authority support. The steer is a referral to adult social care, with consent.',
-      reason:flagged.length+' domain(s) flagged, of which '+highs.length+' at high-level needs. Pattern suggests likely Care Act eligibility.',
+  if(highs.length>=1){
+    return { key:'statutory', band:'High-level need',
+      title:'Routing into services indicated',
+      body:'One or more areas show need at a high level, defined in ASCOT as need with health implications if left unmet over time. The steer is a referral to adult social care, with consent.',
+      reason:highs.length+' domain(s) at high-level need'+(flagged.length>highs.length?', plus '+(flagged.length-highs.length)+' at some needs':'')+'.',
+      action:'Action: route into services, with consent.',
       handoff:'Produce a short, consent-gated summary the person can take to their GP or local authority. It states the flagged areas in plain language and does not present itself as a completed statutory assessment.' };
   }
   if(flagged.length>=1){
-    return { key:'assistiv', title:'Steer to Assistiv',
-      body:'One or a few areas are starting to slip, below the level that triggers statutory support. This is the gap Assistiv exists for: light-touch monitoring to catch change early.',
-      reason:flagged.length+' domain(s) at some needs or worse, none meeting the urgent or statutory threshold. This is the Missing Middle.',
+    return { key:'assistiv', band:'Some needs',
+      title:'Candidate for Assistiv or support services',
+      body:'One or a few areas are at some needs, below the level that triggers statutory support. This is the gap Assistiv exists for: light-touch monitoring and support to catch change early.',
+      reason:flagged.length+' domain(s) at some needs, none at high-level need.',
+      action:'Action: offer Assistiv or local support services.',
       handoff:'Seed the Check-In tool with this result as the baseline, and propose Support Sensors mapped to the flagged domains. The person sees the steer and can decline.' };
   }
-  return { key:'rescreen', title:'No unmet need today',
-    body:'No area shows unmet need at the moment. The steer is to check in again later rather than act now.',
+  return { key:'rescreen', band:'Ideal / no needs',
+    title:'No action required',
+    body:'No area shows unmet need at the moment. General information on where to find support is available if the person ever wants it.',
     reason:'All eight scored domains at ideal or no needs.',
+    action:'Action: no action needed; offer general signposting.',
     handoff:'Store the result and set a re-screen interval so any future change shows as a trajectory, not a fresh start.' };
 }
+
+// ---- Person-facing view ----
+function renderPerson(indices, t){
+  const lede = {
+    urgent:'From what you have shared, it would help to talk to someone soon. You are not on your own with this.',
+    statutory:'From what you have shared, some things are harder than they should be. There is support that can help, and it is your choice whether to take it up.',
+    assistiv:'From what you have shared, a few things are starting to feel like more of a struggle. There are gentle ways to get a bit of support if you would like.',
+    rescreen:'From what you have shared, things are going well right now. That is good to see.'
+  };
+  document.getElementById('p-lede').textContent = lede[t.key];
+
+  const areasCard = document.getElementById('p-areas-card');
+  const areasWrap = document.getElementById('p-areas');
+  areasWrap.innerHTML = '';
+  const flagged = QUESTIONS.filter(q=>q.scored && indices[q.key]>=FLAG_FROM);
+  if(flagged.length){
+    flagged.forEach(q=>{
+      const div = document.createElement('div');
+      div.className = 'p-area';
+      div.innerHTML =
+        '<p class="pa-name">'+escapeHtml(PERSON_NAME[q.key])+'</p>'+
+        '<p class="pa-reflect">You said: \u201c'+escapeHtml(q.options[indices[q.key]])+'\u201d</p>'+
+        '<p class="pa-sign">'+escapeHtml(SIGNPOST[q.key])+'</p>';
+      areasWrap.appendChild(div);
+    });
+    areasCard.style.display = 'block';
+  } else {
+    areasCard.style.display = 'none';
+  }
+
+  const offer = {
+    urgent:'Would you like us to help you talk to someone now? It is completely your choice.',
+    statutory:'Would you like to explore support for any of these? You can also just take this information away and think about it.',
+    assistiv:'Would you like to explore a bit of support, or just have the information for now? Either is fine.',
+    rescreen:'Everything looks settled. If you ever want to know where to find support for any part of life, we can show you. There is no need to do anything now.'
+  };
+  document.getElementById('p-offer-text').textContent = offer[t.key];
+  const ack = document.getElementById('p-ack');
+  ack.style.display = 'none';
+  ack.textContent = '';
+}
+
+// ---- View toggle ----
+const tabPerson = document.getElementById('tab-person');
+const tabPrac = document.getElementById('tab-prac');
+function showView(which){
+  const person = which==='person';
+  document.getElementById('view-person').style.display = person?'block':'none';
+  document.getElementById('view-prac').style.display = person?'none':'block';
+  tabPerson.classList.toggle('on',person); tabPerson.setAttribute('aria-selected',person);
+  tabPrac.classList.toggle('on',!person); tabPrac.setAttribute('aria-selected',!person);
+}
+tabPerson.addEventListener('click',()=>showView('person'));
+tabPrac.addEventListener('click',()=>showView('prac'));
+
+document.getElementById('p-yes').addEventListener('click',()=>{
+  const ack=document.getElementById('p-ack');
+  ack.textContent='Thank you. Someone will go through the options with you. You can change your mind at any time.';
+  ack.style.color='var(--ideal)';
+  ack.style.display='block';
+});
+document.getElementById('p-no').addEventListener('click',()=>{
+  const ack=document.getElementById('p-ack');
+  ack.textContent='That is completely fine. The information is here whenever you want it.';
+  ack.style.color='var(--muted)';
+  ack.style.display='block';
+});
 
 // ---- Submit ----
 const form = document.getElementById('screen');
@@ -589,6 +784,7 @@ const results = document.getElementById('results');
 
 form.addEventListener('submit', function(e){
   e.preventDefault();
+  if(!AI_KEY){ return; }
   const indices = {};
   let missing = false;
   QUESTIONS.forEach(q=>{
@@ -608,13 +804,18 @@ form.addEventListener('submit', function(e){
   const s = scrqol(indices);
   const t = triage(indices, safeguard || aiSafeguard);
 
-  // steer card
+  // practitioner steer card
   const card = document.getElementById('steer-card');
   card.className = 'card steer '+t.key;
+  document.getElementById('band-eyebrow').textContent = t.band;
   document.getElementById('steer-title').textContent = t.title;
   document.getElementById('steer-body').textContent = t.body;
   document.getElementById('steer-reason').textContent = t.reason;
+  document.getElementById('action-line').textContent = t.action;
   document.getElementById('handoff').textContent = t.handoff;
+
+  // person-facing view
+  renderPerson(indices, t);
 
   // score
   document.getElementById('score-num').textContent = s.toFixed(2);
@@ -661,6 +862,7 @@ form.addEventListener('submit', function(e){
   });
   qualCard.style.display = anyQual ? 'block' : 'none';
 
+  showView('person');
   results.classList.add('show');
   results.scrollIntoView({behavior:'smooth',block:'start'});
 });
