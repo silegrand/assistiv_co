@@ -259,6 +259,11 @@
   </details>
 
   <form id="screen" novalidate>
+    <div class="card" id="intro-pc-card">
+      <p class="h2sec">Your postcode (optional)</p>
+      <p style="margin:0 0 12px;color:var(--muted);font-size:.9rem">If you add it, we can show local groups and services near you at the end, for anything that comes up. You can skip this and still do the screening. Nothing is stored.</p>
+      <input type="text" id="intro-pc" class="pc-input" placeholder="e.g. CT10 1SH" autocomplete="postal-code" aria-label="Your postcode" style="max-width:220px" />
+    </div>
     <div id="questions"></div>
 
     <div class="card safeguard">
@@ -870,21 +875,35 @@ const form = document.getElementById('screen');
 const err = document.getElementById('err');
 const results = document.getElementById('results');
 
-// ---- Local takeaway wiring ----
-// Calls the Cloudflare Worker /takeaway endpoint, which geocodes the postcode
-// and queries the Kent+Medway directory. The Supabase key stays in the Worker,
-// never in this page. Set TAKEAWAY_URL to your Worker's domain.
+// ---- Local takeaway wiring (per-domain, stepped radius, national fallback) ----
 const TAKEAWAY_URL = 'https://wandering-wind-5a9d.simongeorgelegrand.workers.dev/takeaway';
 
-// The domains the person flagged, captured at submit, shared by both views.
 let lastFlaggedDomains = [];
+
+// friendly domain names for headings
+const DOMAIN_LABEL = {
+  control:'Staying in control of daily life',
+  personal_care:'Keeping clean and comfortable',
+  food:'Food and drink',
+  safety:'Feeling safe',
+  social:'Seeing people and staying connected',
+  occupation:'Having things to do',
+  accommodation:'Your home',
+  dignity:'Being treated with dignity'
+};
+
+const BAND_LABEL = {
+  local:'',                              // near you: no caveat needed
+  nearby:'A little further out',
+  distant:'The closest we could find'
+};
 
 async function runTakeaway(postcode, statusEl, targetEl, practitioner){
   const pc = (postcode || '').trim();
-  if(!pc){ statusEl.style.display='block'; statusEl.textContent='Please enter a postcode.'; return; }
+  if(!pc){ statusEl.style.display='block'; statusEl.textContent='No postcode was entered, so we cannot show local services. You can still use the information above.'; return; }
   if(!lastFlaggedDomains.length){
     statusEl.style.display='block';
-    statusEl.textContent='No areas were flagged, so there is nothing specific to search for. General information is available above.';
+    statusEl.textContent='No areas were flagged, so there is nothing specific to search for.';
     return;
   }
   statusEl.style.display='block';
@@ -910,61 +929,67 @@ async function runTakeaway(postcode, statusEl, targetEl, practitioner){
 
 function renderTakeaway(data, el, practitioner){
   el.innerHTML='';
-  const places = data.places || [];
-  const advice = data.advice || [];
+  const groups = data.domain_results || [];
+  if(!groups.length){ el.innerHTML='<p class="tk-empty">Nothing to show.</p>'; return; }
 
-  if(!places.length && !advice.length){
-    el.innerHTML = '<p class="tk-empty">We could not find local services for these areas near '+
-      escapeHtml(data.location.postcode)+' just yet. The general information above still applies.</p>';
-    return;
-  }
+  groups.forEach(g=>{
+    const wrap = document.createElement('div');
+    wrap.className='tk-group';
+    wrap.innerHTML = '<p class="tk-group-name">'+escapeHtml(DOMAIN_LABEL[g.domain]||g.domain)+'</p>';
 
-  // group places by the domains they matched
-  if(places.length){
-    const head = document.createElement('p');
-    head.className='tk-advice-head';
-    head.textContent = practitioner
-      ? 'Nearby services ('+places.length+')'
-      : 'Places near you';
-    el.appendChild(head);
-
-    places.forEach(p=>{
-      const item = document.createElement('div');
-      item.className='tk-item';
-      const km = (p.distance_m!=null) ? (p.distance_m/1000).toFixed(1)+' miles' : '';
-      let contact = '';
-      if(practitioner){
-        const bits = [];
-        if(p.phone) bits.push('<a href="tel:'+escapeHtml(p.phone.replace(/\s/g,''))+'">'+escapeHtml(p.phone)+'</a>');
-        if(p.website) bits.push('<a href="'+escapeHtml(p.website)+'" target="_blank" rel="noopener">website</a>');
-        contact = bits.length ? '<p class="tk-contact">'+bits.join(' &middot; ')+'</p>' : '';
-      } else {
-        // person view: gentle, phone only if present
-        if(p.phone) contact = '<p class="tk-contact"><a href="tel:'+escapeHtml(p.phone.replace(/\s/g,''))+'">'+escapeHtml(p.phone)+'</a></p>';
+    if(g.services && g.services.length){
+      // band caveat if the results aren't local
+      if(g.band && BAND_LABEL[g.band]){
+        const note = g.band==='distant'
+          ? 'We could not find anything close, so here is the nearest option.'
+          : 'A little further from you.';
+        const b = document.createElement('p');
+        b.className='tk-meta';
+        b.textContent = note;
+        wrap.appendChild(b);
       }
-      item.innerHTML =
-        '<p class="tk-name">'+escapeHtml(p.name)+'</p>'+
-        '<p class="tk-meta">'+escapeHtml(p.detail||'')+(km?' &middot; '+km:'')+'</p>'+
-        contact;
-      el.appendChild(item);
-    });
-  }
+      g.services.forEach(s=>{
+        const item = document.createElement('div');
+        item.className='tk-item';
+        const km = (s.distance_m!=null) ? (s.distance_m/1609).toFixed(1)+' miles' : '';
+        const summary = s.plain_summary ? '<p class="tk-meta">'+escapeHtml(s.plain_summary)+'</p>' : '';
+        let contact = '';
+        if(practitioner){
+          const bits=[];
+          if(s.phone) bits.push('<a href="tel:'+escapeHtml((s.phone||'').replace(/\s/g,''))+'">'+escapeHtml(s.phone)+'</a>');
+          if(s.website) bits.push('<a href="'+escapeHtml(s.website)+'" target="_blank" rel="noopener">website</a>');
+          contact = bits.length ? '<p class="tk-contact">'+bits.join(' &middot; ')+'</p>' : '';
+        } else if(s.phone){
+          contact = '<p class="tk-contact"><a href="tel:'+escapeHtml((s.phone||'').replace(/\s/g,''))+'">'+escapeHtml(s.phone)+'</a></p>';
+        }
+        item.innerHTML =
+          '<p class="tk-name">'+escapeHtml(s.name)+(km?' <span class="tk-meta" style="font-weight:400">&middot; '+km+'</span>':'')+'</p>'+
+          summary + contact;
+        wrap.appendChild(item);
+      });
+    } else {
+      // national / advice fallback for this domain
+      const fb = document.createElement('p');
+      fb.className='tk-meta';
+      fb.textContent = 'We could not find a local group for this near you. These can still help:';
+      wrap.appendChild(fb);
+    }
 
-  // advice layer
-  if(advice.length){
-    const head = document.createElement('p');
-    head.className='tk-advice-head';
-    head.textContent = 'Information and helplines';
-    el.appendChild(head);
-    advice.slice(0, practitioner?12:6).forEach(a=>{
-      const row = document.createElement('div');
-      row.className='tk-advice';
-      row.innerHTML = '<a href="'+escapeHtml(a.website||'#')+'" target="_blank" rel="noopener">'+escapeHtml(a.name)+'</a>';
-      el.appendChild(row);
-    });
-  }
+    // advice layer under each domain (always show a couple, and it's the
+    // fallback when no services were found)
+    if(g.advice && g.advice.length){
+      const show = (g.services && g.services.length) ? 2 : (practitioner?5:3);
+      g.advice.slice(0, show).forEach(a=>{
+        const row=document.createElement('div');
+        row.className='tk-advice';
+        row.innerHTML='<a href="'+escapeHtml(a.url||'#')+'" target="_blank" rel="noopener">'+escapeHtml(a.name)+'</a>';
+        wrap.appendChild(row);
+      });
+    }
+    el.appendChild(wrap);
+  });
 
-  const note = document.createElement('p');
+  const note=document.createElement('p');
   note.className='tk-note';
   note.textContent = practitioner
     ? 'Distances are to the service\u2019s registered address, which may differ from where activities run. Confirm before referral.'
@@ -972,16 +997,13 @@ function renderTakeaway(data, el, practitioner){
   el.appendChild(note);
 }
 
-// shared postcode between the two views
-function syncPostcode(from, to){ const t=document.getElementById(to); if(t) t.value=from; }
+// buttons in both result views trigger the takeaway using the up-front postcode
 document.getElementById('pc-go').addEventListener('click', ()=>{
-  const pc=document.getElementById('pc-input').value;
-  syncPostcode(pc,'pc-input-prac');
+  const pc=document.getElementById('pc-input').value || document.getElementById('intro-pc').value;
   runTakeaway(pc, document.getElementById('pc-status'), document.getElementById('p-takeaway'), false);
 });
 document.getElementById('pc-go-prac').addEventListener('click', ()=>{
-  const pc=document.getElementById('pc-input-prac').value;
-  syncPostcode(pc,'pc-input');
+  const pc=document.getElementById('pc-input-prac').value || document.getElementById('intro-pc').value;
   runTakeaway(pc, document.getElementById('pc-status-prac'), document.getElementById('prac-takeaway'), true);
 });
 document.getElementById('pc-input').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('pc-go').click(); }});
@@ -1027,6 +1049,17 @@ form.addEventListener('submit', function(e){
   ['p-takeaway','prac-takeaway'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
   // hide the person-view local card entirely when nothing is flagged
   document.getElementById('p-local-card').style.display = lastFlaggedDomains.length ? 'block' : 'none';
+
+  // carry the up-front postcode into both result views, and auto-run if present
+  const introPc = document.getElementById('intro-pc').value.trim();
+  if(introPc){
+    document.getElementById('pc-input').value = introPc;
+    document.getElementById('pc-input-prac').value = introPc;
+    if(lastFlaggedDomains.length){
+      runTakeaway(introPc, document.getElementById('pc-status'), document.getElementById('p-takeaway'), false);
+      runTakeaway(introPc, document.getElementById('pc-status-prac'), document.getElementById('prac-takeaway'), true);
+    }
+  }
 
   // person-facing view
   renderPerson(indices, t);
@@ -1091,7 +1124,7 @@ function resetAll(){
   results.classList.remove('show');
   // clear takeaway state
   lastFlaggedDomains = [];
-  ['pc-input','pc-input-prac'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['pc-input','pc-input-prac','intro-pc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   ['pc-status','pc-status-prac'].forEach(id=>{ const el=document.getElementById(id); if(el){el.style.display='none';el.textContent='';} });
   ['p-takeaway','prac-takeaway'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
   window.scrollTo({top:0,behavior:'smooth'});
