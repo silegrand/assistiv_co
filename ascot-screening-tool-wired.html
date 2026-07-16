@@ -22,6 +22,11 @@
     --noneeds:#5b9b86;
     --some:#bd7a1c;
     --high:#b23a2c;
+    --r-primary:#4a4ea8;
+    --r-primary-tint:#ecedf7;
+    --r-primary-strong:#3a3e8c;
+    --r-bg:#f6f6fb;
+    --r-line:#dcdcef;
     --radius:14px;
     --maxw:760px;
     --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -249,7 +254,35 @@
     .score-num{font-size:2.2rem}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  /* ---- PRINT: clean take-home sheet ---- */
+  /* ---- RESULTS THEME: indigo, to signal a shift from the green screening ---- */
+  #results{
+    background:var(--r-bg);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-top:8px;
+    border:1px solid var(--r-line);
+  }
+  #results .card{border-color:var(--r-line)}
+  /* section labels and headers shift to indigo */
+  #results .h2sec{color:var(--r-primary)}
+  #results .tk-group-name{color:var(--r-primary)}
+  #results .p-area .pa-name{color:var(--r-primary)}
+  #results #p-title,#results .person-intro h2{color:var(--r-primary-strong)}
+  /* primary buttons in results use indigo */
+  #results .primary-btn{background:var(--r-primary)}
+  #results .primary-btn:hover{background:var(--r-primary-strong)}
+  /* view toggle active state indigo */
+  #results .vt.on{background:var(--r-primary);color:#fff}
+  /* postcode input focus + reflection accents */
+  #results .pc-input:focus{border-color:var(--r-primary);outline-color:var(--r-primary)}
+  #results .reflection{background:var(--r-primary-tint);border-color:#cfd0ee}
+  #results .reflection .rtitle{color:var(--r-primary)}
+  /* map toggle button */
+  #results .tk-map-toggle{background:var(--r-primary-tint);color:var(--r-primary-strong)}
+  /* NB: severity signals (--some amber, --high red) are deliberately NOT
+     overridden here \u2014 they carry meaning and must stay legible. */
+
+
   @media print {
     /* hide everything not part of the results */
     header, .view-toggle, #screen > .card:not(#results *), form#screen > *:not(#results),
@@ -279,7 +312,7 @@
     #results::before {
       content: "Your wellbeing summary";
       display: block; font-size: 18pt; font-weight: 700;
-      font-family: var(--display); margin: 0 0 4px; color: #0f5c5b;
+      font-family: var(--display); margin: 0 0 4px; color: #4a4ea8;
     }
     #results::after {
       content: "This is your personal copy. It reflects a brief screening conversation, not a clinical assessment. Services shown are a starting point — always call to check details before visiting.";
@@ -695,7 +728,7 @@ function renderReflection(key, ai){
   const box = document.getElementById('refl_'+key);
   const alert = !!ai.safeguarding_concern;
   box.className = 'reflection show' + (alert ? ' alert' : '');
-  let html = '<p class="rtitle">'+(alert ? 'A note of care' : 'Thank you for sharing that')+'</p>';
+  let html = '<p class="rtitle">'+(alert ? 'A note of care' : 'What you told us')+'</p>';
   html += '<p style="margin:0">'+escapeHtml(ai.reflection||'')+'</p>';
   const flags = [];
   if(ai.possible_minimisation) flags.push('Practitioner note: the words may suggest more difficulty than the option chosen.');
@@ -706,13 +739,13 @@ function renderReflection(key, ai){
 
 async function callAI(q, selectedText, personText){
   const system =
-    'You are the qualitative intelligence layer of an ASCOT-aligned screening tool for older adults in Kent, UK, the group between full independence and formal care. You work on Motivational Interviewing principles: warm, non-judgemental, never alarming.\n\n'+
+    'You are the qualitative layer of an ASCOT-aligned screening tool for older adults in Kent, UK, the group between full independence and formal care. Your register is plain, factual and respectful, NOT therapeutic, NOT motivational-interviewing, NOT warm-and-reassuring. You treat the person as a competent adult who wants to be heard accurately, not managed.\n\n'+
     'DO NOT score or re-score anything. The ASCOT tick-box answer is authoritative and must not be second-guessed as a number. Your only job is to read the extra free text a person writes and return three things.\n\n'+
-    'This group commonly understates difficulty: to avoid worrying family, from fear of losing independence, from stoicism, or not wanting to make a fuss. Watch for minimisation such as "I manage", "not too bad", "only sometimes", difficulty described in a dismissive tone, or detail that contradicts a reassuring option choice.\n\n'+
-    'If the free text contains any sign of abuse, neglect, self-harm or immediate risk, set safeguarding_concern true, keep the reflection gentle and non-probing, and do not give advice or instructions.\n\n'+
+    'THE REFLECTION: restate, in plain British English, what the person actually said, accurately and concisely, as a neutral mirror so they can confirm you understood. Rules: use only their own facts; add no warmth, praise, sympathy, encouragement or reassurance; give no advice; do not diagnose; and do NOT interpret or evaluate what their words MEAN (never say something is a risk, is concerning, or suggests they are struggling). State only what they told you. Prefer starting with "You have said" or "You have described". One or two sentences.\n\n'+'This group commonly understates difficulty: to avoid worrying family, from fear of losing independence, from stoicism, or not wanting to make a fuss. Watch for minimisation such as "I manage", "not too bad", "only sometimes", difficulty described in a dismissive tone, or detail that contradicts a reassuring option choice. This detection feeds the practitioner flag ONLY and must not change the plain register of the reflection shown to the person.\n\n'+
+    'If the free text contains any sign of abuse, neglect, self-harm or immediate risk, set safeguarding_concern true, keep the reflection strictly factual and non-probing, and do not give advice or instructions.\n\n'+
     'DOMAIN BEING DISCUSSED: '+q.domain+'\n\n'+
     'Return ONLY a JSON object, no preamble and no markdown fences, with these keys: '+
-    '"reflection" (one or two warm sentences in British English spoken directly to the person, acknowledging what they said, no advice, no diagnosis), '+
+    '"reflection" (a plain factual restatement of what the person said, British English, spoken to the person as "you", no warmth, no advice, no interpretation of meaning), '+
     '"practitioner_note" (one short sentence for the practitioner, or an empty string), '+
     '"possible_minimisation" (boolean: does the free text suggest more difficulty than the option chosen?), '+
     '"safeguarding_concern" (boolean).';
@@ -1113,7 +1146,7 @@ function initTakeawayMap(mapId, mapCol, points, location){
   // the person's location, if we have it
   if(location && location.lat!=null && location.lng!=null){
     L.circleMarker([location.lat, location.lng], {
-      radius:8, color:'#0f5c5b', fillColor:'#0f5c5b', fillOpacity:0.9, weight:2
+      radius:8, color:'#4a4ea8', fillColor:'#4a4ea8', fillOpacity:0.9, weight:2
     }).addTo(map).bindPopup('<span class="lp-name">You are here</span>'+escapeHtml(location.postcode||''));
     bounds.push([location.lat, location.lng]);
   }
