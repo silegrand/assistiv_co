@@ -249,6 +249,44 @@
     .score-num{font-size:2.2rem}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  /* ---- PRINT: clean take-home sheet ---- */
+  @media print {
+    /* hide everything not part of the results */
+    header, .view-toggle, #screen > .card:not(#results *), form#screen > *:not(#results),
+    .no-print, .actions, .pc-row, .offer-actions, .tk-map-toggle, .tk-mapcol,
+    #p-print-card, #prac-print-card, .steer, .detail, .reflection,
+    button, input, textarea, .pc-status {
+      display: none !important;
+    }
+    /* neutralise app chrome */
+    body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+    .wrap { max-width: 100%; margin: 0; padding: 0; }
+    .card {
+      border: none !important; box-shadow: none !important;
+      padding: 0 0 10px !important; margin: 0 0 14px !important;
+      background: #fff !important; break-inside: avoid;
+    }
+    #results { display: block !important; }
+    /* the on-screen view uses inline display; whichever is visible prints */
+    /* headings and layout for paper */
+    .tk-layout { display: block !important; }
+    .tk-list { width: 100% !important; }
+    .h2sec { color: #000 !important; font-size: 10pt; }
+    .tk-group-name, .p-area .pa-name { color: #111 !important; font-size: 13pt !important; }
+    .tk-item, .p-area { break-inside: avoid; }
+    a { color: #000 !important; text-decoration: none; }
+    /* print header + footer */
+    #results::before {
+      content: "Your wellbeing summary";
+      display: block; font-size: 18pt; font-weight: 700;
+      font-family: var(--display); margin: 0 0 4px; color: #0f5c5b;
+    }
+    #results::after {
+      content: "This is your personal copy. It reflects a brief screening conversation, not a clinical assessment. Services shown are a starting point — always call to check details before visiting.";
+      display: block; margin-top: 20px; padding-top: 10px;
+      border-top: 1px solid #ccc; font-size: 8.5pt; color: #555; font-style: italic;
+    }
+  }
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -339,9 +377,13 @@
         <p class="pc-status" id="pc-status" style="display:none"></p>
         <div id="p-takeaway" class="takeaway-wrap"></div>
       </div>
-    </div>
 
-    <!-- PRACTITIONER VIEW: analysis and action -->
+      <div class="card no-print" id="p-print-card">
+        <p class="h2sec">Keep a copy</p>
+        <p style="margin:0 0 14px;color:var(--muted)">You can save or print your results to keep by the phone, or to share with family or your GP.</p>
+        <button type="button" class="primary-btn" id="p-print">Save or print my results</button>
+      </div>
+    </div>
     <div id="view-prac" role="tabpanel" style="display:none">
       <div class="card steer" id="steer-card">
         <p class="band-eyebrow" id="band-eyebrow"></p>
@@ -394,9 +436,13 @@
         <p class="pc-status" id="pc-status-prac" style="display:none"></p>
         <div id="prac-takeaway" class="takeaway-wrap"></div>
       </div>
-    </div>
 
-    <div class="actions">
+      <div class="card no-print" id="prac-print-card">
+        <p class="h2sec">Copy for the person</p>
+        <p style="margin:0 0 14px;color:var(--muted);font-size:.85rem">Save or print these results to give to the person, or to attach to a referral.</p>
+        <button type="button" class="primary-btn" id="prac-print">Save or print results</button>
+      </div>
+    </div>
       <button type="button" class="primary-btn" id="again-btn">Screen another person</button>
     </div>
   </section>
@@ -1221,6 +1267,17 @@ function resetAll(){
 }
 document.getElementById('reset-btn').addEventListener('click', resetAll);
 document.getElementById('again-btn').addEventListener('click', resetAll);
+
+// print / save results
+function printResults(){
+  // ensure the mobile map toggle state doesn't hide list content; print CSS
+  // hides the interactive map and prints the list + addresses.
+  window.print();
+}
+var pPrint = document.getElementById('p-print');
+if(pPrint) pPrint.addEventListener('click', printResults);
+var pracPrint = document.getElementById('prac-print');
+if(pracPrint) pracPrint.addEventListener('click', printResults);
 </script>
 </body>
 </html>
