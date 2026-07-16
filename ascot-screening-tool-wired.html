@@ -183,7 +183,24 @@
   .pc-status{margin:12px 0 0;color:var(--muted);font-size:.9rem}
   .takeaway-wrap{margin-top:8px}
   .tk-group{margin-top:18px}
-  .tk-group-name{font-weight:600;font-size:.95rem;margin:0 0 8px;text-transform:capitalize}
+  .tk-group-name{font-family:var(--display);font-weight:700;font-size:1.15rem;line-height:1.3;color:var(--primary);margin:0 0 10px}
+
+  /* list + map two-column layout */
+  .tk-layout{display:flex;gap:24px;align-items:flex-start}
+  .tk-list{flex:1 1 55%;min-width:0}
+  .tk-mapcol{flex:1 1 45%;position:sticky;top:16px;align-self:flex-start}
+  .tk-map{height:70vh;min-height:360px;border-radius:12px;border:1px solid var(--line);overflow:hidden}
+  .tk-map-caveat{font-size:.78rem;color:var(--muted);margin:8px 2px 0;font-style:italic}
+  .tk-map-toggle{display:none}
+  .leaflet-popup-content{font-family:var(--sans);font-size:.9rem;line-height:1.4}
+  .leaflet-popup-content .lp-name{font-weight:600;display:block;margin-bottom:3px}
+  @media (max-width:760px){
+    .tk-layout{display:block}
+    .tk-mapcol{position:static;margin-top:16px;display:none}
+    .tk-mapcol.open{display:block}
+    .tk-map{height:60vh}
+    .tk-map-toggle{display:inline-block;margin:4px 0 0;background:var(--primary-tint);color:var(--primary);border:none;border-radius:8px;padding:10px 16px;font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer}
+  }
   .tk-item{padding:12px 0;border-top:1px solid var(--line)}
   .tk-item:first-child{border-top:none}
   .tk-name{font-weight:600;margin:0 0 3px}
@@ -233,6 +250,8 @@
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -493,14 +512,14 @@ const HIGH = 3;        // High-level needs index
 
 // Plain, non-clinical names for the person-facing view.
 const PERSON_NAME = {
-  control:'having a say in your day',
-  personal_care:'keeping clean and comfortable',
-  food:'food and drink',
-  safety:'feeling safe',
-  social:'seeing people',
-  occupation:'spending your time',
-  accommodation:'your home',
-  dignity:'how you are treated'
+  control:'Having a say in your day',
+  personal_care:'Keeping clean and comfortable',
+  food:'Food and drink',
+  safety:'Feeling safe',
+  social:'Seeing people',
+  occupation:'Spending your time',
+  accommodation:'Your home',
+  dignity:'How you are treated'
 };
 
 // Category-level signposting. EDITABLE DEFAULTS: localise to Kent using the
@@ -932,13 +951,27 @@ function renderTakeaway(data, el, practitioner){
   const groups = data.domain_results || [];
   if(!groups.length){ el.innerHTML='<p class="tk-empty">Nothing to show.</p>'; return; }
 
+  // build two-column layout: list on the left, map on the right
+  const layout = document.createElement('div');
+  layout.className='tk-layout';
+  const listCol = document.createElement('div');
+  listCol.className='tk-list';
+  const mapCol = document.createElement('div');
+  mapCol.className='tk-mapcol';
+  const mapId = 'map-'+Math.random().toString(36).slice(2,8);
+  mapCol.innerHTML =
+    '<div class="tk-map" id="'+mapId+'"></div>'+
+    '<p class="tk-map-caveat">Pins show each service\u2019s registered address, which can differ from where activities actually run. Always call to check.</p>';
+
+  // collect map points as we render the list
+  const points = [];
+
   groups.forEach(g=>{
     const wrap = document.createElement('div');
     wrap.className='tk-group';
     wrap.innerHTML = '<p class="tk-group-name">'+escapeHtml(DOMAIN_LABEL[g.domain]||g.domain)+'</p>';
 
     if(g.services && g.services.length){
-      // band caveat if the results aren't local
       if(g.band && BAND_LABEL[g.band]){
         const note = g.band==='distant'
           ? 'We could not find anything close, so here is the nearest option.'
@@ -966,17 +999,19 @@ function renderTakeaway(data, el, practitioner){
           '<p class="tk-name">'+escapeHtml(s.name)+(km?' <span class="tk-meta" style="font-weight:400">&middot; '+km+'</span>':'')+'</p>'+
           summary + contact;
         wrap.appendChild(item);
+
+        // collect a map point if it has coordinates
+        if(s.lat!=null && s.lng!=null && s.lat!==-999){
+          points.push({ lat:s.lat, lng:s.lng, name:s.name, summary:s.plain_summary||'', phone:s.phone||'' });
+        }
       });
     } else {
-      // national / advice fallback for this domain
       const fb = document.createElement('p');
       fb.className='tk-meta';
       fb.textContent = 'We could not find a local group for this near you. These can still help:';
       wrap.appendChild(fb);
     }
 
-    // advice layer under each domain (always show a couple, and it's the
-    // fallback when no services were found)
     if(g.advice && g.advice.length){
       const show = (g.services && g.services.length) ? 2 : (practitioner?5:3);
       g.advice.slice(0, show).forEach(a=>{
@@ -986,7 +1021,7 @@ function renderTakeaway(data, el, practitioner){
         wrap.appendChild(row);
       });
     }
-    el.appendChild(wrap);
+    listCol.appendChild(wrap);
   });
 
   const note=document.createElement('p');
@@ -994,7 +1029,62 @@ function renderTakeaway(data, el, practitioner){
   note.textContent = practitioner
     ? 'Distances are to the service\u2019s registered address, which may differ from where activities run. Confirm before referral.'
     : 'It is always worth a quick call to check times and whether you need to book.';
-  el.appendChild(note);
+  listCol.appendChild(note);
+
+  // assemble: only show the map column if we have any points
+  if(points.length){
+    // mobile toggle button, placed above the layout
+    const toggle = document.createElement('button');
+    toggle.type='button';
+    toggle.className='tk-map-toggle';
+    toggle.textContent='Show map';
+    toggle.addEventListener('click', ()=>{
+      const open = mapCol.classList.toggle('open');
+      toggle.textContent = open ? 'Hide map' : 'Show map';
+      if(open && mapCol._map) setTimeout(()=>mapCol._map.invalidateSize(), 50);
+    });
+    el.appendChild(toggle);
+    layout.appendChild(listCol);
+    layout.appendChild(mapCol);
+    el.appendChild(layout);
+    // init the map after it's in the DOM
+    setTimeout(()=>initTakeawayMap(mapId, mapCol, points, data.location), 60);
+  } else {
+    el.appendChild(listCol);
+  }
+}
+
+function initTakeawayMap(mapId, mapCol, points, location){
+  if(typeof L==='undefined'){ return; }  // Leaflet not loaded
+  const map = L.map(mapId, {scrollWheelZoom:false});
+  mapCol._map = map;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'&copy; OpenStreetMap', maxZoom:18
+  }).addTo(map);
+
+  const bounds = [];
+
+  // the person's location, if we have it
+  if(location && location.lat!=null && location.lng!=null){
+    L.circleMarker([location.lat, location.lng], {
+      radius:8, color:'#0f5c5b', fillColor:'#0f5c5b', fillOpacity:0.9, weight:2
+    }).addTo(map).bindPopup('<span class="lp-name">You are here</span>'+escapeHtml(location.postcode||''));
+    bounds.push([location.lat, location.lng]);
+  }
+
+  points.forEach(p=>{
+    const popup = '<span class="lp-name">'+escapeHtml(p.name)+'</span>'+
+      (p.summary?escapeHtml(p.summary)+'<br>':'')+
+      (p.phone?'<a href="tel:'+escapeHtml(p.phone.replace(/\s/g,''))+'">'+escapeHtml(p.phone)+'</a>':'');
+    L.marker([p.lat, p.lng]).addTo(map).bindPopup(popup);
+    bounds.push([p.lat, p.lng]);
+  });
+
+  if(bounds.length){
+    map.fitBounds(bounds, {padding:[30,30], maxZoom:14});
+  } else {
+    map.setView([51.28,0.52], 10);  // Kent fallback
+  }
 }
 
 // buttons in both result views trigger the takeaway using the up-front postcode
