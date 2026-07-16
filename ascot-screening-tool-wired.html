@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCOT-aligned Screening Tool (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#182a30;
+    --muted:#4f6169;
+    --bg:#f5f7f5;
+    --surface:#ffffff;
+    --line:#dde3e0;
+    --line-strong:#c6cfca;
+    --primary:#0f5c5b;
+    --primary-tint:#e6f0ef;
+    --focus:#0f5c5b;
+    --ideal:#1f7a5a;
+    --noneeds:#5b9b86;
+    --some:#bd7a1c;
+    --high:#b23a2c;
+    --radius:14px;
+    --maxw:760px;
+    --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --display:'Libre Franklin',var(--sans);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:18px;line-height:1.55;
+    padding:32px 20px 96px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto}
+  header.top{margin-bottom:28px}
+  .eyebrow{
+    font-family:var(--display);font-weight:600;font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--primary);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:var(--display);font-weight:700;font-size:2rem;line-height:1.12;
+    margin:0 0 12px;letter-spacing:-.01em;
+  }
+  .lede{color:var(--muted);margin:0;max-width:56ch}
+  .badge{
+    display:inline-block;margin-top:16px;padding:6px 12px;border:1px solid var(--line-strong);
+    border-radius:999px;font-size:.78rem;color:var(--muted);background:var(--surface);
+  }
+  .notice-bar{
+    background:#fdf6ec;border:1px solid #e8d6b8;border-left:4px solid var(--some);
+    color:#6b5220;border-radius:10px;padding:10px 14px;margin:0 0 22px;
+    font-size:.82rem;line-height:1.45;
+  }
+  .notice-bar strong{color:#5a4218}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;margin:18px 0;
+  }
+  .qhead{margin:0 0 10px}
+  .qnum{
+    font-family:var(--display);font-weight:600;font-size:.72rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--primary);display:block;margin:0 0 8px;
+  }
+  .qtext{font-family:var(--display);font-weight:600;font-size:1.18rem;line-height:1.3;margin:0 0 4px}
+  .qhint{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+  .qnote{
+    display:inline-block;margin:0 0 14px;font-size:.78rem;color:var(--muted);
+    background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 8px;
+  }
+  .opt{
+    display:flex;align-items:flex-start;gap:14px;padding:14px 16px;margin:8px 0;
+    border:1.5px solid var(--line);border-radius:10px;cursor:pointer;
+    transition:border-color .12s,background .12s;
+  }
+  .opt:hover{border-color:var(--line-strong);background:#fbfcfb}
+  .opt input{
+    appearance:none;-webkit-appearance:none;margin:2px 0 0;flex:0 0 auto;
+    width:22px;height:22px;border:2px solid var(--line-strong);border-radius:50%;cursor:pointer;
+  }
+  .opt input:checked{border-color:var(--primary);background:radial-gradient(circle at center,var(--primary) 0 46%,transparent 48%)}
+  .opt:has(input:checked){border-color:var(--primary);background:var(--primary-tint)}
+  .opt input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .opt span{font-size:1rem;line-height:1.4}
+  .safeguard{border-top:1px solid var(--line);margin-top:8px;padding-top:18px}
+  .safeguard label{display:flex;align-items:flex-start;gap:12px;cursor:pointer}
+  .safeguard input{width:22px;height:22px;margin-top:2px;accent-color:var(--high);flex:0 0 auto}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  button{
+    font-family:var(--display);font-weight:600;font-size:1rem;cursor:pointer;
+    border-radius:10px;padding:14px 22px;border:1.5px solid transparent;
+  }
+  .primary-btn{background:var(--primary);color:#fff}
+  .primary-btn:hover{background:#0c4b4a}
+  .ghost-btn{background:transparent;color:var(--primary);border-color:var(--line-strong)}
+  .ghost-btn:hover{border-color:var(--primary)}
+  button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .err{color:var(--high);font-weight:500;font-size:.92rem;margin:12px 0 0;display:none}
+  .err.show{display:block}
+
+  /* results */
+  #results{display:none}
+  #results.show{display:block}
+  .steer{border-left:6px solid var(--primary);padding:20px 22px}
+  .steer.urgent{border-left-color:var(--high);background:#fbf1ef}
+  .steer.statutory{border-left-color:var(--some)}
+  .steer.assistiv{border-left-color:var(--ideal)}
+  .steer.rescreen{border-left-color:var(--noneeds)}
+  .steer h2{font-family:var(--display);font-size:1.3rem;margin:0 0 6px}
+  .steer p{margin:0;color:var(--muted)}
+  .steer .reason{margin-top:12px;color:var(--ink);font-size:.95rem}
+
+  .score-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .score-num{font-family:var(--display);font-weight:700;font-size:2.6rem;font-variant-numeric:tabular-nums;line-height:1}
+  .score-label{color:var(--muted);font-size:.9rem}
+  .scale{position:relative;height:12px;border-radius:999px;margin:22px 0 8px;
+    background:linear-gradient(90deg,#e6c9c4 0%,#eadfc6 42%,#cfe2d6 100%);border:1px solid var(--line)}
+  .scale .mark{position:absolute;top:-6px;width:4px;height:24px;background:var(--ink);border-radius:2px;transform:translateX(-50%)}
+  .scale-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}
+
+  .domains{margin-top:6px}
+  .drow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 0;border-bottom:1px solid var(--line)}
+  .drow:last-child{border-bottom:0}
+  .dname{font-weight:500}
+  .dname small{display:block;color:var(--muted);font-weight:400;font-size:.82rem}
+  .chip{font-family:var(--display);font-weight:600;font-size:.8rem;padding:5px 12px;border-radius:999px;white-space:nowrap;color:#fff}
+  .chip.i0{background:var(--ideal)}
+  .chip.i1{background:var(--noneeds)}
+  .chip.i2{background:var(--some)}
+  .chip.i3{background:var(--high)}
+  .flag-tag{font-size:.72rem;color:var(--high);font-weight:600;margin-left:8px}
+
+  details{margin-top:8px}
+  summary{cursor:pointer;font-family:var(--display);font-weight:600;color:var(--primary);font-size:.92rem}
+  details p,details li{color:var(--muted);font-size:.9rem}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--bg);padding:1px 5px;border-radius:4px;font-size:.85em}
+
+  footer.legal{margin-top:36px;color:var(--muted);font-size:.8rem;line-height:1.5;border-top:1px solid var(--line);padding-top:18px}
+  .h2sec{font-family:var(--display);font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin:0 0 4px}
+
+  /* AI setup */
+  .ai-setup{background:var(--primary-tint);border:1px solid #cfe0df}
+  .ai-setup summary{color:var(--primary)}
+  .ai-setup .ai-intro{margin:12px 0 0;color:var(--muted);font-size:.9rem;line-height:1.5}
+  .ai-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  .key-input{flex:1 1 260px;min-width:0;padding:12px 14px;border:1.5px solid var(--line-strong);border-radius:10px;font-size:.95rem;font-family:var(--sans)}
+  .key-input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .ai-status{font-size:.85rem;color:var(--muted);margin:10px 0 0}
+  .ai-status.on{color:var(--ideal);font-weight:600}
+
+  /* free-text detail */
+  .detail{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .detail label{display:block;font-size:.95rem;font-weight:500;margin-bottom:8px}
+  .detail label .sub{color:var(--muted);font-weight:400;font-size:.85rem}
+  .detail textarea{width:100%;min-height:78px;resize:vertical;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--sans);font-size:.98rem;line-height:1.5;color:var(--ink)}
+  .detail textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .detail-actions{display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .reflect-btn{font-family:var(--display);font-weight:600;font-size:.9rem;padding:9px 16px;border-radius:9px;background:var(--surface);color:var(--primary);border:1.5px solid var(--line-strong);cursor:pointer}
+  .reflect-btn:hover:not(:disabled){border-color:var(--primary)}
+  .reflect-btn:disabled{opacity:.45;cursor:default}
+  .spinner{font-size:.85rem;color:var(--muted)}
+  .mic-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:600;font-size:.9rem;padding:9px 14px;border-radius:9px;background:var(--surface);color:var(--primary);border:1.5px solid var(--line-strong);cursor:pointer}
+  .mic-btn:hover{border-color:var(--primary)}
+  .mic-btn.on{background:var(--high);color:#fff;border-color:var(--high)}
+  .mic-btn.on .mic-ico{animation:micpulse 1s ease-in-out infinite}
+  .mic-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  @keyframes micpulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .reflection{margin-top:12px;padding:14px 16px;border-radius:10px;background:var(--primary-tint);border:1px solid #cfe0df;font-size:.96rem;display:none}
+  .reflection.show{display:block}
+  .reflection .rtitle{font-family:var(--display);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);margin:0 0 6px}
+  .reflection.alert{background:#fbf1ef;border-color:#e8c9c4}
+  .reflection.alert .rtitle{color:var(--high)}
+  .prac-flag{margin:10px 0 0;font-size:.84rem;color:var(--muted);line-height:1.5}
+  .prac-flag strong{color:var(--high)}
+
+  /* local takeaway */
+  .pc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pc-input{flex:1;min-width:160px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;text-transform:uppercase}
+  .pc-status{margin:12px 0 0;color:var(--muted);font-size:.9rem}
+  .takeaway-wrap{margin-top:8px}
+  .tk-group{margin-top:18px}
+  .tk-group-name{font-weight:600;font-size:.95rem;margin:0 0 8px;text-transform:capitalize}
+  .tk-item{padding:12px 0;border-top:1px solid var(--line)}
+  .tk-item:first-child{border-top:none}
+  .tk-name{font-weight:600;margin:0 0 3px}
+  .tk-meta{color:var(--muted);font-size:.85rem;margin:0 0 4px}
+  .tk-contact{font-size:.85rem;margin:0}
+  .tk-contact a{color:var(--accent,#1baf7a);text-decoration:none}
+  .tk-advice-head{font-weight:600;font-size:.95rem;margin:20px 0 8px}
+  .tk-advice{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}
+  .tk-advice:first-of-type{border-top:none}
+  .tk-empty{color:var(--muted);font-size:.9rem;margin:12px 0 0}
+  .tk-note{color:var(--muted);font-size:.8rem;margin:14px 0 0;font-style:italic}
+
+  /* qualitative results */
+  .qual .qrow{padding:14px 0;border-bottom:1px solid var(--line)}
+  .qual .qrow:last-child{border-bottom:0}
+  .qrow .qd{font-weight:600}
+  .qrow .qtext-r{color:var(--muted);font-size:.92rem;margin:5px 0 0}
+  .qrow .qnote-r{font-size:.86rem;margin:7px 0 0}
+  .qrow .qnote-r.min{color:var(--some);font-weight:500}
+  .qrow .qnote-r.safe{color:var(--high);font-weight:600}
+
+  /* two-view results */
+  .view-toggle{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px;margin:0 0 18px}
+  .vt{flex:1;font-family:var(--display);font-weight:600;font-size:.92rem;padding:11px 12px;border-radius:8px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+  .vt.on{background:var(--primary);color:#fff}
+  .vt:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .person-intro h2{font-family:var(--display);font-weight:700;font-size:1.5rem;margin:0 0 8px}
+  .person-intro p{margin:0;color:var(--muted)}
+  .band-eyebrow{font-family:var(--display);font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;color:var(--primary)}
+  .steer.urgent .band-eyebrow{color:var(--high)}
+  .steer.statutory .band-eyebrow{color:var(--some)}
+  .steer.assistiv .band-eyebrow{color:var(--ideal)}
+  .steer.rescreen .band-eyebrow{color:var(--noneeds)}
+  .action-line{margin:12px 0 0;font-weight:600;color:var(--ink);font-size:.98rem}
+  .p-area{padding:16px 0;border-bottom:1px solid var(--line)}
+  .p-area:last-child{border-bottom:0}
+  .p-area .pa-name{font-family:var(--display);font-weight:600;margin:0 0 6px}
+  .p-area .pa-reflect{margin:0 0 8px}
+  .p-area .pa-sign{margin:0;color:var(--muted);font-size:.92rem}
+  .offer-actions{display:flex;gap:12px;flex-wrap:wrap}
+  .offer-ack{margin:14px 0 0;color:var(--ideal);font-weight:500}
+
+  @media (max-width:560px){
+    body{font-size:17px;padding:24px 16px 80px}
+    h1{font-size:1.7rem}
+    .score-num{font-size:2.2rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="notice-bar" role="note">
+    <strong>Private prototype.</strong> Not for distribution or public release. ASCOT-SCT4 &copy; University of Kent, 2024, used under private-development approval. A Kent for-profit licence is required before any public or commercial use.
+  </div>
+
+  <header class="top">
+    <p class="eyebrow">Assistiv &middot; ASCOT-aligned screening</p>
+    <h1>How is life going right now?</h1>
+    <p class="lede">Nine short questions about different parts of everyday life. There are no right or wrong answers. Pick the statement that fits best. You will see the result at the end, and you decide what happens next.</p>
+    <span class="badge">Private development prototype &middot; not for public release</span>
+  </header>
+
+  <details class="card ai-setup" id="ai-setup" open>
+    <summary>AI reflections (optional)</summary>
+    <p class="ai-intro">Add your Anthropic API key to turn on AI reflections. The tick-box answers and the ASCOT score do not change. The AI only reads the extra detail a person chooses to write in their own words: it offers a gentle reflection back to them, and flags for the practitioner where the words suggest more difficulty than the option selected. The key is held in memory for this session only. For anything beyond your own private testing, move the key to a Cloudflare Worker proxy so it is never in the browser.</p>
+    <div class="ai-row">
+      <input class="key-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false">
+      <button type="button" class="reflect-btn" id="ai-enable">Turn on AI</button>
+    </div>
+    <p class="ai-status" id="ai-status">AI is off. The screening works without it. Free-text boxes still save what is written.</p>
+  </details>
+
+  <form id="screen" novalidate>
+    <div id="questions"></div>
+
+    <div class="card safeguard">
+      <label>
+        <input type="checkbox" id="safeguard-flag">
+        <span><strong>Practitioner use only:</strong> tick if you have a safeguarding or immediate-risk concern from this conversation, regardless of the answers above. This routes straight to a person.</span>
+      </label>
+    </div>
+
+    <p class="err" id="err">Please answer every question except the one marked not scored, so the result can be calculated.</p>
+    <div class="actions">
+      <button type="submit" class="primary-btn">See the result</button>
+      <button type="button" class="ghost-btn" id="reset-btn">Start again</button>
+    </div>
+  </form>
+
+  <section id="results" aria-live="polite">
+
+    <div class="view-toggle" role="tablist" aria-label="Choose view">
+      <button type="button" class="vt on" id="tab-person" role="tab" aria-selected="true">For the person</button>
+      <button type="button" class="vt" id="tab-prac" role="tab" aria-selected="false">For the practitioner</button>
+    </div>
+
+    <!-- PERSON VIEW: soft, no score, no clinical labels -->
+    <div id="view-person" role="tabpanel">
+      <div class="card person-intro">
+        <h2 id="p-title">Thank you for taking the time</h2>
+        <p id="p-lede"></p>
+      </div>
+
+      <div class="card" id="p-areas-card" style="display:none">
+        <p class="h2sec">Things you mentioned</p>
+        <div id="p-areas"></div>
+      </div>
+
+      <div class="card" id="p-offer-card">
+        <p class="h2sec">If you would like</p>
+        <p id="p-offer-text" style="margin:0 0 14px;color:var(--muted)"></p>
+        <div class="offer-actions">
+          <button type="button" class="primary-btn" id="p-yes">I would like to explore support</button>
+          <button type="button" class="ghost-btn" id="p-no">Not right now</button>
+        </div>
+        <p class="offer-ack" id="p-ack" style="display:none"></p>
+      </div>
+
+      <!-- LOCAL TAKEAWAY: opt-in, postcode-based -->
+      <div class="card" id="p-local-card">
+        <p class="h2sec">See what is near you</p>
+        <p style="margin:0 0 12px;color:var(--muted)">If you enter your postcode, we can show local groups and services for the things you mentioned. This is optional. Nothing is stored.</p>
+        <div class="pc-row">
+          <input type="text" id="pc-input" class="pc-input" placeholder="e.g. CT10 1SH" autocomplete="postal-code" aria-label="Your postcode" />
+          <button type="button" class="primary-btn" id="pc-go">Show me</button>
+        </div>
+        <p class="pc-status" id="pc-status" style="display:none"></p>
+        <div id="p-takeaway" class="takeaway-wrap"></div>
+      </div>
+    </div>
+
+    <!-- PRACTITIONER VIEW: analysis and action -->
+    <div id="view-prac" role="tabpanel" style="display:none">
+      <div class="card steer" id="steer-card">
+        <p class="band-eyebrow" id="band-eyebrow"></p>
+        <h2 id="steer-title"></h2>
+        <p id="steer-body"></p>
+        <p class="reason" id="steer-reason"></p>
+        <p class="action-line" id="action-line"></p>
+      </div>
+
+      <div class="card">
+        <div class="score-head">
+          <div>
+            <p class="h2sec">Current SCRQoL score</p>
+            <div class="score-num" id="score-num"></div>
+          </div>
+          <div class="score-label" id="score-word"></div>
+        </div>
+        <div class="scale"><div class="mark" id="score-mark"></div></div>
+        <div class="scale-ends"><span>Lower quality of life</span><span>Ideal (1.00)</span></div>
+        <details>
+          <summary>How this is scored, and how the band is set</summary>
+          <p>Each of the eight scored domains carries a preference weight for the answer chosen. The weights are summed and converted with the ASCOT-SCT4 formula <code>SCRQoL = 0.203 &times; weighted score &minus; 0.466</code>, anchored to the ideal state at 1.00. The dignity filter question is asked but not scored. The action band is separate from this score: it reads the worst domain state and the spread, not the composite, so a single high-level need is not masked by a good average. Band logic is Assistiv operational triage over ASCOT-native states, configurable and for validation with clinical advisers, not a clinical cut-off.</p>
+        </details>
+      </div>
+
+      <div class="card">
+        <p class="h2sec">Domain by domain</p>
+        <div class="domains" id="domains"></div>
+      </div>
+
+      <div class="card" id="qual-card" style="display:none">
+        <p class="h2sec">In their own words</p>
+        <p style="margin:0 0 8px;color:var(--muted);font-size:.85rem">Free-text detail and any AI notes. These add context and flags for the practitioner. They do not change the ASCOT score.</p>
+        <div class="qual" id="qual"></div>
+      </div>
+
+      <div class="card">
+        <p class="h2sec">What happens next</p>
+        <p id="handoff" style="margin:0;color:var(--muted)"></p>
+      </div>
+
+      <!-- LOCAL SERVICES for the practitioner: fuller, with distance and contact -->
+      <div class="card" id="prac-local-card">
+        <p class="h2sec">Local services for the flagged domains</p>
+        <p style="margin:0 0 12px;color:var(--muted);font-size:.85rem">Self-referable services and groups near the person, matched to the domains flagged above. A handoff aid, not a completed referral. Shared postcode with the person view.</p>
+        <div class="pc-row">
+          <input type="text" id="pc-input-prac" class="pc-input" placeholder="e.g. CT10 1SH" autocomplete="postal-code" aria-label="Postcode" />
+          <button type="button" class="primary-btn" id="pc-go-prac">Find services</button>
+        </div>
+        <p class="pc-status" id="pc-status-prac" style="display:none"></p>
+        <div id="prac-takeaway" class="takeaway-wrap"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary-btn" id="again-btn">Screen another person</button>
+    </div>
+  </section>
+
+  <footer class="legal">
+    ASCOT-SCT4 &copy; University of Kent, 2024, all rights reserved. Used here under private-development approval only. Item wording, response options and preference weights are the copyright of the University of Kent. A for-profit licence (Kent Form 3) must be in place, and Kent notified, before any public release, commercial deployment or paid pilot. This prototype is ASCOT-aligned, not validated: the triage thresholds are configurable defaults for review with clinical advisers, not clinical cut-offs.
+  </footer>
+
+</div>
+
+<script>
+// ---- ASCOT-SCT4 items, response options and preference weights ----
+// Option order is always best (Ideal) first to High-level needs last.
+// State index: 0 Ideal, 1 No needs, 2 Some needs, 3 High-level needs.
+const STATE = ['Ideal','No needs','Some needs','High-level needs'];
+
+const QUESTIONS = [
+  { key:'control', domain:'Control over daily life', scored:true,
+    text:'Which of the following statements best describes how much control you have over your daily life?',
+    hint:'By control over daily life we mean having the choice to do things, or have things done for you, as you like and when you want.',
+    weights:[1.000,0.919,0.541,0.000],
+    options:[
+      'I have as much control over my daily life as I want',
+      'I have adequate control over my daily life',
+      'I have some control over my daily life, but not enough',
+      'I have no control over my daily life'] },
+
+  { key:'personal_care', domain:'Personal cleanliness and comfort', scored:true,
+    text:'Thinking about keeping clean and presentable in appearance, which of the following statements best describes your situation?',
+    weights:[0.911,0.789,0.265,0.195],
+    options:[
+      'I feel clean and am able to present myself the way I like',
+      'I feel adequately clean and presentable',
+      'I feel less than adequately clean or presentable',
+      'I don\u2019t feel at all clean or presentable'] },
+
+  { key:'food', domain:'Food and drink', scored:true,
+    text:'Thinking about the food and drink you get, which of the following statements best describes your situation?',
+    weights:[0.879,0.775,0.294,0.184],
+    options:[
+      'I get all the food and drink I like when I want',
+      'I get adequate food and drink at OK times',
+      'I don\u2019t always get adequate or timely food and drink',
+      'I don\u2019t always get adequate or timely food and drink, and I think there is a risk to my health'] },
+
+  { key:'safety', domain:'Personal safety', scored:true,
+    text:'Which of the following statements best describes how safe you feel?',
+    hint:'By feeling safe we mean how safe you feel both inside and outside the home. This includes fear of abuse, falling or other physical harm.',
+    weights:[0.880,0.452,0.298,0.114],
+    options:[
+      'I feel as safe as I want',
+      'Generally I feel adequately safe, but not as safe as I would like',
+      'I feel less than adequately safe',
+      'I don\u2019t feel at all safe'] },
+
+  { key:'social', domain:'Social participation and involvement', scored:true,
+    text:'Thinking about how much contact you have with people you like, which of the following statements best describes your social situation?',
+    weights:[0.873,0.748,0.497,0.241],
+    options:[
+      'I have as much social contact as I want with people I like',
+      'I have adequate social contact with people',
+      'I have some social contact with people, but not enough',
+      'I have little social contact with people and feel socially isolated'] },
+
+  { key:'occupation', domain:'Occupation', scored:true,
+    text:'Which of the following statements best describes how you spend your time?',
+    hint:'Please include anything you value or enjoy: leisure activities, formal employment, voluntary or unpaid work, and caring for others.',
+    weights:[0.962,0.927,0.567,0.170],
+    options:[
+      'I\u2019m able to spend my time as I want, doing things I value or enjoy',
+      'I\u2019m able to do enough of the things I value or enjoy with my time',
+      'I do some of the things I value or enjoy with my time, but not enough',
+      'I don\u2019t do anything I value or enjoy with my time'] },
+
+  { key:'accommodation', domain:'Accommodation cleanliness and comfort', scored:true,
+    text:'Which of the following statements best describes how clean and comfortable your home is?',
+    weights:[0.863,0.780,0.374,0.288],
+    options:[
+      'My home is as clean and comfortable as I want',
+      'My home is adequately clean and comfortable',
+      'My home is not quite clean or comfortable enough',
+      'My home is not at all clean or comfortable'] },
+
+  { key:'dignity_filter', domain:'Dignity (filter)', scored:false,
+    text:'Which of these statements best describes how having help to do things makes you think and feel about yourself?',
+    note:'Asked but not scored, as per the ASCOT guidance.',
+    options:[
+      'Having help makes me think and feel better about myself',
+      'Having help does not affect the way I think or feel about myself',
+      'Having help sometimes undermines the way I think and feel about myself',
+      'Having help completely undermines the way I think and feel about myself'] },
+
+  { key:'dignity', domain:'Dignity', scored:true,
+    text:'Which of these statements best describes how the way you are helped and treated makes you think and feel about yourself?',
+    weights:[0.847,0.637,0.295,0.263],
+    options:[
+      'The way I\u2019m helped and treated makes me think and feel better about myself',
+      'The way I\u2019m helped and treated does not affect the way I think or feel about myself',
+      'The way I\u2019m helped and treated sometimes undermines the way I think and feel about myself',
+      'The way I\u2019m helped and treated completely undermines the way I think and feel about myself'] }
+];
+
+// ---- Banding (configurable defaults, not clinical cut-offs) ----
+// Band reads the worst domain state and the spread, not the composite score.
+//   all Ideal/No needs        -> no action, general signposting
+//   any Some needs, no High   -> candidate for Assistiv / support services
+//   any High-level need       -> routing into services indicated
+//   safety High, or safeguard -> route to a person now (override)
+// Calibration point for Ann: whether a single high-level need in any domain
+// should always route to services, or only in certain domains.
+const FLAG_FROM = 2;   // Some needs and worse counts as a flag
+const HIGH = 3;        // High-level needs index
+
+// Plain, non-clinical names for the person-facing view.
+const PERSON_NAME = {
+  control:'having a say in your day',
+  personal_care:'keeping clean and comfortable',
+  food:'food and drink',
+  safety:'feeling safe',
+  social:'seeing people',
+  occupation:'spending your time',
+  accommodation:'your home',
+  dignity:'how you are treated'
+};
+
+// Category-level signposting. EDITABLE DEFAULTS: localise to Kent using the
+// Community Outreach Map and district data rather than these generic pointers.
+const SIGNPOST = {
+  control:'An advocate, or a care needs assessment through the council, can help you keep more say over your day. Age UK offers free advice.',
+  personal_care:'A GP or an occupational therapist can help with keeping clean and comfortable, and homecare support may help too.',
+  food:'Local lunch clubs, meal delivery, and dietitian advice through a GP can all help with food and drink. Age UK can point you to what is nearby.',
+  safety:'A GP can arrange a falls check, and the fire service offers free home safety visits. If you ever feel at risk from someone, adult social care can help.',
+  social:'Local community groups and befriending services can help with staying connected. Age UK runs befriending schemes.',
+  occupation:'Community activities, day services and volunteering can help fill the day in ways you enjoy. Libraries and community centres often have listings.',
+  accommodation:'Home improvement agencies, handyperson schemes and warm-home energy support can help your home feel comfortable. The council can advise.',
+  dignity:'If the way you are helped affects how you feel about yourself, an advocate can support you, and you can raise concerns about the quality of care.'
+};
+
+// ---- Build the form ----
+const qWrap = document.getElementById('questions');
+let visIndex = 0;
+QUESTIONS.forEach((q)=>{
+  visIndex++;
+  const group = document.createElement('div');
+  group.className = 'card qgroup';
+  group.setAttribute('role','radiogroup');
+  const labelId = 'lbl_'+q.key;
+  group.setAttribute('aria-labelledby', labelId);
+
+  const head = document.createElement('div');
+  head.className = 'qhead';
+  head.innerHTML =
+    '<p class="qnum">Question '+visIndex+(q.scored?'':' &middot; not scored')+'</p>'+
+    '<p class="qtext" id="'+labelId+'">'+q.text+'</p>'+
+    (q.hint?'<p class="qhint">'+q.hint+'</p>':'')+
+    (q.note?'<span class="qnote">'+q.note+'</span>':'');
+  group.appendChild(head);
+
+  q.options.forEach((opt, oi)=>{
+    const id = q.key+'_'+oi;
+    const lab = document.createElement('label');
+    lab.className = 'opt';
+    lab.setAttribute('for', id);
+    lab.innerHTML =
+      '<input type="radio" id="'+id+'" name="'+q.key+'" value="'+oi+'">'+
+      '<span>'+opt+'</span>';
+    group.appendChild(lab);
+  });
+
+  const detail = document.createElement('div');
+  detail.className = 'detail';
+  detail.innerHTML =
+    '<label for="detail_'+q.key+'">In your own words <span class="sub">(optional). Anything you want to add about your answer.</span></label>'+
+    '<textarea id="detail_'+q.key+'" data-key="'+q.key+'" placeholder="You can leave this blank, or add a little more if you like."></textarea>'+
+    '<div class="detail-actions">'+
+      '<button type="button" class="mic-btn" data-mic="'+q.key+'" aria-pressed="false" aria-label="Speak your answer"><svg class="mic-ico" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"></path><path d="M17 11a1 1 0 0 0-2 0 3 3 0 0 1-6 0 1 1 0 0 0-2 0 5 5 0 0 0 4 4.9V19H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-3v-3.1A5 5 0 0 0 17 11z"></path></svg><span class="mic-label">Speak</span></button>'+
+      '<button type="button" class="reflect-btn" data-reflect="'+q.key+'" disabled>Reflect on this</button>'+
+      '<span class="spinner" data-spin="'+q.key+'"></span>'+
+    '</div>'+
+    '<div class="reflection" id="refl_'+q.key+'"></div>';
+  group.appendChild(detail);
+
+  qWrap.appendChild(group);
+});
+
+// ---- AI free-text layer (optional, does not affect the ASCOT score) ----
+let AI_KEY = '';
+// Model: current Sonnet. Change here if you prefer another model your account can access.
+const AI_MODEL = 'claude-sonnet-5';
+const detailAI = {}; // q.key -> { reflection, practitioner_note, possible_minimisation, safeguarding_concern }
+
+const aiStatus = document.getElementById('ai-status');
+const enableBtn = document.getElementById('ai-enable');
+const keyInput = document.getElementById('apiKeyInput');
+
+function enableAI(){
+  const v = keyInput.value.trim();
+  if(!v){ aiStatus.textContent = 'Please paste an Anthropic API key first.'; aiStatus.classList.remove('on'); return; }
+  if(!v.startsWith('sk-ant-')){ aiStatus.textContent = 'That does not look like an Anthropic key. It should start with sk-ant-.'; aiStatus.classList.remove('on'); return; }
+  AI_KEY = v;
+  aiStatus.textContent = 'AI is on for this session. Reflections appear when you add detail and press Reflect.';
+  aiStatus.classList.add('on');
+  enableBtn.textContent = 'AI on';
+  updateReflectButtons();
+}
+enableBtn.addEventListener('click', enableAI);
+keyInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); enableAI(); } });
+
+function updateReflectButtons(){
+  document.querySelectorAll('[data-reflect]').forEach(btn=>{
+    const key = btn.getAttribute('data-reflect');
+    const ta = document.getElementById('detail_'+key);
+    const hasText = ta && ta.value.trim().length>0;
+    btn.disabled = !(hasText && AI_KEY);
+    btn.title = !AI_KEY ? 'Turn on AI above to use this' : (hasText ? '' : 'Write something first');
+  });
+}
+
+qWrap.addEventListener('input', (e)=>{
+  if(e.target.matches('textarea[data-key]')) updateReflectButtons();
+});
+qWrap.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-reflect]');
+  if(btn) reflect(btn.getAttribute('data-reflect'));
+});
+
+async function reflect(key){
+  const q = QUESTIONS.find(x=>x.key===key);
+  const ta = document.getElementById('detail_'+key);
+  const text = ta.value.trim();
+  if(!text || !AI_KEY) return;
+  const spin = document.querySelector('[data-spin="'+key+'"]');
+  const box = document.getElementById('refl_'+key);
+  spin.textContent = 'Reading your answer\u2026';
+  try{
+    const sel = document.querySelector('input[name="'+key+'"]:checked');
+    const selText = sel ? q.options[parseInt(sel.value,10)] : 'no option selected yet';
+    const ai = await callAI(q, selText, text);
+    detailAI[key] = ai;
+    renderReflection(key, ai);
+  }catch(err){
+    box.className = 'reflection show';
+    box.innerHTML = '<p class="rtitle">Reflection unavailable</p><p style="margin:0">The AI could not be reached just now. Your words are still saved. ('+escapeHtml(err.message||'error')+')</p>';
+  }finally{
+    spin.textContent = '';
+  }
+}
+
+function renderReflection(key, ai){
+  const box = document.getElementById('refl_'+key);
+  const alert = !!ai.safeguarding_concern;
+  box.className = 'reflection show' + (alert ? ' alert' : '');
+  let html = '<p class="rtitle">'+(alert ? 'A note of care' : 'Thank you for sharing that')+'</p>';
+  html += '<p style="margin:0">'+escapeHtml(ai.reflection||'')+'</p>';
+  const flags = [];
+  if(ai.possible_minimisation) flags.push('Practitioner note: the words may suggest more difficulty than the option chosen.');
+  if(ai.safeguarding_concern) flags.push('<strong>Practitioner note: possible safeguarding or risk signal. Review directly.</strong>');
+  if(flags.length) html += '<p class="prac-flag">'+flags.join('<br>')+'</p>';
+  box.innerHTML = html;
+}
+
+async function callAI(q, selectedText, personText){
+  const system =
+    'You are the qualitative intelligence layer of an ASCOT-aligned screening tool for older adults in Kent, UK, the group between full independence and formal care. You work on Motivational Interviewing principles: warm, non-judgemental, never alarming.\n\n'+
+    'DO NOT score or re-score anything. The ASCOT tick-box answer is authoritative and must not be second-guessed as a number. Your only job is to read the extra free text a person writes and return three things.\n\n'+
+    'This group commonly understates difficulty: to avoid worrying family, from fear of losing independence, from stoicism, or not wanting to make a fuss. Watch for minimisation such as "I manage", "not too bad", "only sometimes", difficulty described in a dismissive tone, or detail that contradicts a reassuring option choice.\n\n'+
+    'If the free text contains any sign of abuse, neglect, self-harm or immediate risk, set safeguarding_concern true, keep the reflection gentle and non-probing, and do not give advice or instructions.\n\n'+
+    'DOMAIN BEING DISCUSSED: '+q.domain+'\n\n'+
+    'Return ONLY a JSON object, no preamble and no markdown fences, with these keys: '+
+    '"reflection" (one or two warm sentences in British English spoken directly to the person, acknowledging what they said, no advice, no diagnosis), '+
+    '"practitioner_note" (one short sentence for the practitioner, or an empty string), '+
+    '"possible_minimisation" (boolean: does the free text suggest more difficulty than the option chosen?), '+
+    '"safeguarding_concern" (boolean).';
+  const user =
+    'Question: "'+q.text+'"\n'+
+    'Option the person selected: "'+selectedText+'"\n'+
+    'What the person added in their own words: "'+personText+'"';
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':AI_KEY,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({
+      model: AI_MODEL,
+      max_tokens: 600,
+      system: system,
+      messages:[{ role:'user', content:user }]
+    })
+  });
+  const data = await resp.json();
+  if(data.error) throw new Error(data.error.message);
+  const raw = data.content[0].text;
+  const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+  return JSON.parse(cleaned);
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+updateReflectButtons();
+
+// ---- Voice input for the free-text boxes ----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let activeRec = null, activeKey = null;
+
+if(!SR){
+  document.querySelectorAll('.mic-btn').forEach(b=>{ b.style.display='none'; });
+} else {
+  qWrap.addEventListener('click',(e)=>{
+    const btn = e.target.closest('[data-mic]');
+    if(btn) toggleMic(btn.getAttribute('data-mic'));
+  });
+}
+
+function setMicState(key, on){
+  const btn = document.querySelector('[data-mic="'+key+'"]');
+  if(!btn) return;
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on?'true':'false');
+  const lab = btn.querySelector('.mic-label');
+  if(lab) lab.textContent = on ? 'Listening\u2026' : 'Speak';
+}
+
+function stopMic(){ if(activeRec){ try{ activeRec.stop(); }catch(e){} } }
+
+function toggleMic(key){
+  if(activeKey===key && activeRec){ stopMic(); return; }
+  if(activeRec){ stopMic(); }
+  startMic(key);
+}
+
+function startMic(key){
+  const ta = document.getElementById('detail_'+key);
+  const spin = document.querySelector('[data-spin="'+key+'"]');
+  const rec = new SR();
+  rec.lang = 'en-GB';
+  rec.continuous = true;
+  rec.interimResults = false;
+  activeRec = rec; activeKey = key;
+  setMicState(key, true);
+  if(spin) spin.textContent = '';
+  rec.onresult = (e)=>{
+    let finalT = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) finalT += e.results[i][0].transcript;
+    }
+    finalT = finalT.trim();
+    if(finalT){
+      ta.value = (ta.value.trim() ? ta.value.trim()+' ' : '') + finalT;
+      updateReflectButtons();
+    }
+  };
+  rec.onerror = (e)=>{
+    let msg = 'Voice input stopped.';
+    if(e.error==='not-allowed' || e.error==='service-not-allowed') msg = 'Microphone blocked. Allow mic access in the browser to use voice.';
+    else if(e.error==='no-speech') msg = 'Did not catch that. Try again.';
+    else if(e.error==='audio-capture') msg = 'No microphone found.';
+    if(spin) spin.textContent = msg;
+  };
+  rec.onend = ()=>{
+    setMicState(key, false);
+    if(activeKey===key){ activeRec=null; activeKey=null; }
+  };
+  try{ rec.start(); }
+  catch(err){ setMicState(key,false); if(spin) spin.textContent = 'Could not start voice input.'; }
+}
+
+// ---- Scoring ----
+function scrqol(indices){
+  let sum = 0;
+  QUESTIONS.forEach(q=>{
+    if(q.scored) sum += q.weights[indices[q.key]];
+  });
+  return Math.round((0.203*sum - 0.466)*100)/100;
+}
+function scoreWord(s){
+  if(s>=0.85) return 'At or near the ideal state';
+  if(s>=0.60) return 'Broadly good quality of life';
+  if(s>=0.35) return 'Some quality-of-life impact';
+  return 'Marked quality-of-life impact';
+}
+
+// ---- Triage / banding ----
+function triage(indices, safeguard){
+  const scored = QUESTIONS.filter(q=>q.scored);
+  const flagged = scored.filter(q=>indices[q.key]>=FLAG_FROM);
+  const highs   = scored.filter(q=>indices[q.key]===HIGH);
+  const safetyHigh = indices['safety']===HIGH;
+
+  if(safeguard || safetyHigh){
+    return { key:'urgent', band:'Route to a person now',
+      title:'Route to a person now',
+      body:'This needs a person, not a form. Based on '+(safeguard?'the safeguarding concern flagged':'the safety response')+', the steer is to connect this person with someone who can help now, not to suggest monitoring.',
+      reason:(safeguard?'Safeguarding concern flagged. ':'')+(safetyHigh?'Personal safety recorded at high-level needs. ':'')+'The tool does not sit between a person and urgent help.',
+      action:'Action: warm handoff to a person now.',
+      handoff:'Warm handoff to adult social care or the relevant urgent service, with consent. No sensor recommendation is made at this point.' };
+  }
+  if(highs.length>=1){
+    return { key:'statutory', band:'High-level need',
+      title:'Routing into services indicated',
+      body:'One or more areas show need at a high level, defined in ASCOT as need with health implications if left unmet over time. The steer is a referral to adult social care, with consent.',
+      reason:highs.length+' domain(s) at high-level need'+(flagged.length>highs.length?', plus '+(flagged.length-highs.length)+' at some needs':'')+'.',
+      action:'Action: route into services, with consent.',
+      handoff:'Produce a short, consent-gated summary the person can take to their GP or local authority. It states the flagged areas in plain language and does not present itself as a completed statutory assessment.' };
+  }
+  if(flagged.length>=1){
+    return { key:'assistiv', band:'Some needs',
+      title:'Candidate for Assistiv or support services',
+      body:'One or a few areas are at some needs, below the level that triggers statutory support. This is the gap Assistiv exists for: light-touch monitoring and support to catch change early.',
+      reason:flagged.length+' domain(s) at some needs, none at high-level need.',
+      action:'Action: offer Assistiv or local support services.',
+      handoff:'Seed the Check-In tool with this result as the baseline, and propose Support Sensors mapped to the flagged domains. The person sees the steer and can decline.' };
+  }
+  return { key:'rescreen', band:'Ideal / no needs',
+    title:'No action required',
+    body:'No area shows unmet need at the moment. General information on where to find support is available if the person ever wants it.',
+    reason:'All eight scored domains at ideal or no needs.',
+    action:'Action: no action needed; offer general signposting.',
+    handoff:'Store the result and set a re-screen interval so any future change shows as a trajectory, not a fresh start.' };
+}
+
+// ---- Person-facing view ----
+function renderPerson(indices, t){
+  const lede = {
+    urgent:'From what you have shared, it would help to talk to someone soon. You are not on your own with this.',
+    statutory:'From what you have shared, some things are harder than they should be. There is support that can help, and it is your choice whether to take it up.',
+    assistiv:'From what you have shared, a few things are starting to feel like more of a struggle. There are gentle ways to get a bit of support if you would like.',
+    rescreen:'From what you have shared, things are going well right now. That is good to see.'
+  };
+  document.getElementById('p-lede').textContent = lede[t.key];
+
+  const areasCard = document.getElementById('p-areas-card');
+  const areasWrap = document.getElementById('p-areas');
+  areasWrap.innerHTML = '';
+  const flagged = QUESTIONS.filter(q=>q.scored && indices[q.key]>=FLAG_FROM);
+  if(flagged.length){
+    flagged.forEach(q=>{
+      const div = document.createElement('div');
+      div.className = 'p-area';
+      div.innerHTML =
+        '<p class="pa-name">'+escapeHtml(PERSON_NAME[q.key])+'</p>'+
+        '<p class="pa-reflect">You said: \u201c'+escapeHtml(q.options[indices[q.key]])+'\u201d</p>'+
+        '<p class="pa-sign">'+escapeHtml(SIGNPOST[q.key])+'</p>';
+      areasWrap.appendChild(div);
+    });
+    areasCard.style.display = 'block';
+  } else {
+    areasCard.style.display = 'none';
+  }
+
+  const offer = {
+    urgent:'Would you like us to help you talk to someone now? It is completely your choice.',
+    statutory:'Would you like to explore support for any of these? You can also just take this information away and think about it.',
+    assistiv:'Would you like to explore a bit of support, or just have the information for now? Either is fine.',
+    rescreen:'Everything looks settled. If you ever want to know where to find support for any part of life, we can show you. There is no need to do anything now.'
+  };
+  document.getElementById('p-offer-text').textContent = offer[t.key];
+  const ack = document.getElementById('p-ack');
+  ack.style.display = 'none';
+  ack.textContent = '';
+}
+
+// ---- View toggle ----
+const tabPerson = document.getElementById('tab-person');
+const tabPrac = document.getElementById('tab-prac');
+function showView(which){
+  const person = which==='person';
+  document.getElementById('view-person').style.display = person?'block':'none';
+  document.getElementById('view-prac').style.display = person?'none':'block';
+  tabPerson.classList.toggle('on',person); tabPerson.setAttribute('aria-selected',person);
+  tabPrac.classList.toggle('on',!person); tabPrac.setAttribute('aria-selected',!person);
+}
+tabPerson.addEventListener('click',()=>showView('person'));
+tabPrac.addEventListener('click',()=>showView('prac'));
+
+document.getElementById('p-yes').addEventListener('click',()=>{
+  const ack=document.getElementById('p-ack');
+  ack.textContent='Thank you. Someone will go through the options with you. You can change your mind at any time.';
+  ack.style.color='var(--ideal)';
+  ack.style.display='block';
+});
+document.getElementById('p-no').addEventListener('click',()=>{
+  const ack=document.getElementById('p-ack');
+  ack.textContent='That is completely fine. The information is here whenever you want it.';
+  ack.style.color='var(--muted)';
+  ack.style.display='block';
+});
+
+// ---- Submit ----
+const form = document.getElementById('screen');
+const err = document.getElementById('err');
+const results = document.getElementById('results');
+
+// ---- Local takeaway wiring ----
+// Calls the Cloudflare Worker /takeaway endpoint, which geocodes the postcode
+// and queries the Kent+Medway directory. The Supabase key stays in the Worker,
+// never in this page. Set TAKEAWAY_URL to your Worker's domain.
+const TAKEAWAY_URL = 'https://wandering-wind-5a9d.simongeorgelegrand.workers.dev/takeaway';
+
+// The domains the person flagged, captured at submit, shared by both views.
+let lastFlaggedDomains = [];
+
+async function runTakeaway(postcode, statusEl, targetEl, practitioner){
+  const pc = (postcode || '').trim();
+  if(!pc){ statusEl.style.display='block'; statusEl.textContent='Please enter a postcode.'; return; }
+  if(!lastFlaggedDomains.length){
+    statusEl.style.display='block';
+    statusEl.textContent='No areas were flagged, so there is nothing specific to search for. General information is available above.';
+    return;
+  }
+  statusEl.style.display='block';
+  statusEl.textContent='Looking for local help\u2026';
+  targetEl.innerHTML='';
+  try{
+    const url = TAKEAWAY_URL + '?postcode=' + encodeURIComponent(pc) +
+                '&domains=' + encodeURIComponent(lastFlaggedDomains.join(','));
+    const r = await fetch(url);
+    const data = await r.json();
+    if(data.error){
+      statusEl.textContent = data.error === 'postcode not found'
+        ? 'That postcode was not found. Please check it and try again.'
+        : 'Sorry, something went wrong finding local help. Please try again.';
+      return;
+    }
+    statusEl.style.display='none';
+    renderTakeaway(data, targetEl, practitioner);
+  }catch(err){
+    statusEl.textContent='Sorry, could not reach the local directory just now.';
+  }
+}
+
+function renderTakeaway(data, el, practitioner){
+  el.innerHTML='';
+  const places = data.places || [];
+  const advice = data.advice || [];
+
+  if(!places.length && !advice.length){
+    el.innerHTML = '<p class="tk-empty">We could not find local services for these areas near '+
+      escapeHtml(data.location.postcode)+' just yet. The general information above still applies.</p>';
+    return;
+  }
+
+  // group places by the domains they matched
+  if(places.length){
+    const head = document.createElement('p');
+    head.className='tk-advice-head';
+    head.textContent = practitioner
+      ? 'Nearby services ('+places.length+')'
+      : 'Places near you';
+    el.appendChild(head);
+
+    places.forEach(p=>{
+      const item = document.createElement('div');
+      item.className='tk-item';
+      const km = (p.distance_m!=null) ? (p.distance_m/1000).toFixed(1)+' miles' : '';
+      let contact = '';
+      if(practitioner){
+        const bits = [];
+        if(p.phone) bits.push('<a href="tel:'+escapeHtml(p.phone.replace(/\s/g,''))+'">'+escapeHtml(p.phone)+'</a>');
+        if(p.website) bits.push('<a href="'+escapeHtml(p.website)+'" target="_blank" rel="noopener">website</a>');
+        contact = bits.length ? '<p class="tk-contact">'+bits.join(' &middot; ')+'</p>' : '';
+      } else {
+        // person view: gentle, phone only if present
+        if(p.phone) contact = '<p class="tk-contact"><a href="tel:'+escapeHtml(p.phone.replace(/\s/g,''))+'">'+escapeHtml(p.phone)+'</a></p>';
+      }
+      item.innerHTML =
+        '<p class="tk-name">'+escapeHtml(p.name)+'</p>'+
+        '<p class="tk-meta">'+escapeHtml(p.detail||'')+(km?' &middot; '+km:'')+'</p>'+
+        contact;
+      el.appendChild(item);
+    });
+  }
+
+  // advice layer
+  if(advice.length){
+    const head = document.createElement('p');
+    head.className='tk-advice-head';
+    head.textContent = 'Information and helplines';
+    el.appendChild(head);
+    advice.slice(0, practitioner?12:6).forEach(a=>{
+      const row = document.createElement('div');
+      row.className='tk-advice';
+      row.innerHTML = '<a href="'+escapeHtml(a.website||'#')+'" target="_blank" rel="noopener">'+escapeHtml(a.name)+'</a>';
+      el.appendChild(row);
+    });
+  }
+
+  const note = document.createElement('p');
+  note.className='tk-note';
+  note.textContent = practitioner
+    ? 'Distances are to the service\u2019s registered address, which may differ from where activities run. Confirm before referral.'
+    : 'It is always worth a quick call to check times and whether you need to book.';
+  el.appendChild(note);
+}
+
+// shared postcode between the two views
+function syncPostcode(from, to){ const t=document.getElementById(to); if(t) t.value=from; }
+document.getElementById('pc-go').addEventListener('click', ()=>{
+  const pc=document.getElementById('pc-input').value;
+  syncPostcode(pc,'pc-input-prac');
+  runTakeaway(pc, document.getElementById('pc-status'), document.getElementById('p-takeaway'), false);
+});
+document.getElementById('pc-go-prac').addEventListener('click', ()=>{
+  const pc=document.getElementById('pc-input-prac').value;
+  syncPostcode(pc,'pc-input');
+  runTakeaway(pc, document.getElementById('pc-status-prac'), document.getElementById('prac-takeaway'), true);
+});
+document.getElementById('pc-input').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('pc-go').click(); }});
+document.getElementById('pc-input-prac').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('pc-go-prac').click(); }});
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  const indices = {};
+  let missing = false;
+  QUESTIONS.forEach(q=>{
+    const sel = form.querySelector('input[name="'+q.key+'"]:checked');
+    if(sel){ indices[q.key] = parseInt(sel.value,10); }
+    else if(q.scored){ missing = true; }
+  });
+  if(missing){
+    err.classList.add('show');
+    err.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  err.classList.remove('show');
+
+  const safeguard = document.getElementById('safeguard-flag').checked;
+  const aiSafeguard = Object.values(detailAI).some(a=>a && a.safeguarding_concern);
+  const s = scrqol(indices);
+  const t = triage(indices, safeguard || aiSafeguard);
+
+  // practitioner steer card
+  const card = document.getElementById('steer-card');
+  card.className = 'card steer '+t.key;
+  document.getElementById('band-eyebrow').textContent = t.band;
+  document.getElementById('steer-title').textContent = t.title;
+  document.getElementById('steer-body').textContent = t.body;
+  document.getElementById('steer-reason').textContent = t.reason;
+  document.getElementById('action-line').textContent = t.action;
+  document.getElementById('handoff').textContent = t.handoff;
+
+  // capture flagged domain keys for the local takeaway (both views)
+  lastFlaggedDomains = QUESTIONS
+    .filter(q=>q.scored && indices[q.key]>=FLAG_FROM)
+    .map(q=>q.key);
+  // reset any prior takeaway UI
+  ['pc-status','pc-status-prac'].forEach(id=>{ const el=document.getElementById(id); if(el){el.style.display='none';el.textContent='';} });
+  ['p-takeaway','prac-takeaway'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
+  // hide the person-view local card entirely when nothing is flagged
+  document.getElementById('p-local-card').style.display = lastFlaggedDomains.length ? 'block' : 'none';
+
+  // person-facing view
+  renderPerson(indices, t);
+
+  // score
+  document.getElementById('score-num').textContent = s.toFixed(2);
+  document.getElementById('score-word').textContent = scoreWord(s);
+  const pct = Math.max(0,Math.min(100, ((s-(-0.17))/(1.00-(-0.17)))*100 ));
+  document.getElementById('score-mark').style.left = pct+'%';
+
+  // domains
+  const dWrap = document.getElementById('domains');
+  dWrap.innerHTML = '';
+  QUESTIONS.filter(q=>q.scored).forEach(q=>{
+    const idx = indices[q.key];
+    const flagged = idx>=FLAG_FROM;
+    const row = document.createElement('div');
+    row.className = 'drow';
+    row.innerHTML =
+      '<div class="dname">'+q.domain+
+        (flagged?'<span class="flag-tag">flagged</span>':'')+
+        '<small>'+q.options[idx]+'</small></div>'+
+      '<span class="chip i'+idx+'">'+STATE[idx]+'</span>';
+    dWrap.appendChild(row);
+  });
+
+  // qualitative layer (free text + AI notes)
+  const qualCard = document.getElementById('qual-card');
+  const qualWrap = document.getElementById('qual');
+  qualWrap.innerHTML = '';
+  let anyQual = false;
+  QUESTIONS.forEach(q=>{
+    const ta = document.getElementById('detail_'+q.key);
+    const txt = ta ? ta.value.trim() : '';
+    const ai = detailAI[q.key];
+    if(!txt && !ai) return;
+    anyQual = true;
+    const row = document.createElement('div');
+    row.className = 'qrow';
+    let html = '<div class="qd">'+q.domain+'</div>';
+    if(txt) html += '<p class="qtext-r">\u201c'+escapeHtml(txt)+'\u201d</p>';
+    if(ai && ai.possible_minimisation) html += '<p class="qnote-r min">Possible understatement: the words suggest more difficulty than the option chosen.</p>';
+    if(ai && ai.safeguarding_concern) html += '<p class="qnote-r safe">Safeguarding or risk signal in the free text. Review directly.</p>';
+    if(ai && ai.practitioner_note) html += '<p class="qnote-r">'+escapeHtml(ai.practitioner_note)+'</p>';
+    row.innerHTML = html;
+    qualWrap.appendChild(row);
+  });
+  qualCard.style.display = anyQual ? 'block' : 'none';
+
+  showView('person');
+  results.classList.add('show');
+  results.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// ---- Reset ----
+function resetAll(){
+  form.reset();
+  Object.keys(detailAI).forEach(k=>delete detailAI[k]);
+  document.querySelectorAll('.reflection').forEach(b=>{ b.className='reflection'; b.innerHTML=''; });
+  updateReflectButtons();
+  err.classList.remove('show');
+  results.classList.remove('show');
+  // clear takeaway state
+  lastFlaggedDomains = [];
+  ['pc-input','pc-input-prac'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['pc-status','pc-status-prac'].forEach(id=>{ const el=document.getElementById(id); if(el){el.style.display='none';el.textContent='';} });
+  ['p-takeaway','prac-takeaway'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('reset-btn').addEventListener('click', resetAll);
+document.getElementById('again-btn').addEventListener('click', resetAll);
+</script>
+</body>
+</html>
