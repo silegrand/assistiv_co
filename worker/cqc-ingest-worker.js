@@ -610,11 +610,276 @@ async function tagCharity(env, o) {
   };
 }
 
+// ---- Step 7: audience refinement ----
+// Keyword rules over-include: village halls (venues), churches (worship), and
+// right-service-wrong-audience charities (youth, domestic abuse, LGBT support).
+// This pass asks the one question rules cannot: would an isolated older person
+// actually use this. It sets older_people_relevant and corrects provision_type,
+// over the eligible voluntary set only. It does NOT re-run the whole tagger.
+async function processRefine(env, n) {
+  const orgs = await sbGet(
+    env,
+    `org?sector=eq.voluntary&takeaway_eligible=is.true&audience_checked=eq.false` +
+    `&tag_attempts=lt.${MAX_TAG_ATTEMPTS}` +
+    `&select=id,name,description,provision_type,tag_attempts&order=name&limit=${n}`
+  );
+
+  let relevant = 0, dropped = 0, failed = 0;
+
+  for (const o of orgs) {
+    try {
+      const v = await refineOrg(env, o);
+
+      const patch = {
+        older_people_relevant: v.older_people_relevant,
+        audience_checked: true,
+        provision_type: v.provision_type,
+        refine_notes: v.reason ? v.reason.slice(0, 300) : null,
+        updated_at: new Date().toISOString()
+      };
+      // A charity that is not for this cohort stays in the DB but leaves the
+      // takeaway. This is what keeps the scorecard honest.
+      if (!v.older_people_relevant) patch.takeaway_eligible = false;
+
+      await sbPatch(env, 'org', `id=eq.${o.id}`, patch);
+
+      if (v.older_people_relevant) relevant++; else dropped++;
+    } catch (e) {
+      await sbPatch(env, 'org', `id=eq.${o.id}`, {
+        tag_attempts: (o.tag_attempts || 0) + 1
+      });
+      failed++;
+    }
+  }
+
+  const remaining = await sbCount(
+    env, 'org',
+    `sector=eq.voluntary&takeaway_eligible=is.true&audience_checked=eq.false&tag_attempts=lt.${MAX_TAG_ATTEMPTS}`
+  );
+  return { relevant, dropped, failed, remaining };
+}
+
+async function refineOrg(env, o) {
+  const system =
+    'You are refining a directory of support for ISOLATED OLDER ADULTS (65+) ' +
+    'living at home, below the social-care threshold, who scored poorly on a ' +
+    'wellbeing screen (loneliness, low activity, declining independence).\n\n' +
+    'For the given charity, decide THREE things:\n\n' +
+    '1. older_people_relevant (bool): would an isolated older person plausibly ' +
+    'use this, directly, for company, activity, practical help or advice they ' +
+    'can act on. Set FALSE for, even though these are worthy: places of worship ' +
+    'whose activity is essentially religious services (a church running a named ' +
+    'lunch club or befriending scheme IS relevant; a church "providing sacred ' +
+    'space for worship" is NOT); services aimed at other groups (children and ' +
+    'youth, domestic abuse, LGBT identity support, addiction, asylum, students); ' +
+    'grant-givers; anything a person cannot simply approach.\n\n' +
+    '2. provision_type (string): "service" if it runs its own activity a person ' +
+    'attends (lunch club, day centre, befriending, meals, support group, advice ' +
+    'service). "venue" if it is essentially a room for hire (village/community/ ' +
+    'church hall, community centre, pavilion) with no named older-people ' +
+    'programme of its own. "unknown" if genuinely unclear.\n\n' +
+    '3. reason (short string): one clause saying why, e.g. "worship only", ' +
+    '"youth service", "genuine day centre for elderly", "hall for hire".\n\n' +
+    'Return ONLY JSON: {"older_people_relevant":bool,"provision_type":"service|venue|unknown","reason":"..."}.';
+
+  const user = `Name: ${o.name}\nActivities: ${o.description || 'none stated'}`;
+
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': env.ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: AI_MODEL, max_tokens: 300, system,
+      messages: [{ role: 'user', content: user }]
+    })
+  });
+
+  const data = await r.json();
+  if (data.error) throw new Error(data.error.message);
+
+  const text = (data.content || []).map(c => c.text || '').join('');
+  const clean = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+  let v;
+  try { v = JSON.parse(clean); } catch (e) { throw new Error('unparseable: ' + clean.slice(0, 120)); }
+
+  const pt = ['service', 'venue', 'unknown'].includes(v.provision_type) ? v.provision_type : 'unknown';
+  return {
+    older_people_relevant: v.older_people_relevant === true,
+    provision_type: pt,
+    reason: typeof v.reason === 'string' ? v.reason : null
+  };
+}
+
+// ---- Public takeaway: postcode + flagged domains -> nearby help ----
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',           // tighten to the tool's domain in production
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  };
+}
+
+async function handleTakeaway(request, env, url) {
+  const postcode = (url.searchParams.get('postcode') || '').trim();
+  const domainsRaw = (url.searchParams.get('domains') || '').trim();
+
+  if (!postcode) return json({ error: 'postcode required' }, 400, corsHeaders());
+
+  const domains = domainsRaw
+    ? domainsRaw.split(',').map(d => d.trim()).filter(Boolean)
+    : [];
+  if (!domains.length) return json({ error: 'at least one domain required' }, 400, corsHeaders());
+
+  // 1. geocode
+  const pcRes = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(postcode));
+  const pcData = await pcRes.json();
+  if (!pcData.result || pcData.result.latitude == null) {
+    return json({ error: 'postcode not found', postcode }, 404, corsHeaders());
+  }
+  const lat = pcData.result.latitude;
+  const lng = pcData.result.longitude;
+  const district = pcData.result.admin_district || null;
+
+  // 2. per-domain services (with stepped-radius banding) + per-domain advice
+  const [svcRes, advRes] = await Promise.all([
+    fetch(`${env.SUPABASE_URL}/rest/v1/rpc/takeaway_by_domain`, {
+      method: 'POST', headers: sbHeaders(env, { 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ p_lat: lat, p_lng: lng, p_domains: domains, p_per_domain: 4 })
+    }),
+    fetch(`${env.SUPABASE_URL}/rest/v1/rpc/takeaway_advice_by_domain`, {
+      method: 'POST', headers: sbHeaders(env, { 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ p_domains: domains, p_per_domain: 4 })
+    })
+  ]);
+
+  if (!svcRes.ok) return json({ error: 'takeaway query failed', detail: await svcRes.text() }, 502, corsHeaders());
+  const services = await svcRes.json();
+  const advice = advRes.ok ? await advRes.json() : [];
+
+  // 3. assemble per-domain: services grouped, national fallback where empty
+  const byDomain = {};
+  for (const d of domains) byDomain[d] = { domain: d, band: null, services: [], advice: [], fell_back: false };
+
+  for (const s of services) {
+    const g = byDomain[s.domain];
+    if (!g) continue;
+    if (g.band === null) g.band = s.band;   // all rows in a domain share the winning band
+    g.services.push(s);
+  }
+  for (const a of advice) {
+    if (byDomain[a.domain]) byDomain[a.domain].advice.push(a);
+  }
+
+  // a domain with no local/nearby/distant services falls back to its advice
+  const misses = [];
+  for (const d of domains) {
+    const g = byDomain[d];
+    if (!g.services.length) {
+      g.fell_back = true;
+      misses.push(d);   // recorded in the response for future demand logging (not stored)
+    }
+  }
+
+  return json({
+    location: { postcode, district, lat, lng },
+    domains,
+    domain_results: domains.map(d => byDomain[d]),
+    local_misses: misses,   // domains where nothing was found within 40km
+  }, 200, corsHeaders());
+}
+
+// ---- Step 8: plain-English one-line summaries for the takeaway ----
+// Generates a warm, plain sentence for each takeaway-eligible service, ONLY
+// from its own activity text. If the text is too thin, it falls back to the
+// category rather than inventing a service that may not exist. Runs once over
+// the confirmed services (~250), same drain pattern as tagging.
+async function processSummarise(env, n) {
+  const orgs = await sbGet(
+    env,
+    `org?sector=eq.voluntary&takeaway_eligible=is.true&summarised=eq.false` +
+    `&tag_attempts=lt.${MAX_TAG_ATTEMPTS}` +
+    `&select=id,name,category,description,tag_attempts&order=name&limit=${n}`
+  );
+
+  let done = 0, thin = 0, failed = 0;
+
+  for (const o of orgs) {
+    try {
+      const summary = await summariseOrg(env, o);
+      await sbPatch(env, 'org', `id=eq.${o.id}`, {
+        plain_summary: summary,
+        summarised: true,
+        updated_at: new Date().toISOString()
+      });
+      if (summary) done++; else thin++;
+    } catch (e) {
+      await sbPatch(env, 'org', `id=eq.${o.id}`, {
+        tag_attempts: (o.tag_attempts || 0) + 1
+      });
+      failed++;
+    }
+  }
+
+  const remaining = await sbCount(
+    env, 'org',
+    `sector=eq.voluntary&takeaway_eligible=is.true&summarised=eq.false&tag_attempts=lt.${MAX_TAG_ATTEMPTS}`
+  );
+  return { summarised: done, too_thin: thin, failed, remaining };
+}
+
+async function summariseOrg(env, o) {
+  // If there is almost nothing to work from, do not call the model: fall back
+  // to the category rather than risk inventing detail.
+  const text = (o.description || '').trim();
+  if (text.length < 25) {
+    return o.category ? `A local ${o.category.toLowerCase()}.` : null;
+  }
+
+  const system =
+    'You write ONE short, warm, plain-English sentence describing what a charity ' +
+    'does, for an older person reading it on a phone. Rules: British English. ' +
+    'Under 20 words. Say what they DO and who for, in everyday language. No ' +
+    'jargon, no "provision of", no charity-register phrasing. Use ONLY what the ' +
+    'given text supports — never invent services, days, or details not stated. ' +
+    'If the text is too vague to describe honestly, reply with exactly: UNCLEAR. ' +
+    'Return only the sentence, no quotes, no preamble.';
+
+  const user = `Charity: ${o.name}\nWhat they do (source text): ${text}`;
+
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': env.ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: AI_MODEL, max_tokens: 60, system,
+      messages: [{ role: 'user', content: user }]
+    })
+  });
+
+  const data = await r.json();
+  if (data.error) throw new Error(data.error.message);
+
+  let s = (data.content || []).map(c => c.text || '').join('').trim();
+  s = s.replace(/^["']|["']$/g, '').trim();
+
+  if (!s || /^UNCLEAR$/i.test(s)) {
+    return o.category ? `A local ${o.category.toLowerCase()}.` : null;
+  }
+  return s;
+}
+
 // ---- Router ----
-function json(obj, status = 200) {
+function json(obj, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(obj, null, 2), {
     status,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json', ...extraHeaders }
   });
 }
 
@@ -622,9 +887,25 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // ---- Public takeaway endpoint, called by the screening tool ----
+    // GET /takeaway?postcode=CT10+1SH&domains=social,occupation,food
+    // Geocodes the postcode, calls the takeaway() SQL function, returns JSON.
+    // The Supabase key stays server-side; the browser never sees it.
+    if (url.pathname === '/takeaway') {
+      // CORS preflight
+      if (request.method === 'OPTIONS') {
+        return new Response(null, { status: 204, headers: corsHeaders() });
+      }
+      try {
+        return await handleTakeaway(request, env, url);
+      } catch (e) {
+        return json({ error: String(e.message || e) }, 500, corsHeaders());
+      }
+    }
+
     if (url.pathname !== '/ingest') {
       return new Response(
-        'Kent+Medway ingest worker. Use /ingest?step=seed|locations|tag|links|geocode|ctag',
+        'Kent+Medway ingest worker. Use /ingest?step=seed|locations|tag|links|geocode|ctag|refine',
         { status: 200 }
       );
     }
@@ -639,6 +920,8 @@ export default {
       if (step === 'links')     return json(await processLinks(env, n || LINK_BATCH));
       if (step === 'geocode')   return json(await processGeocode(env, n || 100));
       if (step === 'ctag')      return json(await processCharityTags(env, n || 10));
+      if (step === 'refine')    return json(await processRefine(env, n || 10));
+      if (step === 'summarise') return json(await processSummarise(env, n || 10));
 
       const st = await sbGet(env, 'ingest_state?id=eq.cqc&select=seen,upserted,pending,last_seed');
       const untagged  = await sbCount(env, 'org', `tagged=eq.false&tag_attempts=lt.${MAX_TAG_ATTEMPTS}`);
@@ -662,7 +945,12 @@ export default {
         tagging:   { untagged, retired_after_failures: stuck },
         resources: { unchecked, confirmed_gone: resGone, unreachable: resStuck },
         geocoding: { ungeocoded },
-        charities: { untagged: cUnchecked, takeaway_eligible: cEligible }
+        charities: { untagged: cUnchecked, takeaway_eligible: cEligible },
+        refinement: {
+          unrefined: await sbCount(env, 'org', `sector=eq.voluntary&takeaway_eligible=is.true&audience_checked=eq.false&tag_attempts=lt.${MAX_TAG_ATTEMPTS}`),
+          services: await sbCount(env, 'org', "sector=eq.voluntary&takeaway_eligible=is.true&provision_type=eq.service&audience_checked=eq.true"),
+          venues: await sbCount(env, 'org', "sector=eq.voluntary&takeaway_eligible=is.true&provision_type=eq.venue&audience_checked=eq.true")
+        }
       });
     } catch (e) {
       return json({ error: String(e.message || e) }, 500);
