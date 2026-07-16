@@ -62,21 +62,7 @@ sql/07c_load_from_stage.sql       move charities into org, deduped
 sql/08_exclude_substance_misuse.sql   product decision: exclude from takeaway
 sql/09_requeue_tagged_charities.sql   (only if re-tagging a prior run)
 sql/10_takeaway.sql               the two takeaway functions
-sql/11_eligibility_review.sql     review queries for false positives
-sql/12_provision_type.sql         venue vs service split (rule-based first pass)
-sql/13_prereq_refine.sql          columns for the audience-refinement pass
-sql/14_reconcile_eligibility.sql  fix false exclusions; flag venues as leads
-sql/15_kent_gap_map.sql           Kent-scoped provision gap map + views
 ```
-
-Worker step for the audience-refinement pass (after ctag):
-```
-/ingest?step=refine&n=8           AI pass: is this for isolated older people;
-                                  service vs venue. Sets older_people_relevant.
-```
-
-See `docs/FINDINGS_provision_gap.md` for what the gap map found and, more
-importantly, what it does and does not license as a decision.
 
 Worker steps, drained from a browser console on the Worker's own domain
 (never run a manual loop and the cron simultaneously — `ingest_state.pending`
