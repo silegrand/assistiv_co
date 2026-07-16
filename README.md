@@ -62,7 +62,83 @@ sql/07c_load_from_stage.sql       move charities into org, deduped
 sql/08_exclude_substance_misuse.sql   product decision: exclude from takeaway
 sql/09_requeue_tagged_charities.sql   (only if re-tagging a prior run)
 sql/10_takeaway.sql               the two takeaway functions
+sql/11_eligibility_review.sql     review queries for false positives
+sql/12_provision_type.sql         venue vs service split (rule-based first pass)
+sql/13_prereq_refine.sql          columns for the audience-refinement pass
+sql/14_reconcile_eligibility.sql  fix false exclusions; flag venues as leads
+sql/15_kent_gap_map.sql           Kent-scoped provision gap map + views
+sql/16_validation_sweep.sql       queries to validate the gap map by hand
+sql/17_grant_takeaway_rpc.sql     expose takeaway functions as RPC to the Worker
+sql/18_prereq_summarise.sql       plain_summary + summarised columns
+sql/19_takeaway_by_domain.sql     per-domain takeaway, stepped-radius failover
+sql/20_refkent_stage_dedupe.sql   stage + dedupe the ReferKent (KCC) export
+sql/21_refkent_load_verify.sql    load new ReferKent services + verify placement
 ```
+
+### ReferKent (KCC directory) source
+
+`data/refkent_services.csv` is a cleaned, de-duplicated extract of the KCC /
+ReferKent directory export (Services_in_Kent.xlsx), provided by KCC. Original
+export had mangled columns and one row per category-assignment; cleaned to 172
+unique services. Loaded services are tagged `primary_source = 'ReferKent'`.
+
+Of 172 unique: 74 already held (Charity Commission), 98 new. After geocode +
+refine + audience filtering, **16 usable new older-people services** — mostly
+the CIC / community-org layer that registration-based sources miss. The rest
+were council teams, out-of-area national HQs, or wrong-audience services,
+correctly filtered out.
+
+Note: the export carried no description text, so ReferKent services get a
+category-fallback summary rather than a specific one. If the KCC relationship
+deepens, obtaining descriptions would let the summariser produce proper
+sentences for these too.
+
+Permission: KCC provided the data and expressed interest in the ASCOT
+screening. Confirm explicit use-permission in writing before this source is
+part of a public/commercial deployment.
+
+Worker steps added this round:
+```
+/ingest?step=summarise&n=8        one plain-English sentence per service,
+                                  generated only from its own text (never invented)
+/takeaway?postcode=X&domains=a,b  PUBLIC endpoint the screening tool calls:
+                                  geocodes, queries per-domain with 8/15/40km
+                                  failover, returns grouped results + national
+                                  fallback. Supabase key stays server-side.
+```
+
+## The screening tool
+
+`tool/ascot-screening-tool.html` is the ASCOT-aligned screen with the local
+takeaway wired in. Optional postcode up front; on results, each flagged domain
+shows the nearest confirmed services (with plain-English summaries and honest
+distance bands) and falls back to national advice where nothing is local. Two
+views: gentle for the person, fuller (distance, contact) for the practitioner.
+It calls the Worker's /takeaway endpoint, never Supabase directly.
+
+Note: ASCOT-SCT4 wording and weights are © University of Kent; a for-profit
+licence (Kent Form 3) is required before any public or paid use. This is a
+prototype, not validated.
+
+## Still pending (not built)
+
+- **Demand miss-log.** The Worker returns `local_misses` (domains where nothing
+  was found locally) but nothing is stored. Logging it would create live demand
+  intelligence — but postcode + health-need is special-category data under UK
+  GDPR. Needs a lawful basis, aggregation (district not full postcode), and a
+  data-protection sign-off before switching on. Deliberately left off.
+- **CSV in repo.** `scripts/kent_charities.csv` contains charity contact data,
+  some of it individuals' home addresses. Fine in a private repo; do not make
+  the repo public with it present.
+
+Worker step for the audience-refinement pass (after ctag):
+```
+/ingest?step=refine&n=8           AI pass: is this for isolated older people;
+                                  service vs venue. Sets older_people_relevant.
+```
+
+See `docs/FINDINGS_provision_gap.md` for what the gap map found and, more
+importantly, what it does and does not license as a decision.
 
 Worker steps, drained from a browser console on the Worker's own domain
 (never run a manual loop and the cron simultaneously — `ingest_state.pending`
