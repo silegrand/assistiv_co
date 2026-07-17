@@ -1,0 +1,101 @@
+Run started 2026-07-17 11:58 UTC against https://involvekent.org.uk
+Route 1: WordPress REST API
+  /wp-json/ : HTTP 200
+  post types: article, attachment, case_study, guide, job, mec-events, modula-gallery, nav_menu_item, page, post, print_page, service, wp_block, wp_font_face, wp_font_family, wp_global_styles, wp_navigation, wp_template, wp_template_part
+  trying endpoint 'directory_entry'
+  https://involvekent.org.uk/wp-json/wp/v2/directory_entry : HTTP 404 (unusable)
+  trying endpoint 'directory-entry'
+  https://involvekent.org.uk/wp-json/wp/v2/directory-entry : HTTP 404 (unusable)
+  trying endpoint 'directory_entries'
+  https://involvekent.org.uk/wp-json/wp/v2/directory_entries : HTTP 404 (unusable)
+  trying endpoint 'directory-entries'
+  https://involvekent.org.uk/wp-json/wp/v2/directory-entries : HTTP 404 (unusable)
+  trying endpoint 'directory'
+  https://involvekent.org.uk/wp-json/wp/v2/directory : HTTP 404 (unusable)
+  trying endpoint 'listings'
+  https://involvekent.org.uk/wp-json/wp/v2/listings : HTTP 404 (unusable)
+  trying endpoint 'listing'
+  https://involvekent.org.uk/wp-json/wp/v2/listing : HTTP 404 (unusable)
+Route 2: XML sitemap crawl
+  sitemap https://involvekent.org.uk/sitemap_index.xml : HTTP 200
+  sitemap index lists 18 sub-sitemaps:
+    - https://involvekent.org.uk/post-sitemap.xml
+    - https://involvekent.org.uk/page-sitemap.xml
+    - https://involvekent.org.uk/service-sitemap.xml
+    - https://involvekent.org.uk/directory_entry-sitemap.xml
+    - https://involvekent.org.uk/directory_entry-sitemap2.xml
+    - https://involvekent.org.uk/case_study-sitemap.xml
+    - https://involvekent.org.uk/article-sitemap.xml
+    - https://involvekent.org.uk/job-sitemap.xml
+    - https://involvekent.org.uk/event-sitemap.xml
+    - https://involvekent.org.uk/3d-flip-book-sitemap.xml
+    - https://involvekent.org.uk/mec-events-sitemap.xml
+    - https://involvekent.org.uk/category-sitemap.xml
+    - https://involvekent.org.uk/post_tag-sitemap.xml
+    - https://involvekent.org.uk/directory_entry_category-sitemap.xml
+    - https://involvekent.org.uk/directory_entry_organisation-sitemap.xml
+    - https://involvekent.org.uk/hub_type-sitemap.xml
+    - https://involvekent.org.uk/mec_category-sitemap.xml
+    - https://involvekent.org.uk/author-sitemap.xml
+  collected 1281 listing URLs
+  parsed 25/1281
+  parsed 50/1281
+  parsed 75/1281
+  parsed 100/1281
+  parsed 125/1281
+  parsed 150/1281
+  parsed 175/1281
+  parsed 200/1281
+  parsed 225/1281
+  parsed 250/1281
+  parsed 275/1281
+  parsed 300/1281
+  parsed 325/1281
+  parsed 350/1281
+  parsed 375/1281
+  parsed 400/1281
+  parsed 425/1281
+  parsed 450/1281
+  parsed 475/1281
+  parsed 500/1281
+  parsed 525/1281
+  parsed 550/1281
+  parsed 575/1281
+  parsed 600/1281
+  parsed 625/1281
+  parsed 650/1281
+  parsed 675/1281
+  parsed 700/1281
+  parsed 725/1281
+  parsed 750/1281
+  parsed 775/1281
+  parsed 800/1281
+  parsed 825/1281
+  parsed 850/1281
+  parsed 875/1281
+  parsed 900/1281
+  parsed 925/1281
+  parsed 950/1281
+  parsed 975/1281
+  parsed 1000/1281
+  parsed 1025/1281
+  parsed 1050/1281
+  parsed 1075/1281
+  parsed 1100/1281
+  parsed 1125/1281
+  parsed 1150/1281
+  parsed 1175/1281
+  parsed 1200/1281
+  parsed 1225/1281
+  parsed 1250/1281
+  parsed 1275/1281
+========================================================
+RESULT: 1281 entries
+  with email        : 1213
+  with phone        : 1165
+  with organisation : 1277
+  with categories   : 0
+  SQLite: output/directory.db
+  CSV   : output/directory.csv
+  JSON  : output/directory.json
+========================================================
