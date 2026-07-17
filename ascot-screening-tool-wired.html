@@ -227,7 +227,7 @@
   .p-area .pa-local .pa-local-head{font-family:var(--display);font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin:0 0 10px}
   .p-area .pa-local .tk-item:first-child{border-top:none}
   /* colour-coded header icons */
-  .pa-ico{width:14px;height:14px;vertical-align:-2px;margin-right:7px}
+  .pa-ico{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:7px;flex:none}
   .pa-reflect .pa-ico.said{color:var(--r-primary)}
   .pa-local-head .pa-ico.near{color:var(--primary)}
   #p-areas-map{margin-top:20px}
@@ -1041,9 +1041,11 @@ async function runTakeaway(postcode, statusEl, targetEl, practitioner){
     const r = await fetch(url);
     const data = await r.json();
     if(data.error){
+      console.warn('takeaway error', data);   // detail visible in console
+      statusEl.style.display='block';
       statusEl.textContent = data.error === 'postcode not found'
         ? 'That postcode was not found. Please check it and try again.'
-        : 'Sorry, something went wrong finding local help. Please try again.';
+        : 'We could not load local services just now. Please try again in a moment.';
       return;
     }
     statusEl.style.display='none';
