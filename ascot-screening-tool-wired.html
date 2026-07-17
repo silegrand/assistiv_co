@@ -233,6 +233,27 @@
   #p-areas-map{margin-top:20px}
   #p-areas-map .tk-mapcol{position:static}
 
+  /* person areas: need-blocks left, map floating (sticky) right on desktop */
+  .p-areas-layout{display:flex;gap:24px;align-items:flex-start}
+  .p-areas-layout #p-areas{flex:1 1 58%;min-width:0}
+  .p-areas-layout #p-areas-map{flex:1 1 42%;margin-top:0;position:sticky;top:16px;align-self:flex-start}
+  .p-areas-layout #p-areas-map .tk-mapcol{position:static}
+  .p-areas-layout #p-areas-map .tk-map{height:70vh;min-height:360px}
+  .p-areas-layout #p-areas-map:empty{display:none}
+  @media (max-width:760px){
+    .p-areas-layout{display:block}
+    .p-areas-layout #p-areas-map{position:static;margin-top:20px}
+  }
+
+  /* "Near you" header: faint indigo band so it reads as a label, not a stream */
+  .p-area .pa-local .pa-local-head{
+    display:inline-flex;align-items:center;
+    background:var(--r-primary-tint);color:var(--r-primary-strong);
+    padding:5px 12px;border-radius:999px;margin:0 0 12px;
+    font-size:.7rem;letter-spacing:.1em;
+  }
+  .p-area .pa-local .pa-local-head .pa-ico.near{color:var(--r-primary-strong)}
+
   /* qualitative results */
   .qual .qrow{padding:14px 0;border-bottom:1px solid var(--line)}
   .qual .qrow:last-child{border-bottom:0}
@@ -402,8 +423,10 @@
           <button type="button" class="primary-btn" id="pc-go">Show me what is near me</button>
         </div>
         <p class="pc-status" id="pc-status" style="display:none"></p>
-        <div id="p-areas"></div>
-        <div id="p-areas-map"></div>
+        <div class="p-areas-layout">
+          <div id="p-areas"></div>
+          <div id="p-areas-map"></div>
+        </div>
       </div>
 
       <div class="card" id="p-offer-card">
