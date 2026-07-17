@@ -214,7 +214,7 @@
   .tk-name{font-weight:600;margin:0 0 3px}
   .tk-meta{color:var(--muted);font-size:.85rem;margin:0 0 4px}
   .tk-contact{font-size:.85rem;margin:0}
-  .tk-contact a{color:var(--accent,#1baf7a);text-decoration:none}
+  .tk-contact a{color:var(--primary);text-decoration:none}
   .tk-advice-head{font-weight:600;font-size:.95rem;margin:20px 0 8px}
   .tk-advice{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}
   .tk-advice:first-of-type{border-top:none}
@@ -277,6 +277,7 @@
   /* section labels and headers shift to indigo */
   #results .h2sec{color:var(--r-primary)}
   #results .tk-group-name{color:var(--r-primary)}
+  #results .tk-contact a{color:var(--r-primary)}
   #results .p-area .pa-name{color:var(--r-primary)}
   #results #p-title,#results .person-intro h2{color:var(--r-primary-strong)}
   /* primary buttons in results use indigo */
@@ -956,6 +957,19 @@ function showView(which){
   document.getElementById('view-prac').style.display = person?'none':'block';
   tabPerson.classList.toggle('on',person); tabPerson.setAttribute('aria-selected',person);
   tabPrac.classList.toggle('on',!person); tabPrac.setAttribute('aria-selected',!person);
+  // A Leaflet map initialised while its view was hidden renders at zero size,
+  // so tiles do not fill in. Once the view is visible, recalculate and re-fit.
+  const visibleId = person ? 'view-person' : 'view-prac';
+  setTimeout(()=>{
+    document.querySelectorAll('#'+visibleId+' .tk-mapcol').forEach(mc=>{
+      if(mc._map){
+        mc._map.invalidateSize();
+        if(mc._map._takeawayBounds && mc._map._takeawayBounds.length){
+          mc._map.fitBounds(mc._map._takeawayBounds, {padding:[30,30], maxZoom:14});
+        }
+      }
+    });
+  }, 60);
 }
 tabPerson.addEventListener('click',()=>showView('person'));
 tabPrac.addEventListener('click',()=>showView('prac'));
@@ -1264,6 +1278,7 @@ function initTakeawayMap(mapId, mapCol, points, location){
   } else {
     map.setView([51.28,0.52], 10);  // Kent fallback
   }
+  map._takeawayBounds = bounds;   // kept so a hidden-then-shown map can re-fit
 }
 
 // buttons in both result views trigger the takeaway using the up-front postcode
