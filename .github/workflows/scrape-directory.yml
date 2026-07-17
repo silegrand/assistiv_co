@@ -21,13 +21,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      # The script and requirements.txt live in tools/directory-export/data/
       - name: Install dependencies
-        working-directory: tools/directory-export
+        working-directory: tools/directory-export/data
         run: pip install -r requirements.txt
 
       - name: Run the scraper
-        working-directory: tools/directory-export
-        run: python scrape_directory.py --base-url https://involvekent.org.uk --outdir data
+        working-directory: tools/directory-export/data
+        run: python scrape_directory.py --base-url https://involvekent.org.uk --outdir output
 
       # Runs even if the scrape failed, so diagnostics.txt is always retrievable.
       - name: Upload outputs as a downloadable artifact
@@ -35,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: involve-kent-directory
-          path: tools/directory-export/data/
+          path: tools/directory-export/data/output/
           if-no-files-found: warn
 
       - name: Commit outputs back to the repository
@@ -43,7 +44,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add tools/directory-export/data/
+          git add tools/directory-export/data/output/
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
