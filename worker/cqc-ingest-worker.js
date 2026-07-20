@@ -21,7 +21,25 @@
      table actually resolves before it becomes publicly readable, and re-checks
      on a schedule so dead links are withdrawn rather than served.
 
-  4. NOT CHANGED, DELIBERATELY. `sector` is still hardcoded to 'statutory' on
+  4. FIXED, GEOCODE SUBREQUEST LIMIT. processGeocode() patched one row per
+     Supabase request, so a 100-row batch fired ~100 subrequests and tripped
+     the Cloudflare per-invocation limit once the Involve directory added a
+     large block of postcoded rows. It now applies each batch in a single
+     call via the apply_geocode RPC, and loops several batches per invocation,
+     so a backlog clears in one call and the cron no longer trips the limit.
+
+  5. NEW, INSTRUMENTATION. Two failure modes were invisible: (a) ctag recorded
+     its eligibility decision nowhere, so an excluded row gave no reason and had
+     to be re-read by hand; (b) every AI-tagging processor swallowed exceptions
+     into a bare tag_attempts++ with no message, so a transient Anthropic wobble
+     could retire hundreds of real rows and the only trace was a status counter
+     reading "retired: N" as if that were routine. Now: tagCharity returns a
+     `reason`, stored in `ctag_reason`; and the retiring catch in processTags,
+     processCharityTags, processRefine and processSummarise records the actual
+     error message in `tag_error`, prefixed with the step name. Forward-looking:
+     existing rows keep null until next tagged; do NOT re-tag just to backfill.
+
+  6. NOT CHANGED, DELIBERATELY. `sector` is still hardcoded to 'statutory' on
      every CQC row, and `districts` still holds 'Kent' or 'Medway' rather than
      the twelve real districts. Both are wrong. Both would rewrite rows you
      already have, so I have left them alone pending your say-so. See the note
@@ -31,6 +49,10 @@
   SUPABASE PREREQUISITE, run once in the SQL editor before deploying:
   ---------------------------------------------------------------------------
     alter table org add column if not exists tag_attempts int not null default 0;
+    alter table org add column if not exists tag_error    text;
+    alter table org add column if not exists ctag_reason  text;
+
+  For the batched geocode step, also run 24_apply_geocode_rpc.sql once.
 
   (Plus 01_schema_resources.sql and 02_seed_resources.sql for the advice layer.)
 
@@ -297,7 +319,8 @@ async function processTags(env, n) {
       // FIX: count the attempt, so a row that always fails is retired instead
       // of being re-selected on every pass for ever.
       await sbPatch(env, 'org', `id=eq.${o.id}`, {
-        tag_attempts: (o.tag_attempts || 0) + 1
+        tag_attempts: (o.tag_attempts || 0) + 1,
+        tag_error: 'tag: ' + String(e.message || e).slice(0, 300)
       });
       failed++;
     }
@@ -448,50 +471,62 @@ async function requeueStaleResources(env) {
 // Serves both the charity spine and the CQC district gap. postcodes.io is free,
 // no key, 100 per bulk POST.
 async function processGeocode(env, n) {
-  const rows = await sbGet(
-    env,
-    `org?lat=is.null&postcode=not.is.null&select=id,postcode&limit=${n}`
-  );
-  if (!rows.length) return { geocoded: 0, missed: 0, remaining: 0 };
+  // The per-row PATCH loop was replaced by a single call to the apply_geocode
+  // RPC (24_apply_geocode_rpc.sql), and several batches now run inside one
+  // invocation. Each batch is ~3 subrequests, so up to MAX_BATCHES stays under
+  // the free-plan ceiling of 50 and a large backlog clears in one call.
+  const BATCH = Math.min(n || 100, 100);   // postcodes.io bulk cap
+  const MAX_BATCHES = 14;                   // 14 * ~3 subrequests < 50
 
-  const postcodes = rows.map(r => r.postcode);
-  const res = await fetch('https://api.postcodes.io/postcodes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ postcodes })
-  });
-  const data = await res.json();
+  let geocoded = 0, missed = 0, batches = 0;
 
-  const byPc = {};
-  for (const item of (data.result || [])) {
-    if (item.result && item.result.latitude != null) {
-      byPc[item.query.toUpperCase()] = {
-        lat: item.result.latitude,
-        lng: item.result.longitude,
-        district: item.result.admin_district || null
-      };
+  for (let i = 0; i < MAX_BATCHES; i++) {
+    const rows = await sbGet(
+      env,
+      `org?lat=is.null&postcode=not.is.null&select=id,postcode&limit=${BATCH}`
+    );
+    if (!rows.length) break;
+    batches++;
+
+    const postcodes = rows.map(r => r.postcode);
+    const res = await fetch('https://api.postcodes.io/postcodes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postcodes })
+    });
+    const data = await res.json();
+
+    const byPc = {};
+    for (const item of (data.result || [])) {
+      if (item.result && item.result.latitude != null) {
+        byPc[item.query.toUpperCase()] = {
+          lat: item.result.latitude,
+          lng: item.result.longitude,
+          district: item.result.admin_district || null
+        };
+      }
     }
-  }
 
-  let geocoded = 0, missed = 0;
-  for (const r of rows) {
-    const hit = byPc[(r.postcode || '').toUpperCase()];
-    if (hit) {
-      await sbPatch(env, 'org', `id=eq.${r.id}`, {
-        lat: hit.lat, lng: hit.lng, district: hit.district,
-        updated_at: new Date().toISOString()
-      });
-      geocoded++;
-    } else {
-      // Sentinel so an unresolvable postcode is not retried for ever.
-      // -999 is outside any real coordinate and easy to find later.
-      await sbPatch(env, 'org', `id=eq.${r.id}`, { lat: -999, lng: -999 });
+    const updates = rows.map(r => {
+      const hit = byPc[(r.postcode || '').toUpperCase()];
+      if (hit) {
+        geocoded++;
+        return { id: r.id, lat: hit.lat, lng: hit.lng, district: hit.district };
+      }
       missed++;
+      return { id: r.id, lat: -999, lng: -999, district: null };
+    });
+
+    const apply = await sbPost(env, 'rpc/apply_geocode', { rows: updates });
+    if (!apply.ok) {
+      throw new Error(`apply_geocode ${apply.status}: ${await apply.text()}`);
     }
+
+    if (rows.length < BATCH) break;   // partial batch: nothing left to do
   }
 
   const remaining = await sbCount(env, 'org', 'lat=is.null&postcode=not.is.null');
-  return { geocoded, missed, remaining };
+  return { geocoded, missed, batches, remaining };
 }
 
 // ---- Step 6: relevance-and-domain tag charities from activity text ----
@@ -525,13 +560,16 @@ async function processCharityTags(env, n) {
         self_referable: verdict.self_referable,
         relevance_checked: true,
         tagged: true,
+        ctag_reason: verdict.reason,
+        tag_error: null,
         updated_at: new Date().toISOString()
       });
 
       if (verdict.eligible) eligible++; else excluded++;
     } catch (e) {
       await sbPatch(env, 'org', `id=eq.${o.id}`, {
-        tag_attempts: (o.tag_attempts || 0) + 1
+        tag_attempts: (o.tag_attempts || 0) + 1,
+        tag_error: 'ctag: ' + String(e.message || e).slice(0, 300)
       });
       failed++;
     }
@@ -571,7 +609,10 @@ async function tagCharity(env, o) {
     '3. domains: if eligible, the ASCOT domains it plausibly helps with, from: ' +
     'control, personal_care, food, safety, social, occupation, accommodation, ' +
     'dignity. Each {"domain":"<key>","confidence":0-1}. If not eligible, [].\n\n' +
-    'Return ONLY JSON: {"eligible":bool,"self_referable":bool,"domains":[...]}. ' +
+    'Return ONLY JSON: {"eligible":bool,"self_referable":bool,"domains":[...],"reason":"..."}. ' +
+    'reason is ONE short clause explaining the eligibility decision, e.g. ' +
+    '"worship only", "diocesan finance board", "grant-giving trust", ' +
+    '"runs community lunch club", "day centre for older people". ' +
     'Be strict on eligibility. A village hall that hosts groups is eligible ' +
     '(social, occupation). A relief-in-need charity that only gives grants is not.';
 
@@ -606,7 +647,8 @@ async function tagCharity(env, o) {
   return {
     eligible: v.eligible === true,
     self_referable: v.self_referable === true,
-    domains
+    domains,
+    reason: typeof v.reason === 'string' ? v.reason.slice(0, 200) : null
   };
 }
 
@@ -646,7 +688,8 @@ async function processRefine(env, n) {
       if (v.older_people_relevant) relevant++; else dropped++;
     } catch (e) {
       await sbPatch(env, 'org', `id=eq.${o.id}`, {
-        tag_attempts: (o.tag_attempts || 0) + 1
+        tag_attempts: (o.tag_attempts || 0) + 1,
+        tag_error: 'refine: ' + String(e.message || e).slice(0, 300)
       });
       failed++;
     }
@@ -818,7 +861,8 @@ async function processSummarise(env, n) {
       if (summary) done++; else thin++;
     } catch (e) {
       await sbPatch(env, 'org', `id=eq.${o.id}`, {
-        tag_attempts: (o.tag_attempts || 0) + 1
+        tag_attempts: (o.tag_attempts || 0) + 1,
+        tag_error: 'summarise: ' + String(e.message || e).slice(0, 300)
       });
       failed++;
     }
