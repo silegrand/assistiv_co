@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 """
-Involve Kent directory scraper (v3, self-diagnosing).
+Involve Kent directory scraper (v4, self-diagnosing).
 
 Retrieves every listing from the Involve Kent online directory
 (https://involvekent.org.uk/directory/) and builds a normalised database
 (SQLite) plus CSV and JSON exports. Run with the owner's permission only.
 
-Confirmed facts this version is built around:
-  - Listings live at /directory/{slug}/ and are fully server-rendered.
-  - Each page has labelled sections: Address, What we do, Price, Organisation,
-    Telephone, Email. The site's own contact details sit in the header/footer
-    of every page and are deliberately excluded.
-  - The site runs Yoast SEO, so its sitemap index is at /sitemap_index.xml.
+Listing data (name, organisation, address, postcode, phone, email, description,
+price) comes from the individual /directory/{slug}/ pages, discovered via the
+sitemap because the REST API is disabled for the directory post type.
 
-Routes, in order:
-  1. WordPress REST API (best case: also yields category tags).
-  2. XML sitemap crawl -> parse each /directory/{slug}/ page.
-  3. A supplied list of URLs (--urls-file), if discovery is bypassed.
+Category tags are NOT shown on the listing pages, so they are gathered in a
+second pass over the category archives (/directory_entry_category/{slug}/),
+which are server-rendered and state their member listings and result counts.
 
-Whatever happens, it writes data/diagnostics.txt describing every step.
+Modes:
+  (default)            full scrape + category enrichment
+  --categories-only    reuse the existing output/directory.json and only
+                       (re)build category tags (fast; no listing re-fetch)
+  --skip-categories    scrape listings only
+
+Whatever happens, it writes {outdir}/diagnostics.txt describing every step.
 """
 
 from __future__ import annotations
@@ -45,7 +47,7 @@ except Exception:
 
 
 DEFAULT_BASE = "https://involvekent.org.uk"
-USER_AGENT = ("InvolveKentDirectoryExport/3.0 (data export run with owner "
+USER_AGENT = ("InvolveKentDirectoryExport/4.0 (data export run with owner "
              "permission; contact: directory@involvekent.org.uk)")
 REQUEST_DELAY = 0.4
 PER_PAGE = 100
@@ -57,9 +59,26 @@ SITEMAP_GUESSES = ["/sitemap_index.xml", "/wp-sitemap.xml", "/sitemap.xml",
                    "/directory_entry-sitemap.xml", "/directory-sitemap.xml",
                    "/wp-sitemap-posts-directory_entry-1.xml"]
 
+CATEGORY_SITEMAP = "/directory_entry_category-sitemap.xml"
+CATEGORY_SLUGS_FALLBACK = [
+    "health", "groups-and-community-activities", "support-services-and-self-help",
+    "healthier-lifestyle", "mental-health", "movement-and-balance",
+    "specific-health-conditions", "sport-and-leisure", "walks", "wellbeing",
+    "animals-and-wildlife", "arts-and-crafts", "community-centres-and-warm-spaces",
+    "day-centres-and-dementia", "faith-groups", "gardening-and-conservation",
+    "hobbies-and-interests", "neurodivergent-groups", "online-groups-and-activities",
+    "parent-and-family", "peer-and-support-groups", "social-groups-and-coffee-mornings",
+    "veterans", "volunteering-groups", "abuse", "accessing-food", "advocacy-and-iag",
+    "befriending", "bereavement", "carers-support", "counselling", "employment",
+    "end-of-life", "getting-online", "helplines",
+    "independent-living-and-help-at-home", "family-support",
+    "skills-education-and-training", "transport",
+]
+
 OWN_EMAILS = {"hello@involvekent.org.uk"}
 OWN_PHONES = {"03000810005"}
 KNOWN_LABELS = {"address", "what we do", "price", "organisation", "telephone", "email"}
+MAX_CATEGORY_PAGES = 100
 
 DIAG: list[str] = []
 
@@ -125,6 +144,11 @@ def flatten(prefix, obj, out):
 
 def digits(s):
     return re.sub(r"\D", "", s or "")
+
+
+def slug_from_entry_url(url):
+    parts = [p for p in urlparse(url).path.split("/") if p]
+    return parts[1] if len(parts) >= 2 and parts[0] == "directory" else (parts[-1] if parts else "")
 
 
 # ---------------------------------------------------------------------------
@@ -226,7 +250,7 @@ def normalise_rest(raw):
 
 
 # ---------------------------------------------------------------------------
-# Sitemap route
+# Sitemap route (listing enumeration)
 # ---------------------------------------------------------------------------
 
 def find_sitemap(session, base_url, override):
@@ -255,12 +279,10 @@ def collect_sitemap_urls(session, base_url, override):
 
     entry_urls = []
     if is_index:
-        log(f"  sitemap index lists {len(locs)} sub-sitemaps:")
-        for u in locs:
-            log(f"    - {u}")
+        log(f"  sitemap index lists {len(locs)} sub-sitemaps")
         picked = [u for u in locs if wanted(u)]
         if not picked:
-            log("  no directory sub-sitemap by name; scanning every sub-sitemap for /directory/ URLs")
+            log("  no directory sub-sitemap by name; scanning all for /directory/ URLs")
             picked = locs
         for sm in picked:
             page = get(session, sm)
@@ -281,7 +303,7 @@ def collect_sitemap_urls(session, base_url, override):
 
 
 # ---------------------------------------------------------------------------
-# HTML page parser (section-aware)
+# HTML listing-page parser (section-aware)
 # ---------------------------------------------------------------------------
 
 def sections_map(soup):
@@ -307,7 +329,7 @@ def extract_from_html(html_text, url):
            "address": "", "postcode": "", "price": "", "organisation": "",
            "organisation_url": "", "description": "", "excerpt": "",
            "categories": "", "date": "", "modified": "",
-           "slug": url.rstrip("/").split("/")[-1], "id": None, "_raw": {}}
+           "slug": slug_from_entry_url(url), "id": None, "_raw": {}}
     soup = BeautifulSoup(html_text, "html.parser")
     h1 = soup.find("h1")
     if h1:
@@ -369,8 +391,138 @@ def parse_entry_page(session, url):
                 "address": "", "postcode": "", "price": "", "organisation": "",
                 "organisation_url": "", "description": "", "excerpt": "",
                 "categories": "", "date": "", "modified": "",
-                "slug": url.rstrip("/").split("/")[-1], "id": None, "_raw": {}}
+                "slug": slug_from_entry_url(url), "id": None, "_raw": {}}
     return extract_from_html(resp.text, url)
+
+
+# ---------------------------------------------------------------------------
+# Category enrichment (second pass over category archives)
+# ---------------------------------------------------------------------------
+
+def _entry_slug(href):
+    parts = [p for p in urlparse(href).path.split("/") if p]
+    return parts[1] if len(parts) == 2 and parts[0] == "directory" else None
+
+
+def _category_slug(href):
+    parts = [p for p in urlparse(href).path.split("/") if p]
+    return parts[1] if len(parts) == 2 and parts[0] == "directory_entry_category" else None
+
+
+def parse_category_archive(html_text):
+    soup = BeautifulSoup(html_text, "html.parser")
+    h1 = soup.find("h1")
+    name = h1.get_text(" ", strip=True) if h1 else ""
+    m = re.search(r"Found\s+([\d,]+)\s+results", soup.get_text(" ", strip=True))
+    expected = int(m.group(1).replace(",", "")) if m else None
+
+    parent = ""
+    if h1:
+        for a in soup.find_all("a", href=True):
+            if a is h1 or h1 in a.parents:
+                continue
+            if a.sourceline and h1.sourceline and a.sourceline > h1.sourceline:
+                break
+            cslug = _category_slug(a["href"])
+            if cslug and a.get_text(strip=True) and a.get_text(strip=True).lower() != name.lower():
+                parent = a.get_text(" ", strip=True)
+                break
+
+    slugs, seen = [], set()
+    for a in soup.find_all("a", href=True):
+        s = _entry_slug(a["href"])
+        if s and s not in seen:
+            seen.add(s)
+            slugs.append(s)
+    return {"name": name, "parent": parent, "expected_count": expected, "entry_slugs": slugs}
+
+
+def _page_url(cat_url, n, style):
+    base = cat_url.rstrip("/")
+    return f"{base}/page/{n}/" if style == "path" else f"{base}/?paged={n}"
+
+
+def fetch_category_members(session, cat_url):
+    resp = get(session, cat_url)
+    if resp is None or resp.status_code != 200:
+        log(f"    {cat_url} : HTTP {getattr(resp, 'status_code', 'none')}")
+        return None
+    first = parse_category_archive(resp.text)
+    name, parent, expected = first["name"], first["parent"], first["expected_count"]
+    slugs = list(first["entry_slugs"])
+
+    if expected and len(slugs) < expected:
+        style = None
+        for candidate in ("path", "query"):
+            r = get(session, _page_url(cat_url, 2, candidate))
+            if r is not None and r.status_code == 200:
+                new = [s for s in parse_category_archive(r.text)["entry_slugs"] if s not in set(slugs)]
+                if new:
+                    style = candidate
+                    slugs.extend(new)
+                    break
+        if style:
+            page = 3
+            while expected and len(set(slugs)) < expected and page <= MAX_CATEGORY_PAGES:
+                r = get(session, _page_url(cat_url, page, style))
+                if r is None or r.status_code != 200:
+                    break
+                new = [s for s in parse_category_archive(r.text)["entry_slugs"] if s not in set(slugs)]
+                if not new:
+                    break
+                slugs.extend(new)
+                page += 1
+
+    slugs = list(dict.fromkeys(slugs))
+    short = f" (SHORT of {expected})" if expected and len(slugs) < expected else ""
+    log(f"    {name}: {len(slugs)} of {expected if expected is not None else '?'}{short}")
+    return {"name": name, "parent": parent, "expected": expected, "slugs": slugs}
+
+
+def discover_category_urls(session, base_url):
+    resp = get(session, urljoin(base_url, CATEGORY_SITEMAP))
+    urls = []
+    if resp is not None and resp.status_code == 200 and "<loc>" in resp.text:
+        urls = [u for u in re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", resp.text)
+                if _category_slug(u)]
+        log(f"  category sitemap: {len(urls)} categories")
+    if not urls:
+        log("  category sitemap unavailable; using built-in category list")
+        urls = [urljoin(base_url, f"/directory_entry_category/{s}/") for s in CATEGORY_SLUGS_FALLBACK]
+    return sorted(set(urls))
+
+
+def enrich_with_categories(session, base_url, records):
+    """Populate record['categories'] and return category metadata {name: parent}."""
+    log("Category pass: mapping listings to categories")
+    by_slug = {}
+    for r in records:
+        by_slug.setdefault(r.get("slug") or slug_from_entry_url(r.get("url", "")), r)
+
+    cat_meta = {}
+    membership = {}
+    unmatched = 0
+    for cat_url in discover_category_urls(session, base_url):
+        info = fetch_category_members(session, cat_url)
+        if not info or not info["name"]:
+            continue
+        cat_meta[info["name"]] = info["parent"]
+        for s in info["slugs"]:
+            if s in by_slug:
+                membership.setdefault(s, set()).add(info["name"])
+            else:
+                unmatched += 1
+
+    for slug, r in by_slug.items():
+        names = sorted(membership.get(slug, set()))
+        if names:
+            r["categories"] = "; ".join(names)
+
+    tagged = sum(1 for r in records if r.get("categories"))
+    log(f"  categories mapped: {len(cat_meta)} categories, {tagged}/{len(records)} listings tagged")
+    if unmatched:
+        log(f"  note: {unmatched} category memberships referenced listings not in the main set")
+    return cat_meta
 
 
 # ---------------------------------------------------------------------------
@@ -382,7 +534,8 @@ COLUMNS = ["id", "title", "slug", "url", "organisation", "organisation_url",
            "categories", "description", "excerpt", "date", "modified"]
 
 
-def build_database(records, outdir):
+def build_database(records, outdir, cat_meta=None):
+    cat_meta = cat_meta or {}
     db = f"{outdir}/directory.db"
     conn = sqlite3.connect(db)
     cur = conn.cursor()
@@ -396,11 +549,24 @@ def build_database(records, outdir):
             website TEXT, address TEXT, postcode TEXT, price TEXT,
             categories TEXT, description TEXT, excerpt TEXT, date TEXT,
             modified TEXT, raw_json TEXT);
-        CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);
+        CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE, parent TEXT);
         CREATE TABLE entry_categories (entry_id INTEGER, category_id INTEGER,
             PRIMARY KEY (entry_id, category_id));
     """)
     cat_ids = {}
+
+    def cat_id(name):
+        if name not in cat_ids:
+            cur.execute("INSERT OR IGNORE INTO categories (name, parent) VALUES (?,?)",
+                        (name, cat_meta.get(name, "")))
+            cur.execute("SELECT id FROM categories WHERE name = ?", (name,))
+            cat_ids[name] = cur.fetchone()[0]
+        return cat_ids[name]
+
+    for name in cat_meta:  # ensure every known category exists even if unused
+        cat_id(name)
+
     for i, r in enumerate(records):
         eid = r.get("id") or (10_000_000 + i)
         cur.execute("""INSERT OR REPLACE INTO entries
@@ -414,11 +580,7 @@ def build_database(records, outdir):
              r.get("description", ""), r.get("excerpt", ""), r.get("date", ""),
              r.get("modified", ""), json.dumps(r.get("_raw", {}), ensure_ascii=False)))
         for cat in [c.strip() for c in r.get("categories", "").split(";") if c.strip()]:
-            if cat not in cat_ids:
-                cur.execute("INSERT OR IGNORE INTO categories (name) VALUES (?)", (cat,))
-                cur.execute("SELECT id FROM categories WHERE name = ?", (cat,))
-                cat_ids[cat] = cur.fetchone()[0]
-            cur.execute("INSERT OR IGNORE INTO entry_categories VALUES (?,?)", (eid, cat_ids[cat]))
+            cur.execute("INSERT OR IGNORE INTO entry_categories VALUES (?,?)", (eid, cat_id(cat)))
     conn.commit()
     conn.close()
     return db
@@ -438,6 +600,14 @@ def export_csv_json(records, outdir):
     return csv_path, json_path
 
 
+def load_existing(outdir):
+    path = f"{outdir}/directory.json"
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
 def write_diagnostics(outdir):
     with open(f"{outdir}/diagnostics.txt", "w", encoding="utf-8") as fh:
         fh.write("\n".join(DIAG) + "\n")
@@ -447,74 +617,78 @@ def write_diagnostics(outdir):
 # Main
 # ---------------------------------------------------------------------------
 
+def scrape_listings(session, args):
+    records = []
+    log("Route 1: WordPress REST API")
+    if rest_alive(session, args.base_url):
+        base = args.rest_base or discover_rest_base(session, args.base_url)
+        tried = ([base] if base else []) + [g for g in REST_BASE_GUESSES if g != base]
+        for b in tried:
+            if not b:
+                continue
+            log(f"  trying endpoint '{b}'")
+            raw = fetch_all_entries(session, args.base_url, b)
+            if raw:
+                records = [normalise_rest(r) for r in raw]
+                break
+    else:
+        log("  REST not reachable")
+
+    if records and HAVE_BS4:
+        missing = [r for r in records if not (r["email"] or r["phone"])]
+        if missing:
+            log(f"Filling contact gaps for {len(missing)} entries via page parse")
+            for r in missing:
+                if r.get("url"):
+                    p = parse_entry_page(session, r["url"])
+                    for f in ("email", "phone", "website", "address", "postcode",
+                              "price", "organisation", "organisation_url"):
+                        r[f] = r.get(f) or p.get(f, "")
+
+    if not records:
+        log("Route 2: XML sitemap crawl")
+        urls = collect_sitemap_urls(session, args.base_url, args.sitemap_url)
+        for i, u in enumerate(urls, 1):
+            if i % 25 == 0:
+                log(f"  parsed {i}/{len(urls)}")
+            records.append(parse_entry_page(session, u))
+    return records
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base-url", default=DEFAULT_BASE)
     ap.add_argument("--outdir", default="data")
     ap.add_argument("--rest-base", default=None)
     ap.add_argument("--sitemap-url", default=None)
-    ap.add_argument("--urls-file", default=None, help="Newline-separated listing URLs to parse directly.")
+    ap.add_argument("--skip-categories", action="store_true")
+    ap.add_argument("--categories-only", action="store_true",
+                    help="Reuse output/directory.json and only rebuild category tags.")
     args = ap.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
     session = make_session()
     log(f"Run started {datetime.now(timezone.utc):%Y-%m-%d %H:%M UTC} against {args.base_url}")
-    records = []
 
-    # Route 3 short-circuit: explicit URL list.
-    if args.urls_file:
-        log(f"Route 3: parsing URLs from {args.urls_file}")
-        with open(args.urls_file, encoding="utf-8") as fh:
-            urls = [ln.strip() for ln in fh if ln.strip()]
-        for i, u in enumerate(urls, 1):
-            if i % 25 == 0:
-                log(f"  parsed {i}/{len(urls)}")
-            records.append(parse_entry_page(session, u))
-    else:
-        # Route 1: REST.
-        log("Route 1: WordPress REST API")
-        if rest_alive(session, args.base_url):
-            base = args.rest_base or discover_rest_base(session, args.base_url)
-            tried = ([base] if base else []) + [g for g in REST_BASE_GUESSES if g != base]
-            for b in tried:
-                if not b:
-                    continue
-                log(f"  trying endpoint '{b}'")
-                raw = fetch_all_entries(session, args.base_url, b)
-                if raw:
-                    records = [normalise_rest(r) for r in raw]
-                    break
-        else:
-            log("  REST not reachable")
-
-        # Fill contact gaps from live pages.
-        if records and HAVE_BS4:
-            missing = [r for r in records if not (r["email"] or r["phone"])]
-            if missing:
-                log(f"Filling contact gaps for {len(missing)} entries via page parse")
-                for r in missing:
-                    if r.get("url"):
-                        p = parse_entry_page(session, r["url"])
-                        for f in ("email", "phone", "website", "address", "postcode",
-                                  "price", "organisation", "organisation_url"):
-                            r[f] = r.get(f) or p.get(f, "")
-
-        # Route 2: sitemap.
+    cat_meta = {}
+    if args.categories_only:
+        records = load_existing(args.outdir)
         if not records:
-            log("Route 2: XML sitemap crawl")
-            urls = collect_sitemap_urls(session, args.base_url, args.sitemap_url)
-            for i, u in enumerate(urls, 1):
-                if i % 25 == 0:
-                    log(f"  parsed {i}/{len(urls)}")
-                records.append(parse_entry_page(session, u))
+            log("RESULT: --categories-only but no existing directory.json to reuse.")
+            write_diagnostics(args.outdir)
+            return 1
+        log(f"Reusing {len(records)} existing listings")
+        cat_meta = enrich_with_categories(session, args.base_url, records)
+    else:
+        records = scrape_listings(session, args)
+        if not records:
+            log("RESULT: no records retrieved by any route.")
+            write_diagnostics(args.outdir)
+            return 1
+        if not args.skip_categories:
+            cat_meta = enrich_with_categories(session, args.base_url, records)
 
-    if not records:
-        log("RESULT: no records retrieved by any route.")
-        log("Send me data/diagnostics.txt (it now lists the sitemap contents) and I'll pin it.")
-        write_diagnostics(args.outdir)
-        return 1
-
-    db = build_database(records, args.outdir)
+    db = build_database(records, args.outdir, cat_meta)
     csv_path, json_path = export_csv_json(records, args.outdir)
     log("=" * 56)
     log(f"RESULT: {len(records)} entries")
@@ -522,6 +696,7 @@ def main():
     log(f"  with phone        : {sum(1 for r in records if r.get('phone'))}")
     log(f"  with organisation : {sum(1 for r in records if r.get('organisation'))}")
     log(f"  with categories   : {sum(1 for r in records if r.get('categories'))}")
+    log(f"  distinct categories: {len(cat_meta)}")
     log(f"  SQLite: {db}")
     log(f"  CSV   : {csv_path}")
     log(f"  JSON  : {json_path}")
