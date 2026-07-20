@@ -1,10 +1,17 @@
 name: Scrape Involve Kent directory
 
-# Run manually from the Actions tab, and automatically on the 1st of each month.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode"
+        type: choice
+        default: full
+        options:
+          - full              # scrape all listings + category tags
+          - categories-only   # reuse existing directory.json, refresh tags only
   schedule:
-    - cron: "0 6 1 * *"
+    - cron: "0 6 1 * *"       # 06:00 on the 1st of each month
 
 permissions:
   contents: write
@@ -21,16 +28,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      # The script and requirements.txt live in tools/directory-export/data/
+      # Script and requirements.txt live in tools/directory-export/data/
       - name: Install dependencies
         working-directory: tools/directory-export/data
         run: pip install -r requirements.txt
 
       - name: Run the scraper
         working-directory: tools/directory-export/data
-        run: python scrape_directory.py --base-url https://involvekent.org.uk --outdir output
+        run: |
+          MODE="${{ github.event.inputs.mode || 'full' }}"
+          FLAG=""
+          if [ "$MODE" = "categories-only" ]; then FLAG="--categories-only"; fi
+          echo "Run mode: $MODE"
+          python scrape_directory.py --base-url https://involvekent.org.uk --outdir output $FLAG
 
-      # Runs even if the scrape failed, so diagnostics.txt is always retrievable.
       - name: Upload outputs as a downloadable artifact
         if: always()
         uses: actions/upload-artifact@v4
