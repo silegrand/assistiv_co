@@ -1,52 +1,186 @@
 # robots.txt for Assistiv (www.assistiv.co)
-# Last updated: 2026-05-27
+# Last updated: 2026-07-20
+#
+# IMPORTANT, HOW THIS FILE WORKS
+# A crawler obeys ONLY the most specific User-agent group that matches it.
+# It does NOT also read the "User-agent: *" group. The previous version of
+# this file gave each AI crawler its own group containing "Allow: /" and
+# nothing else, which meant every Disallow in the "*" group was ignored by
+# those crawlers. The exclusion list is therefore repeated in every group.
+# If you add a new path to one group, add it to all of them.
+#
+# NOTE: robots.txt is advisory. It asks well-behaved crawlers not to fetch.
+# It does not make anything private. Anything served by GitHub Pages remains
+# publicly downloadable by anyone with the URL.
 
 # ── Standard crawlers ───────────────────────────────────────────
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /private/
-Disallow: /internal/
+# Private prototype: ASCOT-SCT4 content under University of Kent
+# private-development approval. Not for public release or indexing.
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+# Source, schema and raw directory data
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# ── AI training crawlers ────────────────────────────────────────
-# Assistiv actively welcomes responsible AI indexing for discovery
-# and research purposes. The following crawlers are permitted.
+# ── AI training and answer-engine crawlers ──────────────────────
+# Assistiv welcomes responsible AI indexing of its PUBLIC pages for
+# discovery and research. The private prototype and the raw directory
+# data are excluded from that permission.
 
-# OpenAI (ChatGPT / GPT-4 browsing, SearchGPT)
 User-agent: GPTBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# OpenAI real-time search
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Anthropic (Claude)
 User-agent: ClaudeBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Anthropic web crawler
 User-agent: anthropic-ai
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Google Gemini / AI Overviews
 User-agent: Google-Extended
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Meta AI
 User-agent: FacebookBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Perplexity AI
 User-agent: PerplexityBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# You.com
 User-agent: YouBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
-# Common Crawl (used by many AI training pipelines)
 User-agent: CCBot
 Allow: /
+Disallow: /ascot-screening-tool-wired.html
+Disallow: /ascot-screening-tool-prototype.html
+Disallow: /sql/
+Disallow: /scripts/
+Disallow: /worker/
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /*.sql$
+Disallow: /*.csv$
+Disallow: /*.db$
+Disallow: /kent_charities.csv
+Disallow: /build_resource_seed.py
+Disallow: /cqc-ingest-worker.js
 
 # ── Sitemap ─────────────────────────────────────────────────────
 Sitemap: https://www.assistiv.co/sitemap.xml
