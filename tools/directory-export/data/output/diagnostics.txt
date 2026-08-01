@@ -1,4 +1,4 @@
-Run started 2026-07-20 09:03 UTC against https://involvekent.org.uk
+Run started 2026-08-01 08:25 UTC against https://involvekent.org.uk
 Route 1: WordPress REST API
   /wp-json/ : HTTP 200
   post types: article, attachment, case_study, guide, job, mec-events, modula-gallery, nav_menu_item, page, post, print_page, service, wp_block, wp_font_face, wp_font_family, wp_global_styles, wp_navigation, wp_template, wp_template_part
@@ -19,58 +19,58 @@ Route 1: WordPress REST API
 Route 2: XML sitemap crawl
   sitemap https://involvekent.org.uk/sitemap_index.xml : HTTP 200
   sitemap index lists 18 sub-sitemaps
-  collected 1283 listing URLs
-  parsed 25/1283
-  parsed 50/1283
-  parsed 75/1283
-  parsed 100/1283
-  parsed 125/1283
-  parsed 150/1283
-  parsed 175/1283
-  parsed 200/1283
-  parsed 225/1283
-  parsed 250/1283
-  parsed 275/1283
-  parsed 300/1283
-  parsed 325/1283
-  parsed 350/1283
-  parsed 375/1283
-  parsed 400/1283
-  parsed 425/1283
-  parsed 450/1283
-  parsed 475/1283
-  parsed 500/1283
-  parsed 525/1283
-  parsed 550/1283
-  parsed 575/1283
-  parsed 600/1283
-  parsed 625/1283
-  parsed 650/1283
-  parsed 675/1283
-  parsed 700/1283
-  parsed 725/1283
-  parsed 750/1283
-  parsed 775/1283
-  parsed 800/1283
-  parsed 825/1283
-  parsed 850/1283
-  parsed 875/1283
-  parsed 900/1283
-  parsed 925/1283
-  parsed 950/1283
-  parsed 975/1283
-  parsed 1000/1283
-  parsed 1025/1283
-  parsed 1050/1283
-  parsed 1075/1283
-  parsed 1100/1283
-  parsed 1125/1283
-  parsed 1150/1283
-  parsed 1175/1283
-  parsed 1200/1283
-  parsed 1225/1283
-  parsed 1250/1283
-  parsed 1275/1283
+  collected 1287 listing URLs
+  parsed 25/1287
+  parsed 50/1287
+  parsed 75/1287
+  parsed 100/1287
+  parsed 125/1287
+  parsed 150/1287
+  parsed 175/1287
+  parsed 200/1287
+  parsed 225/1287
+  parsed 250/1287
+  parsed 275/1287
+  parsed 300/1287
+  parsed 325/1287
+  parsed 350/1287
+  parsed 375/1287
+  parsed 400/1287
+  parsed 425/1287
+  parsed 450/1287
+  parsed 475/1287
+  parsed 500/1287
+  parsed 525/1287
+  parsed 550/1287
+  parsed 575/1287
+  parsed 600/1287
+  parsed 625/1287
+  parsed 650/1287
+  parsed 675/1287
+  parsed 700/1287
+  parsed 725/1287
+  parsed 750/1287
+  parsed 775/1287
+  parsed 800/1287
+  parsed 825/1287
+  parsed 850/1287
+  parsed 875/1287
+  parsed 900/1287
+  parsed 925/1287
+  parsed 950/1287
+  parsed 975/1287
+  parsed 1000/1287
+  parsed 1025/1287
+  parsed 1050/1287
+  parsed 1075/1287
+  parsed 1100/1287
+  parsed 1125/1287
+  parsed 1150/1287
+  parsed 1175/1287
+  parsed 1200/1287
+  parsed 1225/1287
+  parsed 1250/1287
+  parsed 1275/1287
 Category pass: mapping listings to categories
   category sitemap: 39 categories
     Abuse: 35 of 35
@@ -80,7 +80,7 @@ Category pass: mapping listings to categories
     Arts and crafts: 108 of 108
     Befriending: 23 of 23
     Bereavement: 22 of 22
-    Carers support: 29 of 29
+    Carers support: 30 of 30
     Community centres and warm spaces: 49 of 49
     Counselling: 43 of 43
     Day centres and Dementia: 82 of 82
@@ -88,15 +88,15 @@ Category pass: mapping listings to categories
     End of life: 27 of 27
     Faith groups: 12 of 12
     Parent and family support: 113 of 113
-    Gardening: 26 of 26
+    Gardening: 25 of 25
     Getting online: 19 of 19
-    Groups and Community Activities: 676 of 676
+    Groups and Community Activities: 680 of 680
     Health: 263 of 263
     Healthier lifestyle: 19 of 19
     Helplines: 60 of 60
-    Hobbies and interests: 204 of 204
+    Hobbies and interests: 208 of 208
     Independent living and help at home: 92 of 92
-    Mental Health: 39 of 39
+    Mental Health: 40 of 40
     Movement and balance: 68 of 68
     Neurodivergent groups: 11 of 11
     Online groups and activities: 16 of 16
@@ -106,19 +106,19 @@ Category pass: mapping listings to categories
     Social groups and coffee mornings: 180 of 180
     Specific health conditions: 55 of 55
     Sport and fitness: 58 of 58
-    Support Services and Self-help: 645 of 645
+    Support Services and Self-help: 646 of 646
     Transport: 8 of 8
     Veterans: 10 of 10
     Volunteering groups: 11 of 11
     Walks: 30 of 30
-    Wellbeing: 32 of 32
-  categories mapped: 39 categories, 1281/1283 listings tagged
+    Wellbeing: 31 of 31
+  categories mapped: 39 categories, 1285/1287 listings tagged
 ========================================================
-RESULT: 1283 entries
-  with email        : 1215
-  with phone        : 1167
-  with organisation : 1279
-  with categories   : 1281
+RESULT: 1287 entries
+  with email        : 1219
+  with phone        : 1171
+  with organisation : 1283
+  with categories   : 1285
   distinct categories: 39
   SQLite: output/directory.db
   CSV   : output/directory.csv
